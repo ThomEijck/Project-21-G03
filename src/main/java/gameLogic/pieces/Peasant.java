@@ -65,6 +65,12 @@ public class Peasant extends Piece{
 		}
 		return targetPositions;
     }
+
+    //call this function after the pawn has been moved to prevent it to be able to move two spaces all the time
+    public void hasMoved()
+	{
+		firstMove = false;
+	}
 }
 //just saving this code in case the other implementation does not work
 /*

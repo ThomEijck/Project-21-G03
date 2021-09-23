@@ -40,7 +40,16 @@ public class Knight extends Piece{
         for (int i = 0; i < possibleMoves.length; i++)
         {
             Position pos = possibleMoves[i];
-            if(pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7 || board[pos.row][pos.column].getPlayer() != getPlayer())
+            //check if the target is not on the board
+            if(pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7)
+            {
+                possibleMoves[i] = new Position(-1, -1);
+            }
+            //knowing that the target is on the board
+            boolean correctTarget = board[pos.row][pos.column] == null
+                    || ( board[pos.row][pos.column] != null && board[pos.row][pos.column].getPlayer() != getPlayer());
+
+            if(!correctTarget)
             {
                 possibleMoves[i] = new Position(-1, -1);
             }

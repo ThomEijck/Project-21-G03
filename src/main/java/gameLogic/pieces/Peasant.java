@@ -37,10 +37,10 @@ public class Peasant extends Piece{
 		//list the possible moves the pawn can make
 		if(firstMove)
 		{
-			possibleMoves = new int[][]{{moveDirection,-1},{moveDirection,0},{moveDirection,-1},{2* moveDirection,0}};
+			possibleMoves = new int[][]{{moveDirection,-1},{moveDirection,1},{moveDirection,0},{2* moveDirection,0}};
 		}else
 		{
-			possibleMoves = new int[][]{{moveDirection,-1},{moveDirection,0},{moveDirection,-1}};
+			possibleMoves = new int[][]{{moveDirection,-1},{moveDirection,1},{moveDirection,0}};
 		}
 		targetPositions = new Position[possibleMoves.length];
 
@@ -58,7 +58,24 @@ public class Peasant extends Piece{
 		for (int i = 0; i < possibleMoves.length; i++)
 		{
 			Position pos = targetPositions[i];
-			if(pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7 || board[pos.row][pos.column].getPlayer() != getPlayer())
+			boolean correctTarget = false;
+
+			if(pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7)
+			{
+				targetPositions[i] = new Position(-1, -1);
+			}
+
+			//knowing that the target is on the board
+			if(i <= 1)//targeting top left/right
+			{
+				correctTarget = (board[pos.row][pos.column].getPlayer() != getPlayer());
+			}
+			else//targeting straight ahead
+			{
+				correctTarget = (board[pos.row][pos.column] == null);
+			}
+
+			if(!correctTarget)
 			{
 				targetPositions[i] = new Position(-1, -1);
 			}

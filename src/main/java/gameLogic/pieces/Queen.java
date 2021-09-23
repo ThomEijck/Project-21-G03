@@ -20,9 +20,9 @@ public class Queen extends Piece{
     	return 5;	
     }
     
-    public boolean findMoves(Piece[][] board){
+    public Position[] findMoves(Piece[][] board){
     	System.out.println(super.getPos().row + " " + super.getPos().column);
-    	return false;	
+    	return null;
     }
     
 }

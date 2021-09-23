@@ -1,6 +1,6 @@
 package gameLogic.pieces;
 
-import chess.util.*;
+import gameLogic.util.*;
 
 public class Bishop extends Piece{
 
@@ -22,6 +22,6 @@ public class Bishop extends Piece{
     
     public Position[] findMoves(Piece[][] board){
     	System.out.println(super.getPos().row + " " + super.getPos().column);
-    	return false;	
+    	return null;
     }
 }

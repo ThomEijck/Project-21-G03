@@ -28,11 +28,11 @@ public class Knight extends Piece{
         
         //current position
         int row = getPos().row;
-        int collumn = getPos().column;
+        int column = getPos().column;
 
         //calculate target positions
         for (int i = 0; i < possibleMoves.length; i++){
-    		possibleMoves[i] = new Position(row + possibleMovement[i][0], collumn + possibleMovement[i][1]);	
+    		possibleMoves[i] = new Position(row + possibleMovement[i][0], column + possibleMovement[i][1]);
     	}
 
 

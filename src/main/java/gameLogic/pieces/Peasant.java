@@ -6,13 +6,13 @@ public class Peasant extends Piece{
 
     private static String name = "Pawn";
 	boolean firstMove;
-	boolean leftEnpassent;
-	boolean rightEnpassent;
+	boolean leftEnpassant;
+	boolean rightEnpassant;
     public Peasant(Position pos, int player) {
         super(pos, player);
         firstMove = true;
-		boolean leftEnpassent = false;
-		boolean rightEnpassent = false;
+		leftEnpassant = false;
+		rightEnpassant = false;
     }
 
     @Override
@@ -28,8 +28,8 @@ public class Peasant extends Piece{
     //TODO: 
     //Make array of possible moves? (done)
     //First move = 2 steps ahead (done)
-    //En passant
-    //Promotion
+    //En passant (kinda done, methods in place, taking a the pawn should probably be handled somewhere else)
+    //Promotion (Should probably be handled somewhere else as well)
     public Position[] findMoves(Piece[][] board){
     	Position[] targetPositions;
     	int[][] possibleMoves;
@@ -72,7 +72,15 @@ public class Peasant extends Piece{
 			//knowing that the target is on the board
 			if(i <= 1)//targeting top left/right
 			{
-				correctTarget = (board[pos.row][pos.column].getPlayer() != getPlayer());
+				//let the pawn be able to move when doing en passant
+				if((i == 0 && leftEnpassant) || (i == 1 && rightEnpassant))
+				{
+					correctTarget = true;
+				}	
+				else
+				{
+					correctTarget = (board[pos.row][pos.column].getPlayer() != getPlayer());
+				}
 			}
 			else//targeting straight ahead
 			{
@@ -84,6 +92,7 @@ public class Peasant extends Piece{
 				targetPositions[i] = new Position(-1, -1);
 			}
 		}
+
 		return targetPositions;
     }
 
@@ -91,18 +100,19 @@ public class Peasant extends Piece{
     public void hasMoved()
 	{
 		firstMove = false;
-		rightEnpassent = true;
-		leftEnpassent = true;
+		rightEnpassant = false;
+		leftEnpassant = false;
 	}
 
-	public void setRightEnpassent()
+	//two functions to make the pawn able to use en passant
+	public void setRightEnpassant()
 	{
-		rightEnpassent = true;
+		rightEnpassant = true;
 	}
 
-	public void setLeftEnpassent()
+	public void setLeftEnpassant()
 	{
-		leftEnpassent = true;
+		leftEnpassant = true;
 	}
 }
 //just saving this code in case the other implementation does not work

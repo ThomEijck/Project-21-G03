@@ -6,9 +6,13 @@ public class Peasant extends Piece{
 
     private static String name = "Pawn";
 	boolean firstMove;
+	boolean leftEnpassent;
+	boolean rightEnpassent;
     public Peasant(Position pos, int player) {
         super(pos, player);
         firstMove = true;
+		boolean leftEnpassent = false;
+		boolean rightEnpassent = false;
     }
 
     @Override
@@ -83,10 +87,22 @@ public class Peasant extends Piece{
 		return targetPositions;
     }
 
-    //call this function after the pawn has been moved to prevent it to be able to move two spaces all the time
+    //call this function after the pawn has been moved to prevent it to be able to move to the wrong spaces
     public void hasMoved()
 	{
 		firstMove = false;
+		rightEnpassent = true;
+		leftEnpassent = true;
+	}
+
+	public void setRightEnpassent()
+	{
+		rightEnpassent = true;
+	}
+
+	public void setLeftEnpassent()
+	{
+		leftEnpassent = true;
 	}
 }
 //just saving this code in case the other implementation does not work

@@ -19,9 +19,43 @@ public class King extends Piece{
     public int getInt(){
     	return 6;	
     }
-    
+
     public Position[] findMoves(Piece[][] board){
-    	System.out.println(super.getPos().row + " " + super.getPos().column);
-    	return null;
+        Position[] possibleMoves = new Position[8];
+
+        //possible moves the king can make
+        int[][] possibleMovement = {{+1,-1},{+1,0},{+1,+1},{0,-1},{0,+1},{-1,-1},{-1,0},{-1,+1}};
+
+        //current position
+        int row = getPos().row;
+        int column = getPos().column;
+
+        //calculate target positions
+        for (int i = 0; i < possibleMoves.length; i++){
+            possibleMoves[i] = new Position(row + possibleMovement[i][0], column + possibleMovement[i][1]);
+        }
+
+
+        //check target position validity
+        for (int i = 0; i < possibleMoves.length; i++)
+        {
+            Position pos = possibleMoves[i];
+            //check if the target is not on the board
+            if(pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7)
+            {
+                possibleMoves[i] = new Position(-1, -1);
+            }
+            //knowing that the target is on the board
+            boolean correctTarget = board[pos.row][pos.column] == null
+                    || ( board[pos.row][pos.column] != null && board[pos.row][pos.column].getPlayer() != getPlayer());
+
+            if(!correctTarget)
+            {
+                possibleMoves[i] = new Position(-1, -1);
+            }
+        }
+
+
+        return possibleMoves;
     }
 }

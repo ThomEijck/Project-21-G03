@@ -50,10 +50,89 @@ public class Board {
         for(int i = 0; i < chessBoard.length; i++) {
             for(int j = 0; j < chessBoard.length; j++) {
                 if(this.chessBoard[i][j] != null) {
-                    System.out.print(this.chessBoard[i][j] + " ");
+                    System.out.print(chessBoard[i][j] + "\t");
+                }else
+                {
+                    System.out.print("\t");
                 }
             }
             System.out.println();
         }
     }
+    
+    public boolean movePiece(Position start, Position end)
+    {
+        Piece piece = chessBoard[start.row][start.column];
+        if(piece == null)
+        {
+            System.out.println("No piece selected");
+            return false;
+        }
+
+        if(validTarget(piece, end))
+        {
+            chessBoard[end.row][end.column] = piece;
+            chessBoard[start.row][start.column] = null;
+        }else
+        {
+            System.out.println("Invalid target");
+            return false;
+        }
+        
+        //enable en passant
+        if(piece.getInt() == 1)
+        {
+            Peasant pawn = (Peasant) piece;
+            if((start.column - end.column == -1 && pawn.getRightEnPassant()) 
+            || (start.column - end.column == 1 && pawn.getLeftEnPassant()))
+            {
+                chessBoard[start.row][end.column] = null;
+                System.out.println(new Position(start.row, end.column));
+            }
+
+            pawn.hasMoved();
+            //if the pawn has moved two spaces make the adjacent enemy pawns be able to use en passant
+            if( Math.abs(start.row - end.row) == 2)
+            {
+                enableEnPassant(end);
+            }
+        }
+
+        piece.setPos(end);
+
+        return true;
+    }
+
+    private boolean validTarget(Piece piece, Position target)
+    {
+        Position[] targets = piece.findMoves(chessBoard);
+        //System.out.println(java.util.Arrays.toString(targets));
+        for (Position position : targets) {
+            if(position.isEqual(target))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void enableEnPassant(Position pos)
+    {
+        if (pos.column - 1 >= 0){
+            Piece leftPiece = chessBoard[pos.row][pos.column - 1];
+            if(leftPiece != null && leftPiece.getInt() == 1)
+            {
+                ((Peasant) leftPiece).setRightEnpassant();
+            }
+        }
+
+        if(pos.column + 1 <= 7){
+            Piece rightPiece = chessBoard[pos.row][pos.column + 1];
+            if(rightPiece != null && rightPiece.getInt() == 1)
+            {
+                ((Peasant) rightPiece).setLeftEnpassant();
+            }
+        }
+    }
+
 }

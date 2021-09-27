@@ -8,4 +8,14 @@ public class Position {
         this.row = row;
         this.column = column;
     }
+
+    public boolean isEqual(Position other)
+    {
+        return (other.row == row && other.column == column);
+    }
+
+    @Override
+    public String toString() {
+        return "row=" + row + ", column=" + column;
+    }
 }

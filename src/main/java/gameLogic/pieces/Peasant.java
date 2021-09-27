@@ -79,7 +79,8 @@ public class Peasant extends Piece{
 				}	
 				else
 				{
-					correctTarget = (board[pos.row][pos.column].getPlayer() != getPlayer());
+					correctTarget = (board[pos.row][pos.column] != null
+					 && board[pos.row][pos.column].getPlayer() != getPlayer());
 				}
 			}
 			else//targeting straight ahead
@@ -113,6 +114,16 @@ public class Peasant extends Piece{
 	public void setLeftEnpassant()
 	{
 		leftEnpassant = true;
+	}
+
+	public boolean getLeftEnPassant()
+	{
+		return leftEnpassant;
+	}
+
+	public boolean getRightEnPassant()
+	{
+		return rightEnpassant;
 	}
 }
 //just saving this code in case the other implementation does not work

@@ -85,7 +85,12 @@ public class Peasant extends Piece{
 			}
 			else//targeting straight ahead
 			{
-				correctTarget = (board[pos.row][pos.column] == null);
+				if(i == 2)
+					correctTarget = (board[pos.row][pos.column] == null);
+				if(i == 3)
+					correctTarget = (board[pos.row][pos.column] == null 
+					&& board[pos.row - moveDirection][pos.column] == null);
+
 			}
 
 			if(!correctTarget)

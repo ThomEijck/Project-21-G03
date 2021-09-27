@@ -79,7 +79,9 @@ public class Board {
             return false;
         }
         
-        //enable en passant
+        piece.setPos(end);
+
+        //do special cases of the pawn
         if(piece.getInt() == 1)
         {
             Peasant pawn = (Peasant) piece;
@@ -96,9 +98,14 @@ public class Board {
             {
                 enableEnPassant(end);
             }
-        }
 
-        piece.setPos(end);
+            if(end.row == 0 || end.row == 7)
+            {
+                //TODO: input in function has to be the value of the dice
+                chessBoard[end.row][end.column] = promotePawn(piece, 5);
+            }
+
+        }
 
         return true;
     }
@@ -133,6 +140,35 @@ public class Board {
                 ((Peasant) rightPiece).setLeftEnpassant();
             }
         }
+    }
+
+    private Piece promotePawn(Piece pawn, int diceResult)
+    {
+        Position pos = pawn.getPos();
+        int player = pawn.getPlayer();
+        switch (diceResult) {
+            case 1:
+                //choose your own class
+                //how idk
+                return null;
+            case 2:
+                return new Knight(pos, player);
+            case 3:
+                return new Bishop(pos, player);
+            case 4:
+                return new Rook(pos, player);
+            case 5:
+                System.out.println("Pawn Promoted!!!");
+                return new Queen(pos, player);
+            case 6:
+                //dafuq
+                //yeah this shit not possible bro
+                break;
+            default:
+                return new Queen(pos, player);
+                
+        }
+        return null;
     }
 
 }

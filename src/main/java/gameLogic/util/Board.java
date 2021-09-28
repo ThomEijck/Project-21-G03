@@ -60,9 +60,25 @@ public class Board {
         }
     }
     
-    public boolean movePiece(Position start, Position end)
+    public boolean movePiece(Position start, Position end, int diceValue, int playerTurn)
     {
+
         Piece piece = chessBoard[start.row][start.column];
+
+        //cant move the other players pieces
+        if(piece.getPlayer() != playerTurn){return  false;}
+
+        //if the piece that wants to be moved is not allowed by the dice
+        if(piece.getInt() != 1 && piece.getInt() != diceValue)
+        {
+            return false;
+        }
+        //if a pawn can be promoted, a different number than 1 can be used
+        else if(piece.getInt() == 1 && piece.getInt() != diceValue && !(end.row == 0 || end.row == 7))
+        {
+            return false;
+        }
+
         if(piece == null)
         {
             System.out.println("No piece selected");
@@ -101,12 +117,12 @@ public class Board {
 
             if(end.row == 0 || end.row == 7)
             {
-                //TODO: input in function has to be the value of the dice
-                chessBoard[end.row][end.column] = promotePawn(piece, 5);
+                chessBoard[end.row][end.column] = promotePawn(piece, diceValue);
             }
 
         }
-
+        //notify the game manager that a piece has been moved
+        GameManager.pieceMoved();
         return true;
     }
 

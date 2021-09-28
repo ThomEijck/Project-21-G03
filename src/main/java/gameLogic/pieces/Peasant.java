@@ -67,6 +67,7 @@ public class Peasant extends Piece{
 			if(pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7)
 			{
 				targetPositions[i] = new Position(-1, -1);
+				continue;//position is invalid, so check next position
 			}
 
 			//knowing that the target is on the board

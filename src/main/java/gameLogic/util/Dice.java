@@ -27,6 +27,9 @@ public class Dice
             for (int j = 0; j < pieces.length; j++)
             {
                 Piece piece = pieces[i][j];
+                if(piece == null){continue;}//if there is an empty square, dont check it
+
+
                 Position[] moves = piece.findMoves(pieces);
                 int index = nameToNum(piece.toString());
                 //check if possible moves can be made
@@ -34,7 +37,7 @@ public class Dice
                 {
                     if(index == 1 && canPromote(moves))
                     {
-                        //all pieces except king can be rolled if a pawn can be promoted
+                        //all pieces except king can at least be rolled if a pawn can be promoted
                         for (int k = 0; k < moves.length - 1; k++)
                         {
                             availablePieces[index - 1] = 1;
@@ -61,6 +64,7 @@ public class Dice
             }
         }
 
+        System.out.println("Options: " + Arrays.toString(options));
         
         int piece = options[random.nextInt(options.length)];
         
@@ -80,6 +84,9 @@ public class Dice
     //function to check if a piece has valid moves
     public boolean hasValidMoves(Position[] moves)
     {
+        if(moves == null)
+            return false;
+
         for (int i = 0; i < moves.length; i++) 
         {
             //invalid moves will have the target -1,-1 

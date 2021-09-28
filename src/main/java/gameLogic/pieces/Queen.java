@@ -21,7 +21,7 @@ public class Queen extends Piece{
     }
     
     public Position[] findMoves(Piece[][] board){
-    	System.out.println(super.getPos().row + " " + super.getPos().column);
+    	//System.out.println(super.getPos().row + " " + super.getPos().column);
     	return null;
     }
     

@@ -31,7 +31,7 @@ public class Board {
         chessBoard[7][1] = new Knight(new Position(7,1), 1);
         chessBoard[7][6] = new Knight(new Position(7,6), 1);
 
-        chessBoard[0][2] = new Bishop(new Position(0,1), 2);
+        chessBoard[0][2] = new Bishop(new Position(0,2), 2);
         chessBoard[0][5] = new Bishop(new Position(0,5), 2);
         chessBoard[7][2] = new Bishop(new Position(7,2), 1);
         chessBoard[7][5] = new Bishop(new Position(7,5), 1);
@@ -89,7 +89,7 @@ public class Board {
             || (start.column - end.column == 1 && pawn.getLeftEnPassant()))
             {
                 chessBoard[start.row][end.column] = null;
-                System.out.println(new Position(start.row, end.column));
+                //System.out.println(new Position(start.row, end.column));
             }
 
             pawn.hasMoved();
@@ -158,7 +158,7 @@ public class Board {
             case 4:
                 return new Rook(pos, player);
             case 5:
-                System.out.println("Pawn Promoted!!!");
+                //System.out.println("Pawn Promoted!!!");
                 return new Queen(pos, player);
             case 6:
                 //dafuq

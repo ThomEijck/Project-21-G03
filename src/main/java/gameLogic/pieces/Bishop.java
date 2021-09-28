@@ -31,7 +31,7 @@ public class Bishop extends Piece{
         }
 
         // Add all possible positions diagonally up and to the right of the current position
-        for(int i = (posColumn + 1), j = (posRow + 1); i < board.length && j < board.length; i++, j++) {
+        for(int i = (posRow + 1), j = (posColumn + 1); i < board.length && j < board.length; i++, j++) {
             if (board[i][j] == null) {
                 possibleMoves[counter++] = new Position(i, j);
             } else if (board[i][j].getPlayer() != getPlayer()){
@@ -43,7 +43,7 @@ public class Bishop extends Piece{
         }
 
         // Add all possible positions diagonally up and to the left of the current position
-        for(int i = (posColumn + 1), j = (posRow - 1); i < board.length && j >= 0; i++, j--) {
+        for(int i = (posRow + 1), j = (posColumn - 1); i < board.length && j >= 0; i++, j--) {
             if (board[i][j] == null) {
                 possibleMoves[counter++] = new Position(i, j);
             } else if (board[i][j].getPlayer() != getPlayer()){
@@ -55,7 +55,7 @@ public class Bishop extends Piece{
         }
 
         // Add all possible positions diagonally down and to the right of the current position
-        for(int i = (posColumn - 1), j = (posRow + 1); i >= 0 && j < board.length; i--, j++) {
+        for(int i = (posRow - 1), j = (posColumn + 1); i >= 0 && j < board.length; i--, j++) {
             if (board[i][j] == null) {
                 possibleMoves[counter++] = new Position(i, j);
             } else if (board[i][j].getPlayer() != getPlayer()){
@@ -67,7 +67,7 @@ public class Bishop extends Piece{
         }
 
         // Add all possible positions diagonally down and to the left of the current position
-        for(int i = (posColumn - 1), j = (posRow - 1); i >= 0 && j >= 0; i--, j--) {
+        for(int i = (posRow - 1), j = (posColumn - 1); i >= 0 && j >= 0; i--, j--) {
             if (board[i][j] == null) {
                 possibleMoves[counter++] = new Position(i, j);
             } else if (board[i][j].getPlayer() != getPlayer()){

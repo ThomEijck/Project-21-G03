@@ -22,7 +22,7 @@ public class GameManager
     //call this function to advance the gamestate
     public void movePiece(Position start, Position end)
     {
-        board.movePiece(new Position(1,0),new Position(2,0), diceValue, currPlayer);
+        board.movePiece(start,end, diceValue, currPlayer);
     }
 
     //logic that needs to be handled after a piece has been moved

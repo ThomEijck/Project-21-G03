@@ -8,7 +8,6 @@ public class Board {
 
     public Board() {
         this.chessBoard = createBoard(chessBoard);
-        printBoard();
     }
 
     public Piece[][] getChessBoard() {
@@ -53,7 +52,7 @@ public class Board {
                     System.out.print(chessBoard[i][j] + "\t");
                 }else
                 {
-                    System.out.print("\t");
+                    System.out.print("  -\t\t");
                 }
             }
             System.out.println();

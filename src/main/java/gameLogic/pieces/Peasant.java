@@ -24,12 +24,7 @@ public class Peasant extends Piece{
     public int getInt(){
     	return 1;	
     }
-    
-    //TODO: 
-    //Make array of possible moves? (done)
-    //First move = 2 steps ahead (done)
-    //En passant (kinda done, methods in place, taking a the pawn should probably be handled somewhere else)
-    //Promotion (Should probably be handled somewhere else as well)
+
     public Position[] findMoves(Piece[][] board){
     	Position[] targetPositions;
     	int[][] possibleMoves;

@@ -70,4 +70,14 @@ public abstract class ShaderProgram {
         }
         return shaderID;
     }
+
+    public void setHighlight(boolean b) {
+        int location = glGetUniformLocation(programID, "highlight");
+        glUniform1i(location, (b ? 1 : 0));
+    }
+
+    public void setPossibleMove(boolean b) {
+        int location = glGetUniformLocation(programID, "possibleMove");
+        glUniform1i(location, (b ? 1 : 0));
+    }
 }

@@ -15,8 +15,16 @@ import static org.lwjgl.opengl.GL30.*;
 public class DisplayManager {
 
     private static long window;
+    private static float xPos, yPos;
+    private static boolean isClicked;
+    private static int width, height;
+    private static int oldMouseState = GLFW_RELEASE;
 
-    public static void createDisplay(int width, int height, String title) {
+    public static void createDisplay(int inWidth, int inHeight, String title) {
+
+        width = inWidth;
+        height = inHeight;
+
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
@@ -42,6 +50,20 @@ public class DisplayManager {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
         });
 
+        glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+            xPos = (float) xpos;
+            yPos = (float) ypos;
+        });
+
+        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+            if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                if (action == GLFW_PRESS && oldMouseState == GLFW_RELEASE) {
+                    isClicked = true;
+                }
+                oldMouseState = action;
+            }
+        });
+
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
         // Enable v-sync
@@ -52,6 +74,8 @@ public class DisplayManager {
         GL.createCapabilities();
         glfwSetFramebufferSizeCallback(window, (window, w, h) -> {
             glViewport(0, 0, w, h);
+            width = w;
+            height = h;
         });
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -75,4 +99,29 @@ public class DisplayManager {
     public static boolean isCloseRequested() {
         return glfwWindowShouldClose(window);
     }
+
+    public static float getXPos() {
+        return xPos;
+    }
+
+    public static float getYPos() {
+        return yPos;
+    }
+
+    public static boolean isClicked() {
+        return isClicked;
+    }
+
+    public static int getWidth() {
+        return width;
+    }
+
+    public static int getHeight() {
+        return height;
+    }
+
+    public static void setClick(boolean b) {
+        isClicked = b;
+    }
+
 }

@@ -98,7 +98,7 @@ public class Loader {
             IntBuffer comp = stack.mallocInt(1);
 
             /* Load image */
-            // stbi_set_flip_vertically_on_load(true);
+            stbi_set_flip_vertically_on_load(true);
             image = stbi_load(path, w, h, comp, 4);
             if (image == null) {
                 throw new RuntimeException(

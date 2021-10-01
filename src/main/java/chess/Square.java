@@ -2,10 +2,7 @@ package chess;
 
 import models.RawModel;
 import models.TexturedModel;
-import renderEngine.DisplayManager;
 import renderEngine.Loader;
-import renderEngine.Renderer;
-import shaders.StaticShader;
 import textures.ModelTexture;
 
 import java.util.Arrays;
@@ -119,6 +116,10 @@ public class Square {
             }
             case Knight: {
                 Square moves[] = mf.moveKnight(this);
+                return moves;
+            }
+            case Pawn: {
+                Square moves[] = mf.movePawn(this);
                 return moves;
             }
             default:

@@ -1,12 +1,7 @@
 package chess;
 
 import gameLogic.util.Position;
-import models.RawModel;
-import models.TexturedModel;
-import renderEngine.DisplayManager;
 import renderEngine.Loader;
-import renderEngine.Renderer;
-import shaders.StaticShader;
 import textures.ModelTexture;
 
 public class Board {
@@ -17,8 +12,8 @@ public class Board {
     public Board(ModelTexture texture) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                float[] vertices = { (j + 1) / 4.0f - 1, (i + 1) / 4.0f - 1, 0, (j + 1) / 4.0f - 1, i / 4.0f - 1, 0,
-                        j / 4.0f - 1, i / 4.0f - 1, 0, j / 4.0f - 1, (i + 1) / 4.0f - 1, 0 };
+                float[] vertices = { (j + 1) / 5.0f - 1, (i + 1) / 4.0f - 1, 0, (j + 1) / 5.0f - 1, i / 4.0f - 1, 0,
+                        j / 5.0f - 1, i / 4.0f - 1, 0, j / 5.0f - 1, (i + 1) / 4.0f - 1, 0 };
 
                 int[] indices = { 0, 1, 3, 1, 2, 3 };
                 float colorSwitch = 0;

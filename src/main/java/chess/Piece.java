@@ -1,11 +1,10 @@
 package chess;
 
-import java.util.Arrays;
-
 public class Piece {
 
     PieceType type;
     Color color;
+    boolean hasMoved = false;
 
     public Piece(Color color, PieceType type) {
         this.type = type;
@@ -18,5 +17,13 @@ public class Piece {
 
     public Color getColor() {
         return color;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved() {
+        hasMoved = true;
     }
 }

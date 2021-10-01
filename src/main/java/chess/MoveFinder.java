@@ -183,14 +183,84 @@ public class MoveFinder {
         Square[] finalMoves = new Square[counter];
         for (int i = 0, c = 0; i < possibleMoves.length; i++) {
             if (possibleMoves[i].row != -1) {
-                System.out.println(possibleMoves[i].row + " " + possibleMoves[i].column);
                 finalMoves[c++] = squares[possibleMoves[i].row][possibleMoves[i].column];
             }
         }
         return finalMoves;
     }
 
-    public Square[] movePawn(int x, int y, boolean hasMoved) {
-        return null;
+    public Square[] movePawn(Square s) {
+        Position[] targetPositions;
+        int[][] possibleMoves;
+
+        boolean leftEnpassant = false;
+        boolean rightEnpassant = false;
+
+        // if player = 1 then (1*2 - 3 = -1), if player = 2 then (2*2-3 = 4)
+        // maps the player number to the correct direction of the pawn movement
+        int moveDirection = s.getPiece().getColor() == Color.White ? 1 : -1;
+
+        // list the possible moves the pawn can make
+        if (!s.getPiece().hasMoved()) {
+            possibleMoves = new int[][] { { moveDirection, -1 }, { moveDirection, 1 }, { moveDirection, 0 },
+                    { 2 * moveDirection, 0 } };
+        } else {
+            possibleMoves = new int[][] { { moveDirection, -1 }, { moveDirection, 1 }, { moveDirection, 0 } };
+        }
+        targetPositions = new Position[possibleMoves.length];
+
+        // current position
+        int row = s.getPosition().row;
+        int column = s.getPosition().column;
+
+        // generate possible target positions
+        for (int i = 0; i < targetPositions.length; i++) {
+            targetPositions[i] = new Position(row + possibleMoves[i][0], column + possibleMoves[i][1]);
+        }
+
+        // validate target positions
+        int counter = 0;
+        for (int i = 0; i < possibleMoves.length; i++) {
+            Position pos = targetPositions[i];
+            boolean correctTarget = false;
+
+            if (pos.column < 0 || pos.column > 7 || pos.row < 0 || pos.row > 7) {
+                targetPositions[i] = new Position(-1, -1);
+                continue;// position is invalid, so check next position
+            }
+
+            // knowing that the target is on the board
+            if (i <= 1)// targeting top left/right
+            {
+                // let the pawn be able to move when doing en passant
+                if ((i == 0 && leftEnpassant) || (i == 1 && rightEnpassant)) {
+                    correctTarget = true;
+                } else {
+                    correctTarget = (squares[pos.row][pos.column].getPiece() != null
+                            && squares[pos.row][pos.column].getPiece().getColor() != s.getPiece().getColor());
+                }
+            } else// targeting straight ahead
+            {
+                if (i == 2)
+                    correctTarget = (squares[pos.row][pos.column].getPiece() == null);
+                if (i == 3)
+                    correctTarget = (squares[pos.row][pos.column].getPiece() == null
+                            && squares[pos.row - moveDirection][pos.column].getPiece() == null);
+
+            }
+
+            if (!correctTarget) {
+                targetPositions[i] = new Position(-1, -1);
+            } else {
+                counter++;
+            }
+        }
+        Square[] finalMoves = new Square[counter];
+        for (int i = 0, c = 0; i < targetPositions.length; i++) {
+            if (targetPositions[i].row != -1) {
+                finalMoves[c++] = squares[targetPositions[i].row][targetPositions[i].column];
+            }
+        }
+        return finalMoves;
     }
 }

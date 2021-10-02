@@ -20,15 +20,26 @@ repositories {
      maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
      maven { url "http://repo.maven.apache.org/maven2" }
 }
+String osName;
+switch(System.getProperty('os.name').toLowerCase().split()[0]){
+    case 'windows':
+        osName = 'natives-windows'
+        break
+    case 'mac':
+        osName = 'natives-macos-arm64'
+        break
+    default:
+        throw new Exception('unknown operating system')
+}
 dependencies {
-    compile group: 'org.lwjgl', name: 'lwjgl', version:'3.2.3'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:'3.2.3'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:'3.2.3'
-    compile group: 'org.lwjgl', name: 'lwjgl', version:'3.2.3', classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:'3.2.3', classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:'3.2.3', classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:'3.2.3'
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:'3.2.3', classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:'3.3.0-SNAPSHOT'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:'3.3.0-SNAPSHOT'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:'3.3.0-SNAPSHOT'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:'3.3.0-SNAPSHOT', classifier:osName
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:'3.3.0-SNAPSHOT', classifier:osName
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:'3.3.0-SNAPSHOT', classifier:osName
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:'3.3.0-SNAPSHOT'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:'3.3.0-SNAPSHOT', classifier:osName
 }
 
 sourceSets {

@@ -14,6 +14,8 @@ import shaders.StaticShader;
 import textures.ModelTexture;
 
 public class MainGameLoop {
+    private static int gameState = 0;//0 = ongoing, 1= white win,2= black win, 3 = draw
+
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
 
@@ -117,5 +119,13 @@ public class MainGameLoop {
         shader.cleanUp();
         loader.cleanUp();
         DisplayManager.closeDisplay();
+    }
+
+    public static void setGameState(int gameState) {
+        MainGameLoop.gameState = gameState;
+    }
+
+    public static int getGameState() {
+        return gameState;
     }
 }

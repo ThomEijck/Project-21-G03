@@ -2,6 +2,8 @@ package chess;
 
 import java.util.*;
 
+import engineTester.MainGameLoop;
+import gameLogic.util.GameManager;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.Loader;
@@ -33,6 +35,9 @@ public class Dice {
 
         int count = 0;
 
+        boolean whiteKingAlive = false;
+        boolean blackKingAlive = false;
+
         // check which pieces can be moved
         for (int i = 0; i < squares.length; i++) {
             for (int j = 0; j < squares.length; j++) {
@@ -41,9 +46,20 @@ public class Dice {
                     continue;
                 } // if there is an empty square, dont check it
 
+                if (square.getPiece().getPieceType() == PieceType.King) {
+                    if(square.getPiece().getColor() == Color.White)
+                    {
+                        whiteKingAlive = true;
+                    }else
+                    {
+                        blackKingAlive = true;
+                    }
+                }
+
                 if (square.getPiece().getColor() != turn) {
                     continue;
                 }
+
 
                 Square[] moves = square.getMoves(mf);
                 // check if possible moves can be made
@@ -65,6 +81,25 @@ public class Dice {
                 count++;
             }
         }
+        if(count == 0)
+        {
+            MainGameLoop.setGameState(3);
+        }
+
+        if(whiteKingAlive != blackKingAlive)//one king is dead and one is alive
+        {
+            if(whiteKingAlive)//assign the winner
+            {
+                System.out.println("White win");
+                MainGameLoop.setGameState(1);
+            }else
+            {
+                System.out.println("Black win");
+                MainGameLoop.setGameState(2);
+            }
+        }
+
+        int piece = 6;//default value
         int[] options = new int[count];
         int index = 0;
         // only add pieces that can be moved to the die
@@ -73,7 +108,7 @@ public class Dice {
                 options[index++] = i;
             }
         }
-        int piece = options[random.nextInt(options.length)];
+        piece = options[random.nextInt(options.length)];
         generatePieceModel(piece, turn);
         generateDiceModel(piece);
         return piece;

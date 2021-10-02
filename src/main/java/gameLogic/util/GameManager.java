@@ -6,7 +6,7 @@ public class GameManager
     private static Dice dice;
     private static int diceValue;
     private static int currPlayer;
-
+    private static int gameState = 0;//0 = ongoing, 1= white win,2= black win, 3 = draw
     public GameManager()
     {
         currPlayer = 1;//white always starts
@@ -15,14 +15,17 @@ public class GameManager
         diceValue = dice.getValue();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         GameManager g = new GameManager();
+        
     }
 
     //call this function to advance the gamestate
     public void movePiece(Position start, Position end)
     {
-        board.movePiece(start,end, diceValue, currPlayer);
+        if(gameState == 0)//only make moves while the game is ongoing
+            board.movePiece(start,end, diceValue, currPlayer);
     }
 
     //logic that needs to be handled after a piece has been moved
@@ -50,4 +53,8 @@ public class GameManager
     {
         return currPlayer;
     }
+
+    public static int getGameState(){return gameState;}
+
+    public static void setGameState(int newState){gameState = newState;}
 }

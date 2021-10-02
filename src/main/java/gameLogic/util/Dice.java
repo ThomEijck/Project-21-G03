@@ -20,6 +20,8 @@ public class Dice
         Piece[][] pieces = board.getChessBoard();
         
         int count = 0;
+        boolean whiteKingAlive = false;
+        boolean blackKingAlive = false;
 
         //check which pieces can be moved
         for (int i = 0; i < pieces.length; i++)
@@ -28,7 +30,17 @@ public class Dice
             {
                 Piece piece = pieces[i][j];
                 if(piece == null){continue;}//if there is an empty square, dont check it
+                if(piece.getInt() == 6)
+                {
+                    if(piece.getPlayer() == 1)
+                    {
+                        whiteKingAlive = true;
+                    }else
+                    {
+                        blackKingAlive = true;
+                    }
 
+                }
 
                 Position[] moves = piece.findMoves(pieces);
                 int index = nameToNum(piece.toString());
@@ -52,7 +64,26 @@ public class Dice
                 }
             }
         }
-    
+
+        if(count == 0)//no pieces can be moved
+        {
+            GameManager.setGameState(3);//its a draw if a player cant move
+            return 6;//exit out of the function
+        }
+
+        System.out.println("White: " + whiteKingAlive +  " - black: " + blackKingAlive + "\n");
+
+        if(whiteKingAlive != blackKingAlive)//one king is dead and one is alive
+        {
+            if(whiteKingAlive)//assign the winner
+            {
+                GameManager.setGameState(1);
+            }else
+            {
+                GameManager.setGameState(2);
+            }
+            return 6;//exit out of the function
+        }
         int[] options = new int[count];
         int index = 0;
         //only add pieces that can be moved to the die
@@ -64,7 +95,7 @@ public class Dice
             }
         }
 
-        System.out.println("Options: " + Arrays.toString(options));
+        //System.out.println("Options: " + Arrays.toString(options));
         
         int piece = options[random.nextInt(options.length)];
         

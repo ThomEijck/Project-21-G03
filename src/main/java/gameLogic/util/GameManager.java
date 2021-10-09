@@ -12,7 +12,7 @@ public class GameManager
         currPlayer = 1;//white always starts
         board = new Board();
         dice = new Dice(board);
-        diceValue = dice.getValue();
+        diceValue = dice.getValue(currPlayer);
     }
 
     public static void main(String[] args)
@@ -32,7 +32,7 @@ public class GameManager
     public static void pieceMoved()
     {
         //get a new dice value
-        diceValue = dice.getValue();
+        diceValue = dice.getValue(currPlayer);
 
         //swap the player that can move a piece
         if(currPlayer == 1 )

@@ -29,37 +29,23 @@ public class Dice {
     }
 
     public int getValue(Color turn) {
-
         int[] availablePieces = new int[6];
         Square[][] squares = board.getSquares();
 
         int count = 0;
 
-        boolean whiteKingAlive = false;
-        boolean blackKingAlive = false;
-
         // check which pieces can be moved
         for (int i = 0; i < squares.length; i++) {
             for (int j = 0; j < squares.length; j++) {
                 Square square = squares[i][j];
+                // if there is an empty square, dont check it
                 if (square.getPiece() == null) {
                     continue;
-                } // if there is an empty square, dont check it
-
-                if (square.getPiece().getPieceType() == PieceType.King) {
-                    if(square.getPiece().getColor() == Color.White)
-                    {
-                        whiteKingAlive = true;
-                    }else
-                    {
-                        blackKingAlive = true;
-                    }
                 }
 
                 if (square.getPiece().getColor() != turn) {
                     continue;
                 }
-
 
                 Square[] moves = square.getMoves(mf);
                 // check if possible moves can be made
@@ -81,25 +67,8 @@ public class Dice {
                 count++;
             }
         }
-        if(count == 0)
-        {
-            MainGameLoop.setGameState(3);
-        }
 
-        if(whiteKingAlive != blackKingAlive)//one king is dead and one is alive
-        {
-            if(whiteKingAlive)//assign the winner
-            {
-                System.out.println("White win");
-                MainGameLoop.setGameState(1);
-            }else
-            {
-                System.out.println("Black win");
-                MainGameLoop.setGameState(2);
-            }
-        }
-
-        int piece = 6;//default value
+        int piece = 6;// default value
         int[] options = new int[count];
         int index = 0;
         // only add pieces that can be moved to the die
@@ -117,6 +86,7 @@ public class Dice {
     private boolean canPromote(Square[] moves) {
         for (Square square : moves) {
             if (square.getPosition().row == 7 || square.getPosition().row == 0) {
+                square.getPiece().setPromote(true);
                 return true;
             }
         }

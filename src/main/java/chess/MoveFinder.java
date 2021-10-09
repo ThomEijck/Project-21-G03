@@ -193,10 +193,6 @@ public class MoveFinder {
         Position[] targetPositions;
         int[][] possibleMoves;
 
-        boolean leftEnpassant = false;
-        boolean rightEnpassant = false;
-
-        // if player = 1 then (1*2 - 3 = -1), if player = 2 then (2*2-3 = 4)
         // maps the player number to the correct direction of the pawn movement
         int moveDirection = s.getPiece().getColor() == Color.White ? 1 : -1;
 
@@ -229,22 +225,23 @@ public class MoveFinder {
                 continue;// position is invalid, so check next position
             }
 
+            Square ts = squares[pos.row][pos.column];
+
             // knowing that the target is on the board
             if (i <= 1)// targeting top left/right
             {
                 // let the pawn be able to move when doing en passant
-                if ((i == 0 && leftEnpassant) || (i == 1 && rightEnpassant)) {
+                if ((i == 0 && s.getPiece().getLeftEnpassant()) || (i == 1 && s.getPiece().getRightEnpassant())) {
                     correctTarget = true;
                 } else {
-                    correctTarget = (squares[pos.row][pos.column].getPiece() != null
-                            && squares[pos.row][pos.column].getPiece().getColor() != s.getPiece().getColor());
+                    correctTarget = (ts.getPiece() != null && ts.getPiece().getColor() != s.getPiece().getColor());
                 }
             } else// targeting straight ahead
             {
                 if (i == 2)
-                    correctTarget = (squares[pos.row][pos.column].getPiece() == null);
+                    correctTarget = (ts.getPiece() == null);
                 if (i == 3)
-                    correctTarget = (squares[pos.row][pos.column].getPiece() == null
+                    correctTarget = (ts.getPiece() == null
                             && squares[pos.row - moveDirection][pos.column].getPiece() == null);
 
             }

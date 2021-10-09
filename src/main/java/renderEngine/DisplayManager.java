@@ -120,4 +120,8 @@ public class DisplayManager {
         isClicked = b;
     }
 
+    public static float getAspectRatio() {
+        return (float) width / (float) height;
+    }
+
 }

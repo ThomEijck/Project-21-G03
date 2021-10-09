@@ -163,9 +163,8 @@ public class Board {
         int player = pawn.getPlayer();
         switch (diceResult) {
             case 1:
-                //choose your own class
-                //how idk
-                return null;
+                PromotionChooser pc = new PromotionChooser(pawn);
+                return pc.getNewPiece();
             case 2:
                 return new Knight(pos, player);
             case 3:
@@ -185,5 +184,7 @@ public class Board {
         }
         return null;
     }
+
+
 
 }

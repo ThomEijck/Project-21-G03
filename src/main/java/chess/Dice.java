@@ -2,8 +2,6 @@ package chess;
 
 import java.util.*;
 
-import engineTester.MainGameLoop;
-import gameLogic.util.GameManager;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.Loader;

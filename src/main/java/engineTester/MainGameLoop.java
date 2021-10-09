@@ -1,11 +1,6 @@
 package engineTester;
 
 import chess.*;
-import gameLogic.pieces.Bishop;
-import gameLogic.pieces.Knight;
-import gameLogic.pieces.Queen;
-import gameLogic.pieces.Rook;
-import gameLogic.util.PromotionChooser;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.Renderer;
@@ -13,8 +8,7 @@ import shaders.StaticShader;
 import textures.ModelTexture;
 
 public class MainGameLoop {
-    private static int gameState = 0;//0 = ongoing, 1= white win,2= black win, 3 = draw
-    private static Piece[] possibleEnPassantPieces = new Piece[2]; //only 2 pieces can en passant at each moment
+    private static Piece[] possibleEnPassantPieces = new Piece[2]; // only 2 pieces can en passant at each moment
 
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
@@ -72,27 +66,19 @@ public class MainGameLoop {
                                         boolean rEnpassant = piece.getRightEnpassant();
                                         boolean lEnpassant = piece.getLeftEnpassant();
                                         resetEnPassant();
-                                        System.out.println(i + "," + j  + ":" + yIndex + "," + xIndex);
-                                        if(piece.getPieceType() == PieceType.Pawn)
-                                        {
-                                            if((j - xIndex == -1 && rEnpassant)
-                                                    || (j - xIndex == 1 &&lEnpassant))
-                                            {
+                                        if (piece.getPieceType() == PieceType.Pawn) {
+                                            if ((j - xIndex == -1 && rEnpassant) || (j - xIndex == 1 && lEnpassant)) {
                                                 board.getSquares()[i][xIndex].removePiece();
-                                                System.out.println("removed piece from: " + i + "," + xIndex);
                                             }
 
-                                            if( Math.abs(i - yIndex) == 2)
-                                            {
-                                                enableEnPassant(yIndex,xIndex,board.getSquares());
+                                            if (Math.abs(i - yIndex) == 2) {
+                                                enableEnPassant(yIndex, xIndex, board.getSquares());
                                             }
 
-                                            if(yIndex == 0 || yIndex == 7)
-                                            {
+                                            if (yIndex == 0 || yIndex == 7) {
                                                 selectedSquare.setPiece(promotePawn(piece, diceRoll));
                                             }
                                         }
-
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
                                     }
@@ -109,7 +95,7 @@ public class MainGameLoop {
                         if (selectedSquare.getPiece() != null) {
                             if (selectedSquare.getPiece().getColor() == turn
                                     && (selectedSquare.getPiece().getPieceType().getValue() == diceRoll
-                                            || canPromote(selectedSquare.getPiece(), yIndex))) {
+                                            || (canPromote(selectedSquare.getPiece(), yIndex) && diceRoll != 5))) {
                                 Square[] moves = selectedSquare.getMoves(mf);
                                 for (Square square : moves) {
                                     square.setPossibleMove(true);
@@ -121,6 +107,8 @@ public class MainGameLoop {
                     if (playAgainButton.isClicked(x, y)) {
                         winner = null;
                         initBoard(board);
+                        turn = Color.White;
+                        diceRoll = dice.getValue(turn);
                     }
                 }
             }
@@ -152,8 +140,7 @@ public class MainGameLoop {
         DisplayManager.closeDisplay();
     }
 
-    private static Piece promotePawn(Piece piece, int diceRoll)
-    {
+    private static Piece promotePawn(Piece piece, int diceRoll) {
         Color col = piece.getColor();
         switch (diceRoll) {
             case 1:
@@ -163,7 +150,7 @@ public class MainGameLoop {
             case 3:
                 return new Piece(col, PieceType.Rook);
             case 4:
-                //System.out.println("Pawn Promoted!!!");
+                // System.out.println("Pawn Promoted!!!");
                 return new Piece(col, PieceType.Queen);
             case 5:
             case 0:
@@ -203,42 +190,37 @@ public class MainGameLoop {
         board.getSquares()[7][7].setPiece(new Piece(Color.Black, PieceType.Rook));
     }
 
-    private static void enableEnPassant(int row , int column , Square[][] board)
-    {
-        if (column - 1 >= 0){
+    private static void enableEnPassant(int row, int column, Square[][] board) {
+        if (column - 1 >= 0) {
             Piece leftPiece = board[row][column - 1].getPiece();
-            if(leftPiece != null && leftPiece.getPieceType() == PieceType.Pawn)
-            {
+            if (leftPiece != null && leftPiece.getPieceType() == PieceType.Pawn) {
                 leftPiece.rightEnpassant = true;
                 possibleEnPassantPieces[0] = board[row][column - 1].getPiece();
             }
         }
 
-        if(column + 1 <= 7){
+        if (column + 1 <= 7) {
             Piece rightPiece = board[row][column + 1].getPiece();
-            if(rightPiece != null && rightPiece.getPieceType() == PieceType.Pawn)
-            {
+            if (rightPiece != null && rightPiece.getPieceType() == PieceType.Pawn) {
                 rightPiece.leftEnpassant = true;
                 possibleEnPassantPieces[1] = board[row][column + 1].getPiece();
             }
         }
     }
 
-    private static void resetEnPassant()
-    {
-        for (int i = 0; i < possibleEnPassantPieces.length; i++)
-        {
+    private static void resetEnPassant() {
+        for (int i = 0; i < possibleEnPassantPieces.length; i++) {
             Piece piece = possibleEnPassantPieces[i];
-            if(piece != null){piece.resetEnPassant();}
+            if (piece != null) {
+                piece.resetEnPassant();
+            }
         }
     }
 
-    private static boolean canPromote(Piece piece, int row)
-    {
-        if(piece.getPieceType() != PieceType.Pawn)
-        {
+    private static boolean canPromote(Piece piece, int row) {
+        if (piece.getPieceType() != PieceType.Pawn) {
             return false;
         }
-        return piece.getColor() == Color.White? row == 6: row == 1;
+        return piece.getColor() == Color.White ? row == 6 : row == 1;
     }
 }

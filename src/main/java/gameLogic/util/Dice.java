@@ -13,7 +13,7 @@ public class Dice
         this.board = board;
     }
 
-    public int getValue()
+    public int getValue(int player)
     {
         
         int[] availablePieces = new int[6];
@@ -41,6 +41,7 @@ public class Dice
                     }
 
                 }
+                if(piece.getPlayer() != player){continue;}
 
                 Position[] moves = piece.findMoves(pieces);
                 int index = nameToNum(piece.toString());

@@ -102,8 +102,12 @@ public class Peasant extends Piece{
     public void hasMoved()
 	{
 		firstMove = false;
-		rightEnpassant = false;
+	}
+
+	public void resetEnPassant()
+	{
 		leftEnpassant = false;
+		rightEnpassant = false;
 	}
 
 	//two functions to make the pawn able to use en passant

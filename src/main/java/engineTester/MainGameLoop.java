@@ -1,13 +1,11 @@
 package engineTester;
 
-import chess.Board;
-import chess.Button;
-import chess.Piece;
-import chess.Square;
-import chess.Dice;
-import chess.Color;
-import chess.MoveFinder;
-import chess.PieceType;
+import chess.*;
+import gameLogic.pieces.Bishop;
+import gameLogic.pieces.Knight;
+import gameLogic.pieces.Queen;
+import gameLogic.pieces.Rook;
+import gameLogic.util.PromotionChooser;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.Renderer;
@@ -15,6 +13,9 @@ import shaders.StaticShader;
 import textures.ModelTexture;
 
 public class MainGameLoop {
+    private static int gameState = 0;//0 = ongoing, 1= white win,2= black win, 3 = draw
+    private static Piece[] possibleEnPassantPieces = new Piece[2]; //only 2 pieces can en passant at each moment
+
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
 
@@ -56,58 +57,9 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
+                                        resetEnPassant();
                                         Piece piece = board.getSquares()[i][j].removePiece();
-
-                                        if ((piece.getLeftEnpassant() && j - selectedSquare.getPosition().column == 1)
-                                                || (piece.getRightEnpassant()
-                                                        && j - selectedSquare.getPosition().column == -1)) {
-
-                                            if (piece.getColor() == Color.Black) {
-                                                board.getSquares()[selectedSquare.getPosition().row + 1][selectedSquare
-                                                        .getPosition().column].removePiece();
-                                            } else {
-                                                board.getSquares()[selectedSquare.getPosition().row - 1][selectedSquare
-                                                        .getPosition().column].removePiece();
-                                            }
-                                        }
-
-                                        for (int k = 0; k < 8; k++) {
-                                            for (int l = 0; l < 8; l++) {
-                                                if (board.getSquares()[k][l].getPiece() != null) {
-
-                                                    board.getSquares()[k][l].getPiece().setLeftEnpassant(false);
-                                                    board.getSquares()[k][l].getPiece().setRightEnpassant(false);
-
-                                                }
-                                            }
-                                        }
-
                                         piece.setHasMoved();
-                                        if (piece.getPieceType() == PieceType.Pawn) {
-                                            if (Math.abs(selectedSquare.getPosition().row - i) == 2) {
-                                                if (selectedSquare.getPosition().column - 1 >= 0) {
-                                                    Piece adjPiece = board.getSquares()[selectedSquare
-                                                            .getPosition().row][selectedSquare.getPosition().column + 1]
-                                                                    .getPiece();
-                                                    if (adjPiece != null) {
-                                                        if (adjPiece.getPieceType() == PieceType.Pawn) {
-                                                            adjPiece.setLeftEnpassant(true);
-                                                        }
-                                                    }
-                                                }
-
-                                                if (selectedSquare.getPosition().column + 1 <= 7) {
-                                                    Piece adjPiece = board.getSquares()[selectedSquare
-                                                            .getPosition().row][selectedSquare.getPosition().column - 1]
-                                                                    .getPiece();
-                                                    if (adjPiece != null) {
-                                                        if (adjPiece.getPieceType() == PieceType.Pawn) {
-                                                            adjPiece.setRightEnpassant(true);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
 
                                         if (selectedSquare.getPiece() != null) {
                                             if (selectedSquare.getPiece().getPieceType() == PieceType.King) {
@@ -117,6 +69,31 @@ public class MainGameLoop {
                                         }
 
                                         selectedSquare.setPiece(piece);
+
+                                        boolean rEnpassant = piece.getRightEnpassant();
+                                        boolean lEnpassant = piece.getLeftEnpassant();
+
+                                        System.out.println(i + "," + j  + ":" + yIndex + "," + xIndex);
+                                        if(piece.getPieceType() == PieceType.Pawn)
+                                        {
+                                            if((j - xIndex == -1 && rEnpassant)
+                                                    || (j - xIndex == 1 &&lEnpassant))
+                                            {
+                                                board.getSquares()[i][xIndex].removePiece();
+                                                System.out.println("removed piece from: " + i + "," + xIndex);
+                                            }
+
+                                            if( Math.abs(i - yIndex) == 2)
+                                            {
+                                                enableEnPassant(yIndex,xIndex,board.getSquares());
+                                            }
+
+                                            if(yIndex == 0 || yIndex == 7)
+                                            {
+                                                selectedSquare.setPiece(promotePawn(piece, diceRoll));
+                                            }
+                                        }
+
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
                                     }
@@ -133,7 +110,7 @@ public class MainGameLoop {
                         if (selectedSquare.getPiece() != null) {
                             if (selectedSquare.getPiece().getColor() == turn
                                     && (selectedSquare.getPiece().getPieceType().getValue() == diceRoll
-                                            || selectedSquare.getPiece().canPromote())) {
+                                            || (selectedSquare.getPiece().getPieceType() == PieceType.Pawn && (yIndex == 0 || yIndex == 7)))) {
                                 Square[] moves = selectedSquare.getMoves(mf);
                                 for (Square square : moves) {
                                     square.setPossibleMove(true);
@@ -176,6 +153,29 @@ public class MainGameLoop {
         DisplayManager.closeDisplay();
     }
 
+    private static Piece promotePawn(Piece piece, int diceRoll)
+    {
+        Color col = piece.getColor();
+        switch (diceRoll) {
+            case 1:
+                return new Piece(col, PieceType.Knight);
+            case 2:
+                return new Piece(col, PieceType.Bishop);
+            case 3:
+                return new Piece(col, PieceType.Rook);
+            case 4:
+                //System.out.println("Pawn Promoted!!!");
+                return new Piece(col, PieceType.Queen);
+            case 5:
+            case 0:
+                PromotionChooser2D pc = new PromotionChooser2D(piece);
+                return pc.getNewPiece();
+            default:
+                return new Piece(col, PieceType.Queen);
+
+        }
+    }
+
     public static void initBoard(Board board) {
         for (int i = 0; i < board.getSquares().length; i++) {
             for (int j = 0; j < board.getSquares().length; j++) {
@@ -202,5 +202,35 @@ public class MainGameLoop {
         board.getSquares()[7][5].setPiece(new Piece(Color.Black, PieceType.Bishop));
         board.getSquares()[7][6].setPiece(new Piece(Color.Black, PieceType.Knight));
         board.getSquares()[7][7].setPiece(new Piece(Color.Black, PieceType.Rook));
+    }
+
+    private static void enableEnPassant(int row , int column , Square[][] board)
+    {
+        if (column - 1 >= 0){
+            Piece leftPiece = board[row][column - 1].getPiece();
+            if(leftPiece != null && leftPiece.getPieceType() == PieceType.Pawn)
+            {
+                leftPiece.rightEnpassant = true;
+                possibleEnPassantPieces[0] = board[row][column - 1].getPiece();
+            }
+        }
+
+        if(column + 1 <= 7){
+            Piece rightPiece = board[row][column + 1].getPiece();
+            if(rightPiece != null && rightPiece.getPieceType() == PieceType.Pawn)
+            {
+                rightPiece.leftEnpassant = true;
+                possibleEnPassantPieces[1] = board[row][column + 1].getPiece();
+            }
+        }
+    }
+
+    private static void resetEnPassant()
+    {
+        for (int i = 0; i < possibleEnPassantPieces.length; i++)
+        {
+            Piece piece = possibleEnPassantPieces[i];
+            if(piece != null){piece.resetEnPassant();}
+        }
     }
 }

@@ -86,7 +86,6 @@ public class Dice {
     private boolean canPromote(Square[] moves) {
         for (Square square : moves) {
             if (square.getPosition().row == 7 || square.getPosition().row == 0) {
-                square.getPiece().setPromote(true);
                 return true;
             }
         }

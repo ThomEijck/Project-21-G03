@@ -193,6 +193,9 @@ public class MoveFinder {
         Position[] targetPositions;
         int[][] possibleMoves;
 
+        boolean leftEnpassant = s.getPiece().leftEnpassant;
+        boolean rightEnpassant = s.getPiece().rightEnpassant;
+
         // maps the player number to the correct direction of the pawn movement
         int moveDirection = s.getPiece().getColor() == Color.White ? 1 : -1;
 

@@ -1,5 +1,6 @@
 package gameLogic.util;
 
+import chess.Square;
 import gameLogic.pieces.*;
 
 public class Board {
@@ -13,7 +14,7 @@ public class Board {
     public Piece[][] getChessBoard() {
         return this.chessBoard;
     }
-
+    private Piece[] possibleEnPassantPieces = new Piece[2];//always only 2 pieces can do enpassant
     private Piece[][] createBoard(Piece[][] chessBoard) {
         for(int i = 0; i < 8; i++) {
             chessBoard[1][i] = new Peasant(new Position(1,i), 2);
@@ -96,12 +97,20 @@ public class Board {
         
         piece.setPos(end);
 
+        boolean rEnpassant = false;
+        boolean lEnpassant = false;
+        if(piece.getInt() == 1) {
+            rEnpassant = ((Peasant) piece).getRightEnPassant();
+            lEnpassant = ((Peasant) piece).getLeftEnPassant();
+        }
+        resetEnPassant();
+
         //do special cases of the pawn
         if(piece.getInt() == 1)
         {
             Peasant pawn = (Peasant) piece;
-            if((start.column - end.column == -1 && pawn.getRightEnPassant()) 
-            || (start.column - end.column == 1 && pawn.getLeftEnPassant()))
+            if((start.column - end.column == -1 && rEnpassant)
+            || (start.column - end.column == 1 && lEnpassant))
             {
                 chessBoard[start.row][end.column] = null;
                 //System.out.println(new Position(start.row, end.column));
@@ -145,6 +154,7 @@ public class Board {
             if(leftPiece != null && leftPiece.getInt() == 1)
             {
                 ((Peasant) leftPiece).setRightEnpassant();
+                possibleEnPassantPieces[0] = leftPiece;
             }
         }
 
@@ -153,7 +163,17 @@ public class Board {
             if(rightPiece != null && rightPiece.getInt() == 1)
             {
                 ((Peasant) rightPiece).setLeftEnpassant();
+                possibleEnPassantPieces[1] = rightPiece;
             }
+        }
+    }
+
+    private void resetEnPassant()
+    {
+        for (int i = 0; i < possibleEnPassantPieces.length; i++)
+        {
+            Peasant piece = (Peasant) possibleEnPassantPieces[i];
+            if(piece != null){piece.resetEnPassant();}
         }
     }
 

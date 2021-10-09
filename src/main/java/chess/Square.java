@@ -11,6 +11,9 @@ import gameLogic.util.Position;
 
 public class Square {
 
+
+
+
     private Loader loader = new Loader();
 
     private TexturedModel bg;

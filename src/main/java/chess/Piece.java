@@ -5,13 +5,16 @@ public class Piece {
     PieceType type;
     Color color;
     boolean hasMoved = false;
-    boolean canPromote;
-    boolean leftEnpassant;
-    boolean rightEnpassant;
+    //enpassant variables
+    public boolean leftEnpassant;
+    public boolean rightEnpassant;
+
 
     public Piece(Color color, PieceType type) {
         this.type = type;
         this.color = color;
+        leftEnpassant = false;
+        rightEnpassant = false;
     }
 
     public PieceType getPieceType() {
@@ -30,27 +33,17 @@ public class Piece {
         hasMoved = true;
     }
 
-    public boolean canPromote() {
-        return canPromote;
-    }
-
-    public void setPromote(boolean b) {
-        canPromote = b;
-    }
-
     public boolean getLeftEnpassant() {
         return leftEnpassant;
-    }
-
-    public void setLeftEnpassant(boolean b) {
-        leftEnpassant = b;
     }
 
     public boolean getRightEnpassant() {
         return rightEnpassant;
     }
 
-    public void setRightEnpassant(boolean b) {
-        rightEnpassant = b;
+    public void resetEnPassant()
+    {
+        leftEnpassant = false;
+        rightEnpassant = false;
     }
 }

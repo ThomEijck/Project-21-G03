@@ -109,7 +109,7 @@ public class MainGameLoop {
                         if (selectedSquare.getPiece() != null) {
                             if (selectedSquare.getPiece().getColor() == turn
                                     && (selectedSquare.getPiece().getPieceType().getValue() == diceRoll
-                                            || (selectedSquare.getPiece().getPieceType() == PieceType.Pawn && (yIndex == 0 || yIndex == 7)))) {
+                                            || canPromote(selectedSquare.getPiece(), yIndex))) {
                                 Square[] moves = selectedSquare.getMoves(mf);
                                 for (Square square : moves) {
                                     square.setPossibleMove(true);
@@ -231,5 +231,14 @@ public class MainGameLoop {
             Piece piece = possibleEnPassantPieces[i];
             if(piece != null){piece.resetEnPassant();}
         }
+    }
+
+    private static boolean canPromote(Piece piece, int row)
+    {
+        if(piece.getPieceType() != PieceType.Pawn)
+        {
+            return false;
+        }
+        return piece.getColor() == Color.White? row == 6: row == 1;
     }
 }

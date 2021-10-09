@@ -57,7 +57,6 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
-                                        resetEnPassant();
                                         Piece piece = board.getSquares()[i][j].removePiece();
                                         piece.setHasMoved();
 
@@ -72,7 +71,7 @@ public class MainGameLoop {
 
                                         boolean rEnpassant = piece.getRightEnpassant();
                                         boolean lEnpassant = piece.getLeftEnpassant();
-
+                                        resetEnPassant();
                                         System.out.println(i + "," + j  + ":" + yIndex + "," + xIndex);
                                         if(piece.getPieceType() == PieceType.Pawn)
                                         {

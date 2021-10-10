@@ -1,5 +1,6 @@
 package chess;
 
+import gameLogic.pieces.Rook;
 import gameLogic.util.Position;
 
 public class MoveFinder {
@@ -260,4 +261,38 @@ public class MoveFinder {
         }
         return finalMoves;
     }
+
+    public Square[] moveCastling(Square s){
+        int posColumn = s.getPosition().column;
+        int posRow = s.getPosition().row;
+        Position[] possibleMoves = new Position[2];
+
+
+        int counter = 0;
+        if(squares[posRow][posColumn-4].getPiece().getPieceType() == PieceType.Rook){
+            Square rook = squares[posRow][posColumn-4];
+            if(!rook.getPiece().hasMoved && squares[posRow][posColumn-3].getPiece() == null && squares[posRow][posColumn-2].getPiece() == null && squares[posRow][posColumn-1].getPiece() == null){
+                possibleMoves[0] = new Position(posRow, posColumn-2);
+                counter++;
+            }
+        }
+
+        if(squares[posRow][posColumn+3].getPiece().getPieceType() == PieceType.Rook){
+            Square rook =  squares[posRow][posColumn+3];
+            if(!rook.getPiece().hasMoved && squares[posRow][posColumn+2].getPiece() == null && squares[posRow][posColumn+1].getPiece() == null){
+                possibleMoves[1] = new Position(posRow, posColumn+2);
+                counter++;
+            }
+        }
+
+        Square[] finalMoves = new Square[counter];
+        if(counter!=0) {
+            for (int i = 0; i < finalMoves.length; i++) {
+                finalMoves[i] = squares[possibleMoves[i].row][possibleMoves[i].column];
+            }
+        }
+
+        return finalMoves;
+    }
+
 }

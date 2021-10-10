@@ -105,8 +105,19 @@ public class Square {
             case King: {
                 Square diag[] = mf.moveDiagonal(this, 1);
                 Square ortho[] = mf.moveOrthogonal(this, 1);
+
                 Square[] squares = Arrays.copyOf(diag, diag.length + ortho.length);
                 System.arraycopy(ortho, 0, squares, diag.length, ortho.length);
+
+                if(!this.getPiece().hasMoved){
+                    Square castling[] = mf.moveCastling(this);
+                    if (castling.length != 0){
+                        Square[] newSquares = Arrays.copyOf(squares, squares.length + castling.length);
+                        System.arraycopy(castling, 0, newSquares, squares.length, castling.length);
+                        squares = newSquares;
+                    }
+                }
+                System.out.print(squares);
                 return squares;
             }
             case Rook: {

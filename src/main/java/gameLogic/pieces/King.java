@@ -5,6 +5,7 @@ import gameLogic.util.*;
 public class King extends Piece{
 
     private static String name = "King";
+    boolean firstMove = true;
 
     public King(Position pos, int player) {
         super(pos, player);
@@ -20,8 +21,15 @@ public class King extends Piece{
     	return 6;	
     }
 
+    public void hasMoved(){
+        firstMove = false;
+    }
+
     public Position[] findMoves(Piece[][] board){
-        Position[] possibleMoves = new Position[8];
+        Position[] possibleMoves = new Position[10];
+        // 8 and 9 are for the castling. By default not possible
+        possibleMoves[8] = new Position(-1,-1);
+        possibleMoves[9] = new Position(-1,-1);
 
         //possible moves the king can make
         int[][] possibleMovement = {{+1,-1},{+1,0},{+1,+1},{0,-1},{0,+1},{-1,-1},{-1,0},{-1,+1}};
@@ -31,13 +39,13 @@ public class King extends Piece{
         int column = getPos().column;
 
         //calculate target positions
-        for (int i = 0; i < possibleMoves.length; i++){
+        for (int i = 0; i < possibleMovement.length; i++){
             possibleMoves[i] = new Position(row + possibleMovement[i][0], column + possibleMovement[i][1]);
         }
 
 
         //check target position validity
-        for (int i = 0; i < possibleMoves.length; i++)
+        for (int i = 0; i < possibleMovement.length; i++)
         {
             Position pos = possibleMoves[i];
             //check if the target is not on the board
@@ -56,7 +64,23 @@ public class King extends Piece{
             }
         }
 
+        if (firstMove){
+            if(board[row][column-4].getInt() == 4){
+                Rook rook1 = (Rook) board[row][column-4];
+                if(rook1.isFirstMove() && board[row][column-3] == null && board[row][column-2] == null && board[row][column-1] == null){
+                    possibleMoves[8] = new Position(row, column-2);
+                }
+            }
 
+            if(board[row][column+3].getInt() == 4){
+                Rook rook2 = (Rook) board[row][column+3];
+                if(rook2.isFirstMove() && board[row][column+2] == null && board[row][column+1] == null){
+                    possibleMoves[9] = new Position(row, column+2);
+                }
+            }
+        }
+
+        System.out.println(possibleMoves);
         return possibleMoves;
     }
 }

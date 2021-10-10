@@ -1,6 +1,8 @@
 package engineTester;
 
 import chess.*;
+import gameLogic.pieces.King;
+import gameLogic.pieces.Rook;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.Renderer;
@@ -79,6 +81,21 @@ public class MainGameLoop {
                                                 selectedSquare.setPiece(promotePawn(piece, diceRoll));
                                             }
                                         }
+
+                                        // if piece type is king and the movement is two squares then castle
+                                        if (piece.getPieceType() == PieceType.King ) {
+                                            if (j+2 == xIndex) {
+                                                Piece rook = board.getSquares()[i][7].removePiece();
+                                                board.getSquares()[i][j+1].setPiece(rook);
+                                                piece.setHasMoved();
+                                            }
+                                            if (j-2 == xIndex) {
+                                                Piece rook = board.getSquares()[i][0].removePiece();
+                                                board.getSquares()[i][j-1].setPiece(rook);
+                                                piece.setHasMoved();
+                                            }
+                                        }
+
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
                                     }

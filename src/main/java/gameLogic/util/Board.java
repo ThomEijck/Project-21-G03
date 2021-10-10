@@ -129,6 +129,34 @@ public class Board {
             }
 
         }
+
+        if(piece.getInt() == 4){
+            Rook rook = (Rook) piece;
+            rook.hasMoved();
+        }
+
+        // Check if castling is done
+        if(piece.getInt() == 6){
+            // Check if castling is done on queen side
+            if (start.row == end.row && start.column-2 == end.column) {
+                Rook rook1 = (Rook) chessBoard[start.row][start.column - 4];
+                chessBoard[start.row][start.column - 1] = rook1;
+                chessBoard[start.row][start.column - 4] = null;
+                rook1.hasMoved();
+            }
+
+            // Check if castling is done on king side
+
+            if(start.row == end.row && start.column+2 == end.column){
+                Rook rook2 = (Rook) chessBoard[start.row][start.column+3];
+                chessBoard[start.row][start.column+1] = rook2;
+                chessBoard[start.row][start.column+3] = null;
+                rook2.hasMoved();
+            }
+
+            ((King) piece).hasMoved();
+        }
+
         //notify the game manager that a piece has been moved
         GameManager.pieceMoved();
         return true;

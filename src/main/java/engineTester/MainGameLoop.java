@@ -29,13 +29,16 @@ public class MainGameLoop {
         ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
         ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
         ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
+        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/replayButton.png"));
         Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
         Button playAgainButtonB = new Button(375,550,500,150,playAgainTextureB);
         Button playAgainButtonDraw = new Button(375,550,500,150,playAgainTextureDraw);
+        Button replayButton = new Button(1090,540,70,70,playAgainTexture);
 
         playAgainButtonW.setEnabled(false);
         playAgainButtonB.setEnabled(false);
         playAgainButtonDraw.setEnabled(false);
+        replayButton.setEnabled(true);
 
         initBoard(board);
         Color turn = Color.White;
@@ -160,6 +163,7 @@ public class MainGameLoop {
                 }
                 renderer.render(dice.getPieceModel());
                 renderer.render(dice.getDiceModel());
+                renderer.render(replayButton.getTexturedModel());
             } else if (winner == Color.White) {
                 renderer.render(playAgainButtonW.getTexturedModel());
             }

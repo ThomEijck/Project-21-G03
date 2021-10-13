@@ -166,6 +166,9 @@ public class MainGameLoop {
             else if (winner == Color.Black) {
                 renderer.render(playAgainButtonB.getTexturedModel());
             }
+            else if(isDraw){
+                renderer.render(playAgainButtonDraw.getTexturedModel());
+            }
             shader.stop();
             DisplayManager.updateDisplay();
         }

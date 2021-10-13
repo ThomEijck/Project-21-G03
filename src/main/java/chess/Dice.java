@@ -2,6 +2,7 @@ package chess;
 
 import java.util.*;
 
+import engineTester.MainGameLoop;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.Loader;
@@ -65,17 +66,23 @@ public class Dice {
                 count++;
             }
         }
-
         int piece = 6;// default value
-        int[] options = new int[count];
-        int index = 0;
-        // only add pieces that can be moved to the die
-        for (int i = 0; i < availablePieces.length; i++) {
-            if (availablePieces[i] > 0) {
-                options[index++] = i;
+
+        if(count == 0)//if a piece cant be moved declare a draw
+        {
+            MainGameLoop.setDraw();
+        }else{
+            int[] options = new int[count];
+            int index = 0;
+            // only add pieces that can be moved to the die
+            for (int i = 0; i < availablePieces.length; i++) {
+                if (availablePieces[i] > 0) {
+                    options[index++] = i;
+                }
             }
+            piece = options[random.nextInt(options.length)];
         }
-        piece = options[random.nextInt(options.length)];
+
         generatePieceModel(piece, turn);
         generateDiceModel(piece);
         return piece;

@@ -65,16 +65,17 @@ public class King extends Piece{
         }
 
         if (firstMove){
-            if(board[row][column-4].getInt() == 4){
-                Rook rook1 = (Rook) board[row][column-4];
-                if(rook1.isFirstMove() && board[row][column-3] == null && board[row][column-2] == null && board[row][column-1] == null){
+            Piece rook1 = board[row][column-4];
+            if(rook1 != null && board[row][column-4].getInt() == 4){
+                Rook rook = (Rook) board[row][column-4];
+                if(rook.isFirstMove() && board[row][column-3] == null && board[row][column-2] == null && board[row][column-1] == null){
                     possibleMoves[8] = new Position(row, column-2);
                 }
             }
-
-            if(board[row][column+3].getInt() == 4){
-                Rook rook2 = (Rook) board[row][column+3];
-                if(rook2.isFirstMove() && board[row][column+2] == null && board[row][column+1] == null){
+            Piece rook2 = board[row][column+3];
+            if(rook2 != null && board[row][column+3].getInt() == 4){
+                Rook rook = (Rook) board[row][column+3];
+                if(rook.isFirstMove() && board[row][column+2] == null && board[row][column+1] == null){
                     possibleMoves[9] = new Position(row, column+2);
                 }
             }

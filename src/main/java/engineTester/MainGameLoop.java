@@ -58,6 +58,14 @@ public class MainGameLoop {
                 int yIndex = (int) (8 - (yRatio * 8));
 
                 if (winner == null && !isDraw) {
+                    if (replayButton.isClicked(x, y))
+                    {
+                        winner = null;
+                        isDraw = false;
+                        initBoard(board);
+                        turn = Color.White;
+                        diceRoll = dice.getValue(turn);
+                    }
                     if (xIndex < 8 && yIndex < 8) {
                         Square selectedSquare = board.getSquares()[yIndex][xIndex];
                         if (selectedSquare.getPossibleMove()) {
@@ -171,6 +179,8 @@ public class MainGameLoop {
                 renderer.render(playAgainButtonB.getTexturedModel());
             }
             else if(isDraw){
+                playAgainButtonDraw.setEnabled(true);
+
                 renderer.render(playAgainButtonDraw.getTexturedModel());
             }
             shader.stop();

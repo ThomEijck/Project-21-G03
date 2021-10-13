@@ -25,9 +25,16 @@ public class MainGameLoop {
         MoveFinder mf = new MoveFinder(board);
         Dice dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
-        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/play_again.png"));
-        Button playAgainButton = new Button(375, 550, 500, 100, playAgainTexture);
-        playAgainButton.setEnabled(false);
+        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
+        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
+        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
+        Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
+        Button playAgainButtonB = new Button(375,550,500,150,playAgainTextureB);
+        Button playAgainButtonDraw = new Button(375,550,500,150,playAgainTextureDraw);
+
+        playAgainButtonW.setEnabled(false);
+        playAgainButtonB.setEnabled(false);
+        playAgainButtonDraw.setEnabled(false);
 
         initBoard(board);
         Color turn = Color.White;
@@ -58,8 +65,13 @@ public class MainGameLoop {
 
                                         if (selectedSquare.getPiece() != null) {
                                             if (selectedSquare.getPiece().getPieceType() == PieceType.King) {
+                                                if(turn == Color.White){
+                                                    playAgainButtonW.setEnabled(true);
+                                                }
+                                                if(turn == Color.Black){
+                                                    playAgainButtonB.setEnabled(true);
+                                                }
                                                 winner = turn;
-                                                playAgainButton.setEnabled(true);
                                             }
                                         }
 
@@ -121,7 +133,7 @@ public class MainGameLoop {
                         }
                     }
                 } else {
-                    if (playAgainButton.isClicked(x, y)) {
+                    if (playAgainButtonW.isClicked(x, y) || playAgainButtonB.isClicked(x,y) || playAgainButtonDraw.isClicked(x,y)) {
                         winner = null;
                         initBoard(board);
                         turn = Color.White;
@@ -146,8 +158,11 @@ public class MainGameLoop {
                 }
                 renderer.render(dice.getPieceModel());
                 renderer.render(dice.getDiceModel());
-            } else {
-                renderer.render(playAgainButton.getTexturedModel());
+            } else if (winner == Color.White) {
+                renderer.render(playAgainButtonW.getTexturedModel());
+            }
+            else if (winner == Color.Black) {
+                renderer.render(playAgainButtonB.getTexturedModel());
             }
             shader.stop();
             DisplayManager.updateDisplay();

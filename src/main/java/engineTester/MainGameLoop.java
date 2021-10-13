@@ -10,6 +10,7 @@ import shaders.StaticShader;
 import textures.ModelTexture;
 
 public class MainGameLoop {
+    private static boolean isDraw = false;
     private static Piece[] possibleEnPassantPieces = new Piece[2]; // only 2 pieces can en passant at each moment
 
     public static void main(String[] args) {
@@ -46,7 +47,7 @@ public class MainGameLoop {
                 float yRatio = y / DisplayManager.getHeight();
                 int yIndex = (int) (8 - (yRatio * 8));
 
-                if (winner == null) {
+                if (winner == null && !isDraw) {
                     if (xIndex < 8 && yIndex < 8) {
                         Square selectedSquare = board.getSquares()[yIndex][xIndex];
                         if (selectedSquare.getPossibleMove()) {
@@ -123,6 +124,7 @@ public class MainGameLoop {
                 } else {
                     if (playAgainButton.isClicked(x, y)) {
                         winner = null;
+                        isDraw = false;
                         initBoard(board);
                         turn = Color.White;
                         diceRoll = dice.getValue(turn);
@@ -131,7 +133,7 @@ public class MainGameLoop {
             }
             renderer.prepare();
             shader.start();
-            if (winner == null) {
+            if (winner == null && !isDraw) {
                 for (Square squares[] : board.getSquares()) {
                     for (Square square : squares) {
                         shader.setHighlight(square.getHighlight());
@@ -232,6 +234,11 @@ public class MainGameLoop {
                 piece.resetEnPassant();
             }
         }
+    }
+
+    public static void setDraw()
+    {
+        isDraw = true;
     }
 
     private static boolean canPromote(Piece piece, int row) {

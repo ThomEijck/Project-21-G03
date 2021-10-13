@@ -269,15 +269,16 @@ public class MoveFinder {
 
 
         int counter = 0;
-        if(squares[posRow][posColumn-4].getPiece().getPieceType() == PieceType.Rook){
+        Piece rook1 = squares[posRow][posColumn-4].getPiece();
+        if(rook1 != null && rook1.getPieceType() == PieceType.Rook){
             Square rook = squares[posRow][posColumn-4];
             if(!rook.getPiece().hasMoved && squares[posRow][posColumn-3].getPiece() == null && squares[posRow][posColumn-2].getPiece() == null && squares[posRow][posColumn-1].getPiece() == null){
                 possibleMoves[0] = new Position(posRow, posColumn-2);
                 counter++;
             }
         }
-
-        if(squares[posRow][posColumn+3].getPiece().getPieceType() == PieceType.Rook){
+        Piece rook2 = squares[posRow][posColumn+3].getPiece();
+        if(rook2 != null && rook2.getPieceType() == PieceType.Rook){
             Square rook =  squares[posRow][posColumn+3];
             if(!rook.getPiece().hasMoved && squares[posRow][posColumn+2].getPiece() == null && squares[posRow][posColumn+1].getPiece() == null){
                 possibleMoves[1] = new Position(posRow, posColumn+2);

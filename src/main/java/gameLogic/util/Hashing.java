@@ -28,22 +28,59 @@ public class Hashing
 
         int enPassentColumn = -1;//store the column of a valid en passant square, if any
 
+        boolean castling00 = false;
+        boolean castling07 = false;
+        boolean castling70 = false;
+        boolean castling77 = false;
+        boolean castlingBlack = false;
+        boolean castlingWhite = false;
+
+
         for (int i = 0; i < pieces.length; i++)
         {
             Position pos = pieces[i].getPos();
             hash ^= keyValues[(pieces[i].getInt() - 1)* pieces[i].getPlayer() *64 + pos.row * 8 + pos.column];
-            if(pieces[i].getInt() == 1)//check for en passant
+            switch (pieces[i].getInt())//check for en passant
             {
-                Peasant p = (Peasant) pieces[i];
+                case 1:
+                    Peasant p = (Peasant) pieces[i];
 
-                if (p.getLeftEnPassant())
-                {
-                    enPassentColumn = pos.row -1;
-                } 
-                if(p.getRightEnPassant())
-                {
-                    enPassentColumn = pos.row + 1;
-                }
+                    if (p.getLeftEnPassant()) {
+                        enPassentColumn = pos.row - 1;
+                    }
+                    if (p.getRightEnPassant()) {
+                        enPassentColumn = pos.row + 1;
+                    }
+                    break;
+                case 4:
+                    Rook rookPiece = (Rook) pieces[i];
+                    if(rookPiece.isFirstMove())
+                    {
+                        if(rookPiece.getPos().row == 0)
+                        {
+                            if(rookPiece.getPos().column == 0){castling00 = true;}
+                            else{castling07 = true;}
+                        }
+                        else if(rookPiece.getPos().row == 7)
+                        {
+                            if(rookPiece.getPos().column == 0){castling70 = true;}
+                            else{castling77 = true;}
+                        }
+                    }
+                    break;
+                case 6:
+                    King kingPiece = (King) pieces[i];
+                    if(kingPiece.firstMove) {
+                        if(kingPiece.getPlayer() == 1)
+                        {
+                            castlingWhite = true;
+                        }else
+                        {
+                            castlingBlack = true;
+                        }
+                    }
+                    break;
+
             }
         }
 
@@ -52,9 +89,24 @@ public class Hashing
             hash ^= keyValues[64*12 + enPassentColumn];
         }
 
-        //TODO: add castling to hashing
+        if(castling00 && castlingBlack)
+        {
+            hash ^= keyValues[64*12 + 8];
+        }
+        if(castling07 && castlingBlack)
+        {
+            hash ^= keyValues[64*12 + 8 + 1];
+        }
+        if(castling70 && castlingWhite)
+        {
+            hash ^= keyValues[64*12 + 8 + 2];
+        }
+        if(castling77 && castlingWhite)
+        {
+            hash ^= keyValues[64*12 + 8 + 3];
+        }
 
-        if(blackToMove){hash ^= keyValues[781];}
+        if(blackToMove){hash ^= keyValues[780];}
         return hash;
     }
 

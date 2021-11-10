@@ -5,7 +5,7 @@ import gameLogic.util.*;
 public class King extends Piece{
 
     private static String name = "King";
-    boolean firstMove = true;
+    public boolean firstMove = true;
 
     public King(Position pos, int player) {
         super(pos, player);

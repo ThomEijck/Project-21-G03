@@ -12,8 +12,15 @@ public class Hashing
     long hash;
     Random random;
     long[] keyValues;
+    boolean[] castling;
+
+
     public Hashing(Piece[] pieces, boolean blackToMove)
-    {   
+    {
+        castling = new boolean[];
+        for (int i = 0; i < castling.length; i++) {
+            castling[i] =false;
+        }
         random = new Random(seed);
         keyValues = new long[781];//781 is the amount of numbers needed for zobrist hashing
         for (int i = 0; i < keyValues.length; i++) {
@@ -92,39 +99,41 @@ public class Hashing
         if(castling00 && castlingBlack)
         {
             hash ^= keyValues[64*12 + 8];
+            castling[0] = true;
         }
         if(castling07 && castlingBlack)
         {
             hash ^= keyValues[64*12 + 8 + 1];
+            castling[1] = true;
         }
         if(castling70 && castlingWhite)
         {
             hash ^= keyValues[64*12 + 8 + 2];
+            castling[2] = true;
         }
         if(castling77 && castlingWhite)
         {
             hash ^= keyValues[64*12 + 8 + 3];
+            castling[4] = true;
         }
 
         if(blackToMove){hash ^= keyValues[780];}
         return hash;
     }
 
-    public void updateHash(Position source1,Position source2, Piece piece1, Piece piece2)
+    public void updateHash(Position source1,Position source2, Position target1,Position target2, Piece piece1, Piece piece2)
     {
-        if(source1 != null)
-            hash ^= keyValues[(piece1.getInt() - 1)*piece1.getPlayer() *64 + source1.row * 8 + source1.column];//remove piece 1
-        if(source2 != null)
-            hash ^= keyValues[(piece2.getInt() - 1)*piece2.getPlayer() *64 + source2.row * 8 + source2.column];//remove piece 2
-        if(piece1 != null) {
-            Position pos = piece1.getPos();
-            hash ^= keyValues[(piece1.getInt() - 1) * piece1.getPlayer() * 64 + pos.row * 8 + pos.column];//add piece 1
-        }
-        if(piece2 != null) {
-            Position pos = piece2.getPos();
-            hash ^= keyValues[(piece2.getInt() - 1) * piece2.getPlayer() * 64 + pos.row * 8 + pos.column];//add piece 2
-        }
+        int piece1Index = (piece1.getInt() - 1)*piece1.getPlayer() *64;
+        int piece2Index = (piece2.getInt() - 1)*piece2.getPlayer() *64;
+        update(source1, target1, piece1Index);//update piece 1
+        update(source2, target2, piece2Index);//update piece 2
+    }
 
+    private void update(Position position1, Position position2, int pieceIndex) {
+        if(position1 != null)
+            hash ^= keyValues[pieceIndex + position1.row * 8 + position1.column];//remove piece 1
+        if(position2 != null)
+            hash ^= keyValues[pieceIndex + position2.row * 8 + position2.column];//remove piece 2
     }
 
     public long getHash(){return hash;}

@@ -66,7 +66,7 @@ public class Hashing
             hash ^= keyValues[(piece2.getInt() - 1)*piece2.getPlayer() *64 + source2.row * 8 + source2.column];//remove piece 2
         if(piece1 != null) {
             Position pos = piece1.getPos();
-            hash ^= keyValues[(piece1.getInt() - 1) * piece1.getPlayer() * 64 + source1.row * 8 + source1.column];//add piece 1
+            hash ^= keyValues[(piece1.getInt() - 1) * piece1.getPlayer() * 64 + pos.row * 8 + pos.column];//add piece 1
         }
         if(piece2 != null) {
             Position pos = piece2.getPos();

@@ -1,5 +1,5 @@
 package chess;
 
 public interface BoardEvaluator {
-    public int evaluateBoard(Board board);
+    public float evaluateBoard(Board board);
 }

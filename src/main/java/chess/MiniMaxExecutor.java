@@ -15,10 +15,10 @@ public class MiniMaxExecutor {
 
         // first iteration of minimax done separately, to use the value of the dice
         Board[] children = findChildren(currentBoard, maxPlayer, diceValue);
-        int bestValue = Integer.MIN_VALUE;
+        float bestValue = Integer.MIN_VALUE;
         Board bestBoard = null;
         for(int i = 0; i < children.length; i++){
-            int newValue = minimax(children[i], depth - 1, false, nextPlayer(maxPlayer));
+            float newValue = minimax(children[i], depth - 1, false, nextPlayer(maxPlayer));
             if (newValue > bestValue){
                 bestValue = newValue;
                 bestBoard = children[i];
@@ -27,7 +27,7 @@ public class MiniMaxExecutor {
         return bestBoard;
     }
 
-    private int minimax(Board board, int depth, boolean maximizingPlayer, Color currentPlayer){
+    private float minimax(Board board, int depth, boolean maximizingPlayer, Color currentPlayer){
         if (depth == 0){
             return evaluator.evaluateBoard(board);
         }
@@ -38,16 +38,16 @@ public class MiniMaxExecutor {
         }
 
         if (maximizingPlayer){
-            int value = Integer.MIN_VALUE;
+            float value = Integer.MIN_VALUE;
             for(int i = 0; i < children.length; i++){
-                value = Integer.max(value, minimax(children[i], depth - 1, false, nextPlayer(currentPlayer) ));
+                value = Float.max(value, minimax(children[i], depth - 1, false, nextPlayer(currentPlayer) ));
             }
             return value;
         }
         else{
-            int value = Integer.MAX_VALUE;
+            float value = Integer.MAX_VALUE;
             for(int i = 0; i < children.length; i++){
-                value = Integer.min(value, minimax(children[i], depth - 1, true, nextPlayer(currentPlayer) ));
+                value = Float.min(value, minimax(children[i], depth - 1, true, nextPlayer(currentPlayer) ));
             }
             return value;
         }

@@ -17,7 +17,7 @@ public class Hashing
 
     public Hashing(Piece[] pieces, boolean blackToMove)
     {
-        castling = new boolean[];
+        castling = new boolean[4];
         for (int i = 0; i < castling.length; i++) {
             castling[i] =false;
         }

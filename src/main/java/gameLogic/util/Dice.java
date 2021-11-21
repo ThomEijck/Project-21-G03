@@ -12,12 +12,12 @@ public class Dice
     {
         random = new Random();
         this.board = board;
-        table = new TranspositionTable(board,false);
+        table = new TranspositionTable();
     }
 
     public int getValue(int player)
     {
-        int positionCount = table.add(player != 1);
+        int positionCount = table.add(board.getChessBoard(),player != 1);
         if(positionCount >= 3)//if there is 3 repetition of a position
         {
             GameManager.setGameState(3);//let the game be a draw

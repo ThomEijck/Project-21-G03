@@ -3,6 +3,8 @@ package engineTester;
 import chess.*;
 import gameLogic.pieces.King;
 import gameLogic.pieces.Rook;
+import gameLogic.util.GameManager;
+import gameLogic.util.TranspositionTable;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.Renderer;
@@ -12,6 +14,7 @@ import textures.ModelTexture;
 public class MainGameLoop {
     private static boolean isDraw = false;
     private static Piece[] possibleEnPassantPieces = new Piece[2]; // only 2 pieces can en passant at each moment
+    private static TranspositionTable table = new TranspositionTable();
 
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
@@ -122,6 +125,11 @@ public class MainGameLoop {
 
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
+                                        int positionCount = table.add(board.getSquares(),turn == Color.White);
+                                        if(positionCount >= 3)//if there is 3 repetition of a position
+                                        {
+                                            setDraw();//let the game be a draw
+                                        }
                                     }
                                 }
                             }

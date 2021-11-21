@@ -7,15 +7,22 @@ public class Dice
 
     Random random;
     Board board;
+    TranspositionTable table;
     public Dice(Board board)
     {
         random = new Random();
         this.board = board;
+        table = new TranspositionTable(board,false);
     }
 
     public int getValue(int player)
     {
-        
+        int positionCount = table.add(player != 1);
+        if(positionCount >= 3)//if there is 3 repetition of a position
+        {
+            GameManager.setGameState(3);//let the game be a draw
+        }
+
         int[] availablePieces = new int[6];
         Piece[][] pieces = board.getChessBoard();
         
@@ -44,7 +51,7 @@ public class Dice
                 if(piece.getPlayer() != player){continue;}
 
                 Position[] moves = piece.findMoves(pieces);
-                int index = nameToNum(piece.toString());
+                int index = piece.getInt();
                 //check if possible moves can be made
                 if(index >= 0 && availablePieces[index - 1] == 0 && hasValidMoves( moves))
                 {
@@ -129,33 +136,5 @@ public class Dice
             }    
         }
         return false;
-    }
-
-    //function that converts the name of a piece to its index
-    private int nameToNum(String name)
-    {
-        switch (name) {
-            case "Pawn":
-                return 1;
-                
-            case "Knight":
-                return 2;
-                
-            case "Bishop":
-                return 3;
-                
-            case "Rook":
-                return 4;
-                
-            case "Queen":
-                return 5;
-                
-            case "King":
-                return 6;
-                
-            default:
-                return -1;//empty square
-                
-        }
     }
 }

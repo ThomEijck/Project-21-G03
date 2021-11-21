@@ -15,7 +15,7 @@ public class Hashing
     boolean[] castling;
 
 
-    public Hashing(Piece[] pieces, boolean blackToMove)
+    public Hashing(Board board, boolean blackToMove)
     {
         castling = new boolean[4];
         for (int i = 0; i < castling.length; i++) {
@@ -26,10 +26,10 @@ public class Hashing
         for (int i = 0; i < keyValues.length; i++) {
             keyValues[i] = random.nextLong();
         }
-        hash = calculateHash(pieces,blackToMove);
+        hash = calculateHash(board.getChessBoard(),blackToMove);
     }
 
-    private long calculateHash(Piece[] pieces, boolean blackToMove)
+    public long calculateHash(Piece[][] board, boolean blackToMove)
     {
         long hash = 0;
 
@@ -43,51 +43,52 @@ public class Hashing
         boolean castlingWhite = false;
 
 
-        for (int i = 0; i < pieces.length; i++)
+        for (int i = 0; i < board.length; i++)
         {
-            Position pos = pieces[i].getPos();
-            hash ^= keyValues[(pieces[i].getInt() - 1)* pieces[i].getPlayer() *64 + pos.row * 8 + pos.column];
-            switch (pieces[i].getInt())//check for en passant
-            {
-                case 1:
-                    Peasant p = (Peasant) pieces[i];
+            for (int j = 0; j < board.length; j++) {
+                Position pos = board[i][j].getPos();
+                hash ^= keyValues[(board[i][j].getInt() - 1)* board[i][j].getPlayer() *64 + pos.row * 8 + pos.column];
+                switch (board[i][j].getInt())//check for en passant
+                {
+                    case 1:
+                        Peasant p = (Peasant) board[i][j];
 
-                    if (p.getLeftEnPassant()) {
-                        enPassentColumn = pos.row - 1;
-                    }
-                    if (p.getRightEnPassant()) {
-                        enPassentColumn = pos.row + 1;
-                    }
-                    break;
-                case 4:
-                    Rook rookPiece = (Rook) pieces[i];
-                    if(rookPiece.isFirstMove())
-                    {
-                        if(rookPiece.getPos().row == 0)
-                        {
-                            if(rookPiece.getPos().column == 0){castling00 = true;}
-                            else{castling07 = true;}
+                        if (p.getLeftEnPassant()) {
+                            enPassentColumn = pos.row - 1;
                         }
-                        else if(rookPiece.getPos().row == 7)
-                        {
-                            if(rookPiece.getPos().column == 0){castling70 = true;}
-                            else{castling77 = true;}
+                        if (p.getRightEnPassant()) {
+                            enPassentColumn = pos.row + 1;
                         }
-                    }
-                    break;
-                case 6:
-                    King kingPiece = (King) pieces[i];
-                    if(kingPiece.firstMove) {
-                        if(kingPiece.getPlayer() == 1)
-                        {
-                            castlingWhite = true;
-                        }else
-                        {
-                            castlingBlack = true;
+                        break;
+                    case 4:
+                        Rook rookPiece = (Rook) board[i][j];
+                        if (rookPiece.isFirstMove()) {
+                            if (rookPiece.getPos().row == 0) {
+                                if (rookPiece.getPos().column == 0) {
+                                    castling00 = true;
+                                } else {
+                                    castling07 = true;
+                                }
+                            } else if (rookPiece.getPos().row == 7) {
+                                if (rookPiece.getPos().column == 0) {
+                                    castling70 = true;
+                                } else {
+                                    castling77 = true;
+                                }
+                            }
                         }
-                    }
-                    break;
-
+                        break;
+                    case 6:
+                        King kingPiece = (King) board[i][j];
+                        if (kingPiece.firstMove) {
+                            if (kingPiece.getPlayer() == 1) {
+                                castlingWhite = true;
+                            } else {
+                                castlingBlack = true;
+                            }
+                        }
+                        break;
+                }
             }
         }
 

@@ -20,10 +20,11 @@ public class PromotionChooser2D {
                 JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,
                 null,possibleValues,possibleValues[0]);
 
-        int result = (int)selectedValue;
+        int result = (Integer) selectedValue;
 
         PieceType[] types = {PieceType.Queen,PieceType.Knight,PieceType.Bishop,PieceType.Rook};
-
-        return result >= 0? new Piece(col,types[result]):new Piece(col,types[0]);
+        Piece newPiece = result >= 0? new Piece(col,types[result]):new Piece(col,types[0]);
+        newPiece.setHasMoved();
+        return newPiece;
     }
 }

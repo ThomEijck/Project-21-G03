@@ -24,6 +24,6 @@ public class PromotionChooser {
         Object selectedValue = JOptionPane.showOptionDialog(null,"To which piece do you want to promote the pawn", "Promotion",
                 JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,
                 null,possibleValues,possibleValues[0]);
-        return possibleValues[(int)selectedValue];
+        return possibleValues[(Integer)selectedValue];
     }
 }

@@ -22,10 +22,10 @@ public class GameManager
     }
 
     //call this function to advance the gamestate
-    public void movePiece(Position start, Position end)
+    public void movePiece(Move move)
     {
         if(gameState == 0)//only make moves while the game is ongoing
-            board.movePiece(start,end, diceValue, currPlayer);
+            board.movePiece(move, diceValue, currPlayer);
     }
 
     //logic that needs to be handled after a piece has been moved

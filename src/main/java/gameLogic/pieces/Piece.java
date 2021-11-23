@@ -6,7 +6,7 @@ public class Piece implements ChessPiece {
 
     private Position pos;
     private final int player;
-
+    private int moveCount = 0;
     public Piece(Position pos, int player) {
         this.pos = pos;
         this.player = player;
@@ -35,6 +35,14 @@ public class Piece implements ChessPiece {
     public Position[] findMoves(Piece[][] board){
     	System.out.println("Piece class");
     	return null;	
+    }
+
+    public boolean isFirstMove() {
+        return moveCount == 0;
+    }
+
+    public void hasMoved(){
+        moveCount++;
     }
     
 }

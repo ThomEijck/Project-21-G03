@@ -5,12 +5,10 @@ import gameLogic.util.*;
 public class Peasant extends Piece{
 
     private static String name = "Pawn";
-	boolean firstMove;
 	boolean leftEnpassant;
 	boolean rightEnpassant;
     public Peasant(Position pos, int player) {
         super(pos, player);
-        firstMove = true;
 		leftEnpassant = false;
 		rightEnpassant = false;
     }
@@ -34,7 +32,7 @@ public class Peasant extends Piece{
 		int moveDirection = getPlayer() * 2 - 3;
 
 		//list the possible moves the pawn can make
-		if(firstMove)
+		if(isFirstMove())
 		{
 			possibleMoves = new int[][]{{moveDirection,-1},{moveDirection,1},{moveDirection,0},{2* moveDirection,0}};
 		}else
@@ -98,12 +96,6 @@ public class Peasant extends Piece{
 		return targetPositions;
     }
 
-    //call this function after the pawn has been moved to prevent it to be able to move to the wrong spaces
-    public void hasMoved()
-	{
-		firstMove = false;
-	}
-
 	public void resetEnPassant()
 	{
 		leftEnpassant = false;
@@ -131,44 +123,3 @@ public class Peasant extends Piece{
 		return rightEnpassant;
 	}
 }
-//just saving this code in case the other implementation does not work
-/*
-if (super.getPlayer() == 1){
-
-
-    		//Check the player to find the pawn's direction
-			if (super.getPos().row != 0){
-			//Make sure the pawn can't go off the board
-				if (board[super.getPos().row-1][super.getPos().column] == null){
-				//Check the square in front of the pawn
-					System.out.println("EMPTY SQUARE AHEAD!");
-					System.out.println("Can move to: " + (super.getPos().row-1) + " " + super.getPos().column);
-					return true;
-				}
-			}
-			return false;
-    	}
-    	else{
-			if(firstMove)
-			{
-				possibleMoves = new int[][]{{1,-1},{1,0},{1,-1},{2,0}};
-			}else
-			{
-				possibleMoves = new int[][]{{1,-1},{1,0},{1,-1}};
-			}
-
-
-
-
-    		if (super.getPos().row != 7){
-			//Make sure the pawn can't go off the board
-				if (board[super.getPos().row+1][super.getPos().column] == null){
-				//Check the square in front of the pawn
-					System.out.println("EMPTY SQUARE AHEAD!");
-					System.out.println("Can move to: " + (super.getPos().row+1) + " " + super.getPos().column);
-					return true;
-				}
-			}
-			return false;
-    	}
- */

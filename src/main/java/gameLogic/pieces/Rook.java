@@ -69,12 +69,4 @@ public class Rook extends Piece {
 
 		return finalMoves;
 	}
-
-	public boolean isFirstMove() {
-		return firstmove;
-	}
-
-	public void hasMoved(){
-		firstmove = false;
-	}
 }

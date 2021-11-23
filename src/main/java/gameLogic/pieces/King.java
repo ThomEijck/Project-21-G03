@@ -5,7 +5,6 @@ import gameLogic.util.*;
 public class King extends Piece{
 
     private static String name = "King";
-    public boolean firstMove = true;
 
     public King(Position pos, int player) {
         super(pos, player);
@@ -19,10 +18,6 @@ public class King extends Piece{
     @Override
     public int getInt(){
     	return 6;	
-    }
-
-    public void hasMoved(){
-        firstMove = false;
     }
 
     public Position[] findMoves(Piece[][] board){
@@ -64,7 +59,7 @@ public class King extends Piece{
             }
         }
 
-        if (firstMove){
+        if (isFirstMove()){
             Piece rook1 = board[row][column-4];
             if(rook1 != null && board[row][column-4].getInt() == 4){
                 Rook rook = (Rook) board[row][column-4];
@@ -80,8 +75,6 @@ public class King extends Piece{
                 }
             }
         }
-
-        System.out.println(possibleMoves);
         return possibleMoves;
     }
 }

@@ -60,9 +60,10 @@ public class Board {
         }
     }
     
-    public boolean movePiece(Position start, Position end, int diceValue, int playerTurn)
+    public boolean movePiece(Move move, int diceValue, int playerTurn)
     {
-
+        Position start = move.getStart();
+        Position end = move.getEnd();
         Piece piece = chessBoard[start.row][start.column];
 
         //cant move the other players pieces
@@ -116,7 +117,6 @@ public class Board {
                 //System.out.println(new Position(start.row, end.column));
             }
 
-            pawn.hasMoved();
             //if the pawn has moved two spaces make the adjacent enemy pawns be able to use en passant
             if( Math.abs(start.row - end.row) == 2)
             {
@@ -130,11 +130,6 @@ public class Board {
 
         }
 
-        if(piece.getInt() == 4){
-            Rook rook = (Rook) piece;
-            rook.hasMoved();
-        }
-
         // Check if castling is done
         if(piece.getInt() == 6){
             // Check if castling is done on queen side
@@ -142,7 +137,6 @@ public class Board {
                 Rook rook1 = (Rook) chessBoard[start.row][start.column - 4];
                 chessBoard[start.row][start.column - 1] = rook1;
                 chessBoard[start.row][start.column - 4] = null;
-                rook1.hasMoved();
             }
 
             // Check if castling is done on king side
@@ -151,12 +145,11 @@ public class Board {
                 Rook rook2 = (Rook) chessBoard[start.row][start.column+3];
                 chessBoard[start.row][start.column+1] = rook2;
                 chessBoard[start.row][start.column+3] = null;
-                rook2.hasMoved();
             }
 
-            ((King) piece).hasMoved();
-        }
 
+        }
+        piece.hasMoved();
         //notify the game manager that a piece has been moved
         GameManager.pieceMoved();
         return true;

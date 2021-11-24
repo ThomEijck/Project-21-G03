@@ -124,6 +124,8 @@ public class Board {
             rEnpassant = ((Peasant) piece).getRightEnPassant();
             lEnpassant = ((Peasant) piece).getLeftEnPassant();
         }
+
+        //TODO: this right here fucks up the entire en passant for minimax
         resetEnPassant();
 
         //do special cases of the pawn

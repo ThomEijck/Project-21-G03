@@ -5,7 +5,6 @@ import gameLogic.util.*;
 public class Rook extends Piece {
 
 	private static String name = "Rook";
-	boolean firstmove = true;
 
 	public Rook(Position pos, int player) {
 		super(pos, player);

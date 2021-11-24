@@ -1,6 +1,8 @@
 package gameLogic.util.MiniMax;
 
 import gameLogic.util.*;
+import gameLogic.pieces.*;
+import java.util.*;
 
 public class MiniMaxExecutorUtil {
     private BoardEvaluatorUtil evaluator;
@@ -20,6 +22,9 @@ public class MiniMaxExecutorUtil {
         Move bestMove = null;
         Move[] moves = getMoves(currentBoard, diceValue, player);
         for(int i = 0; i < moves.length; i++){
+            if(moves[i].getEnd().row == -1)
+                continue;
+            //System.out.println(i);
             moveExecutor.movePiece(currentBoard, moves[i]);
             float newValue = minimax(currentBoard, depth - 1, nextPlayer(player));
             moveExecutor.unMovePiece(currentBoard, moves[i]);
@@ -35,15 +40,25 @@ public class MiniMaxExecutorUtil {
         if (depth == 0){
             return evaluator.evaluateBoard(board);
         }
+        //board.printBoard();
 
-        Move[] moves = getMoves(board,-1,currentPlayer);
+        //TODO: make getMoves function work with all pieces
+        List<Move> movesList = new ArrayList<Move>();
+        for (int i = 1; i <= 6; i++) {//get moves of all pieces
+            addMoves(movesList,board,i,currentPlayer);
+        }
+
+        Move[] moves = movesList.toArray(new Move[0]);
+
         if (moves.length == 0){
-            return 0;
+            return 0;//its a draw
         }
 
         if (currentPlayer == 1){
             float value = Integer.MIN_VALUE;
             for(int i = 0; i < moves.length; i++){
+                if(moves[i].getEnd().row == -1)
+                    continue;
                 moveExecutor.movePiece(board,moves[i]);
                 value = Float.max(value, minimax(board, depth - 1, nextPlayer(currentPlayer) ));
                 moveExecutor.unMovePiece(board,moves[i]);
@@ -53,6 +68,8 @@ public class MiniMaxExecutorUtil {
         else{
             float value = Integer.MAX_VALUE;
             for(int i = 0; i < moves.length; i++){
+                if(moves[i].getEnd().row == -1)
+                    continue;
                 moveExecutor.movePiece(board,moves[i]);
                 value = Float.min(value, minimax(board, depth - 1, nextPlayer(currentPlayer) ));
                 moveExecutor.unMovePiece(board,moves[i]);
@@ -63,7 +80,26 @@ public class MiniMaxExecutorUtil {
 
     private Move[] getMoves(Board board, int diceValue, int player)
     {
-        return null;
+        Piece[][] pieces = board.getChessBoard();
+        List<Move> moves = new ArrayList<Move>();
+        for (int i = 0; i < pieces.length; i++)
+        {
+            for (int k = 0; k < pieces[i].length; k++)
+            {
+                Piece piece = pieces[i][k];
+                if(piece == null || piece.getInt() != diceValue || piece.getPlayer() != player)
+                {
+                    continue;//only get the relevant pieces
+                }
+                Position[] targets = piece.findMoves(board.getChessBoard());
+                for (int l = 0; l < targets.length; l++)
+                {
+                    Position pos = new Position(piece.getPos());
+                    moves.add(new Move(pos,targets[l]));
+                }
+            }
+        }
+        return moves.toArray(new Move[0]);//not sure if this works
     }
 
 
@@ -72,6 +108,15 @@ public class MiniMaxExecutorUtil {
             return 2;
         }
         else return 1;
+    }
+
+    private void addMoves(List<Move> moves,Board board, int diceValue,int player)
+    {
+        Move[] pieceMoves = getMoves(board,diceValue,player);
+        for (int i = 0; i < pieceMoves.length; i++)
+        {
+            moves.add(pieceMoves[i]);
+        }
     }
 
 

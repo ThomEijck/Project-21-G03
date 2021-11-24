@@ -2,19 +2,26 @@ package gameLogic.util;
 
 import chess.Square;
 import gameLogic.pieces.*;
+import gameLogic.util.MiniMax.MoveHistoryData;
+
+import java.util.*;
+
 
 public class Board {
 
     private Piece[][] chessBoard = new Piece[8][8];
+    private Stack<MoveHistoryData> moveHistory;
+    private Piece[] possibleEnPassantPieces = new Piece[2];//always only 2 pieces can do enpassant
 
     public Board() {
         this.chessBoard = createBoard(chessBoard);
+        moveHistory = new Stack<MoveHistoryData>();
     }
 
     public Piece[][] getChessBoard() {
         return this.chessBoard;
     }
-    private Piece[] possibleEnPassantPieces = new Piece[2];//always only 2 pieces can do enpassant
+
     private Piece[][] createBoard(Piece[][] chessBoard) {
         for(int i = 0; i < 8; i++) {
             chessBoard[1][i] = new Peasant(new Position(1,i), 2);
@@ -50,10 +57,10 @@ public class Board {
         for(int i = 0; i < chessBoard.length; i++) {
             for(int j = 0; j < chessBoard.length; j++) {
                 if(this.chessBoard[i][j] != null) {
-                    System.out.print(chessBoard[i][j] + "\t");
+                    System.out.print(chessBoard[i][j] + "" +chessBoard[i][j].getPlayer() + "\t");
                 }else
                 {
-                    System.out.print("  -\t\t");
+                    System.out.print("  -  \t");
                 }
             }
             System.out.println();
@@ -65,6 +72,7 @@ public class Board {
         Position start = move.getStart();
         Position end = move.getEnd();
         Piece piece = chessBoard[start.row][start.column];
+        Piece captured = chessBoard[end.row][end.column];//can be null but that does not matter;
 
         //cant move the other players pieces
         if(piece.getPlayer() != playerTurn){return  false;}
@@ -93,10 +101,22 @@ public class Board {
         }else
         {
             System.out.println("Invalid target");
+            System.out.println(start);
+            System.out.println(end);
+            System.out.println(piece);
+            System.out.println(piece.getPos());
+            Position[] moves = piece.findMoves(getChessBoard());
+            if(piece.getClass() == Peasant.class)
+            {
+                System.out.println(((Peasant)piece).getLeftEnPassant());
+                System.out.println(((Peasant)piece).getRightEnPassant());
+            }
+            System.out.println(Arrays.toString(moves));
+            printBoard();
+            revertMove();
+            printBoard();
             return false;
         }
-        
-        piece.setPos(end);
 
         boolean rEnpassant = false;
         boolean lEnpassant = false;
@@ -113,6 +133,7 @@ public class Board {
             if((start.column - end.column == -1 && rEnpassant)
             || (start.column - end.column == 1 && lEnpassant))
             {
+                captured = chessBoard[start.row][end.column];
                 chessBoard[start.row][end.column] = null;
                 //System.out.println(new Position(start.row, end.column));
             }
@@ -129,12 +150,20 @@ public class Board {
             }
 
         }
-
+        //add move to move history
+        moveHistory.push(new MoveHistoryData(move,piece,captured,false));
+        piece.setPos(end);
         // Check if castling is done
         if(piece.getInt() == 6){
+            Position startPos = null;
+            Position endPos = null;
+            Piece rook = null;
             // Check if castling is done on queen side
             if (start.row == end.row && start.column-2 == end.column) {
                 Rook rook1 = (Rook) chessBoard[start.row][start.column - 4];
+                rook = rook1;
+                startPos = new Position(start.row,start.column-4);
+                endPos = new Position(start.row,start.column-1);
                 chessBoard[start.row][start.column - 1] = rook1;
                 chessBoard[start.row][start.column - 4] = null;
             }
@@ -143,15 +172,46 @@ public class Board {
 
             if(start.row == end.row && start.column+2 == end.column){
                 Rook rook2 = (Rook) chessBoard[start.row][start.column+3];
+                rook = rook2;
+                startPos = new Position(start.row,start.column+3);
+                endPos = new Position(start.row,start.column+1);
                 chessBoard[start.row][start.column+1] = rook2;
                 chessBoard[start.row][start.column+3] = null;
             }
-
+            if(startPos != null)
+            {
+                //add movement of the rook to move history
+                moveHistory.push(new MoveHistoryData(new Move(startPos,endPos),rook,null,true));
+                rook.setPos(endPos);
+            }
 
         }
-        piece.hasMoved();
+        piece.hasBeenMoved();
         //notify the game manager that a piece has been moved
-        GameManager.pieceMoved();
+        //GameManager.pieceMoved();
+        return true;
+    }
+
+    public boolean revertMove()
+    {
+        if(moveHistory.empty())
+        {
+            return false;
+        }
+
+        MoveHistoryData toRevert = moveHistory.pop();
+        Move move = toRevert.getMadeMove();
+        Position start = move.getStart();
+        Position end = move.getEnd();
+
+        chessBoard[end.row][end.column] = toRevert.getCapturedPiece();
+        chessBoard[start.row][start.column] = toRevert.getMovedPiece();
+
+        if(toRevert.isCastling())
+        {
+            revertMove();
+        }
+
         return true;
     }
 
@@ -174,6 +234,7 @@ public class Board {
             Piece leftPiece = chessBoard[pos.row][pos.column - 1];
             if(leftPiece != null && leftPiece.getInt() == 1)
             {
+                System.out.println("Yo did some en passant :" + pos);
                 ((Peasant) leftPiece).setRightEnpassant();
                 possibleEnPassantPieces[0] = leftPiece;
             }

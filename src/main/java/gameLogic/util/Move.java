@@ -12,4 +12,12 @@ public class Move {
 
     public Position getStart(){return start;}
     public Position getEnd(){return end;}
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }

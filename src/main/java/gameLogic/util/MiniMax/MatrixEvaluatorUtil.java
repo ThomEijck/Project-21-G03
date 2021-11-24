@@ -73,6 +73,8 @@ public class MatrixEvaluatorUtil implements BoardEvaluatorUtil
         for (int i = 0; i < squares.length; i++) {
             for (int k = 0; k < squares[i].length; k++) {
                 Piece piece = squares[i][k];
+                if(piece == null)
+                    continue;
                 int player =  piece.getPlayer();
                 int pieceNumber = piece.getInt() - 1;
                 if(player > 0)

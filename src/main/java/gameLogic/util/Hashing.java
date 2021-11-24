@@ -82,7 +82,7 @@ public class Hashing
                         break;
                     case 6:
                         King kingPiece = (King) board[i][j];
-                        if (kingPiece.firstMove) {
+                        if (kingPiece.isFirstMove()) {
                             if (kingPiece.getPlayer() == 1) {
                                 castlingWhite = true;
                             } else {
@@ -145,7 +145,7 @@ public class Hashing
                 Position pos = new Position(i,j);
                 int player = board[i][j].getPiece().getColor() == Color.White? 1:2;
                 int pieceValue = board[i][j].getPiece().getPieceType().getValue();
-                hash ^= keyValues[(pieceValue - 1)* player *64 + pos.row * 8 + pos.column];
+                hash ^= keyValues[(pieceValue)* player * 64 + pos.row * 8 + pos.column];
                 switch (pieceValue)//check for en passant
                 {
                     case 1:

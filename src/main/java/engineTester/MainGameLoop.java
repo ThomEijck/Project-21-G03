@@ -23,16 +23,16 @@ public class MainGameLoop {
         Renderer renderer = new Renderer();
         StaticShader shader = new StaticShader();
 
-        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("res/chess_texture_atlas.png"));
-        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("res/dice_atlas.png"));
+        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("../../../res/chess_texture_atlas.png"));
+        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("../../../res/dice_atlas.png"));
         Board board = new Board(textureAtlas);
         MoveFinder mf = new MoveFinder(board);
         Dice dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
-        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
-        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
-        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
-        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/replayButton.png"));
+        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("../../../res/play_againW.png"));
+        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("../../../res/play_againB.png"));
+        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("../../../res/play_againDraw.png"));
+        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("../../../res/replayButton.png"));
         Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
         Button playAgainButtonB = new Button(375,550,500,150,playAgainTextureB);
         Button playAgainButtonDraw = new Button(375,550,500,150,playAgainTextureDraw);

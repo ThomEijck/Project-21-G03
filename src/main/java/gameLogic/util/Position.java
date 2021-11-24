@@ -9,6 +9,11 @@ public class Position {
         this.column = column;
     }
 
+    public Position(Position pos) {
+        this.row = pos.row;
+        this.column = pos.column;
+    }
+
     public boolean isEqual(Position other)
     {
         return (other.row == row && other.column == column);

@@ -41,8 +41,15 @@ public class Piece implements ChessPiece {
         return moveCount == 0;
     }
 
-    public void hasMoved(){
+    public void hasBeenMoved(){
         moveCount++;
     }
-    
+
+    public void hasBeenUnMoved(){
+        moveCount--;
+    }
+
+    public void setMoveCount(int count){moveCount = count;}
+
+    public int getMoveCount() {return moveCount;}
 }

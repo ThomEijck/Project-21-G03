@@ -25,7 +25,7 @@ public class GameManager
     public void movePiece(Move move)
     {
         if(gameState == 0)//only make moves while the game is ongoing
-            board.movePiece(move, diceValue, currPlayer);
+            board.movePiece(move, diceValue, currPlayer,false);
     }
 
     //logic that needs to be handled after a piece has been moved

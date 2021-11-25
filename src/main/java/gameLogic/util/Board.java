@@ -16,6 +16,7 @@ public class Board {
     public Board() {
         this.chessBoard = createBoard(chessBoard);
         moveHistory = new Stack<MoveHistoryData>();
+
     }
 
     public Piece[][] getChessBoard() {
@@ -67,7 +68,7 @@ public class Board {
         }
     }
     
-    public boolean movePiece(Move move, int diceValue, int playerTurn)
+    public boolean movePiece(Move move, int diceValue, int playerTurn,boolean isAI)
     {
         Position start = move.getStart();
         Position end = move.getEnd();
@@ -140,7 +141,15 @@ public class Board {
 
             if(end.row == 0 || end.row == 7)
             {
-                chessBoard[end.row][end.column] = promotePawn(piece, diceValue);
+                if(isAI)
+                {
+                    //queen value, we dont have pawn promotion moves implemented in dice chess
+                    chessBoard[end.row][end.column] = promotePawn(piece, 5);
+                }else
+                {
+                    chessBoard[end.row][end.column] = promotePawn(piece, diceValue);
+                }
+
             }
 
         }
@@ -212,15 +221,13 @@ public class Board {
         {
             return false;
         }
-
         MoveHistoryData toRevert = moveHistory.pop();
         Move move = toRevert.getMadeMove();
         Position start = move.getStart();
+        Position end = move.getEnd();
         Position capture = toRevert.getCapturedPos();
 
-        printBoard();
-        System.out.println(move);
-
+        chessBoard[end.row][end.column] = null;
         chessBoard[capture.row][capture.column] = toRevert.getCapturedPiece();
         chessBoard[start.row][start.column] = toRevert.getMovedPiece();
 
@@ -229,22 +236,13 @@ public class Board {
         //im pretty sure en passant is evil
 
         //pieces that have en passant due to this move will not have it anymore
-        //also im too lazy to make a for loop for two elements
-        if(possibleEnPassantPieces[0] != null)
-        {
-            ((Peasant)possibleEnPassantPieces[0]).resetEnPassant();
-        }
-        if(possibleEnPassantPieces[1] != null)
-        {
-            ((Peasant)possibleEnPassantPieces[1]).resetEnPassant();
-        }
+        resetEnPassant();
 
         Position leftPos = toRevert.getLeftEPPos();
         Position rightPos = toRevert.getRightEPPos();
         if(leftPos != null)
         {
             possibleEnPassantPieces[0] = chessBoard[leftPos.row][leftPos.column];
-            System.out.println(leftPos + " : " + rightPos);
             ((Peasant)possibleEnPassantPieces[0]).setRightEnpassant();
         }
         if(rightPos != null)
@@ -264,7 +262,6 @@ public class Board {
     private boolean validTarget(Piece piece, Position target)
     {
         Position[] targets = piece.findMoves(chessBoard);
-        //System.out.println(java.util.Arrays.toString(targets));
         for (Position position : targets) {
             if(position.isEqual(target))
             {
@@ -280,7 +277,6 @@ public class Board {
             Piece leftPiece = chessBoard[pos.row][pos.column - 1];
             if(leftPiece != null && leftPiece.getInt() == 1)
             {
-                //System.out.println("Yo did some en passant :" + pos);
                 ((Peasant) leftPiece).setRightEnpassant();
                 possibleEnPassantPieces[0] = leftPiece;
             }

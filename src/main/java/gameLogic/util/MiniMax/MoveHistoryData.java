@@ -8,11 +8,16 @@ public class MoveHistoryData
     private Piece capturedPiece;
     private Piece movedPiece;
     private boolean castling;
-
-    public MoveHistoryData(Move move, Piece toMove, Piece capture,boolean castling)
+    private Position leftEPPos;//position of the piece that has left en passant rights
+    private Position rightEPPos;//position of the piece that has right en passant rights
+    private Position capturedPos;
+    public MoveHistoryData(Move move,Position capturedPos, Piece toMove, Piece capture,boolean castling, Position leftEPPos,Position rightEPPos)
     {
 
         madeMove = move;
+        this.capturedPos = capturedPos;
+        this.leftEPPos = leftEPPos;
+        this.rightEPPos = rightEPPos;
         this.castling = castling;//if castling has been done we need to move another piece, the king
         //create copies of the pieces to prevent funny stuff with object references
         capturedPiece = createPiece(capture);
@@ -30,6 +35,12 @@ public class MoveHistoryData
     public Piece getMovedPiece() {
         return movedPiece;
     }
+
+    public Position getCapturedPos() {return capturedPos;}
+
+    public Position getLeftEPPos() {return leftEPPos;}
+
+    public Position getRightEPPos() {return rightEPPos;}
 
     public boolean isCastling() {
         return castling;

@@ -73,7 +73,7 @@ public class Board {
         Position end = move.getEnd();
         Piece piece = chessBoard[start.row][start.column];
         Piece captured = chessBoard[end.row][end.column];//can be null but that does not matter;
-
+        Position capturedPos = move.getEnd();
         //cant move the other players pieces
         if(piece.getPlayer() != playerTurn){return  false;}
 
@@ -125,9 +125,6 @@ public class Board {
             lEnpassant = ((Peasant) piece).getLeftEnPassant();
         }
 
-        //TODO: this right here fucks up the entire en passant for minimax
-        resetEnPassant();
-
         //do special cases of the pawn
         if(piece.getInt() == 1)
         {
@@ -136,14 +133,9 @@ public class Board {
             || (start.column - end.column == 1 && lEnpassant))
             {
                 captured = chessBoard[start.row][end.column];
+                capturedPos = new Position(start.row,end.column);
                 chessBoard[start.row][end.column] = null;
                 //System.out.println(new Position(start.row, end.column));
-            }
-
-            //if the pawn has moved two spaces make the adjacent enemy pawns be able to use en passant
-            if( Math.abs(start.row - end.row) == 2)
-            {
-                enableEnPassant(end);
             }
 
             if(end.row == 0 || end.row == 7)
@@ -153,8 +145,27 @@ public class Board {
 
         }
         //add move to move history
-        moveHistory.push(new MoveHistoryData(move,piece,captured,false));
+        Position lEPos = null;
+        Position rEPos = null;
+        if(possibleEnPassantPieces[0] != null) {
+            lEPos = possibleEnPassantPieces[0].getPos();
+            lEPos = new Position(lEPos.row,lEPos.column);//make a copy to prevent funny java stuff
+        }
+        if(possibleEnPassantPieces[1] != null) {
+            rEPos = possibleEnPassantPieces[1].getPos();
+            rEPos = new Position(rEPos.row,rEPos.column);
+        }
+        moveHistory.push(new MoveHistoryData(move,capturedPos,piece,captured,false,lEPos,rEPos));
         piece.setPos(end);
+
+        resetEnPassant();
+        //if the pawn has moved two spaces make the adjacent enemy pawns be able to use en passant
+        if( piece.getInt() == 1 && Math.abs(start.row - end.row) == 2)
+        {
+            enableEnPassant(end);
+        }
+
+
         // Check if castling is done
         if(piece.getInt() == 6){
             Position startPos = null;
@@ -183,7 +194,7 @@ public class Board {
             if(startPos != null)
             {
                 //add movement of the rook to move history
-                moveHistory.push(new MoveHistoryData(new Move(startPos,endPos),rook,null,true));
+                moveHistory.push(new MoveHistoryData(new Move(startPos,endPos),capturedPos,rook,null,true,null,null));
                 rook.setPos(endPos);
             }
 
@@ -196,6 +207,7 @@ public class Board {
 
     public boolean revertMove()
     {
+
         if(moveHistory.empty())
         {
             return false;
@@ -204,10 +216,42 @@ public class Board {
         MoveHistoryData toRevert = moveHistory.pop();
         Move move = toRevert.getMadeMove();
         Position start = move.getStart();
-        Position end = move.getEnd();
+        Position capture = toRevert.getCapturedPos();
 
-        chessBoard[end.row][end.column] = toRevert.getCapturedPiece();
+        printBoard();
+        System.out.println(move);
+
+        chessBoard[capture.row][capture.column] = toRevert.getCapturedPiece();
         chessBoard[start.row][start.column] = toRevert.getMovedPiece();
+
+
+        //en passant stuff, if you encounter problems with en passant, good luck
+        //im pretty sure en passant is evil
+
+        //pieces that have en passant due to this move will not have it anymore
+        //also im too lazy to make a for loop for two elements
+        if(possibleEnPassantPieces[0] != null)
+        {
+            ((Peasant)possibleEnPassantPieces[0]).resetEnPassant();
+        }
+        if(possibleEnPassantPieces[1] != null)
+        {
+            ((Peasant)possibleEnPassantPieces[1]).resetEnPassant();
+        }
+
+        Position leftPos = toRevert.getLeftEPPos();
+        Position rightPos = toRevert.getRightEPPos();
+        if(leftPos != null)
+        {
+            possibleEnPassantPieces[0] = chessBoard[leftPos.row][leftPos.column];
+            System.out.println(leftPos + " : " + rightPos);
+            ((Peasant)possibleEnPassantPieces[0]).setRightEnpassant();
+        }
+        if(rightPos != null)
+        {
+            possibleEnPassantPieces[1] = chessBoard[rightPos.row][rightPos.column];
+            ((Peasant)possibleEnPassantPieces[1]).setLeftEnpassant();
+        }
 
         if(toRevert.isCastling())
         {
@@ -236,7 +280,7 @@ public class Board {
             Piece leftPiece = chessBoard[pos.row][pos.column - 1];
             if(leftPiece != null && leftPiece.getInt() == 1)
             {
-                System.out.println("Yo did some en passant :" + pos);
+                //System.out.println("Yo did some en passant :" + pos);
                 ((Peasant) leftPiece).setRightEnpassant();
                 possibleEnPassantPieces[0] = leftPiece;
             }
@@ -258,6 +302,7 @@ public class Board {
         {
             Peasant piece = (Peasant) possibleEnPassantPieces[i];
             if(piece != null){piece.resetEnPassant();}
+            possibleEnPassantPieces[i] = null;
         }
     }
 

@@ -35,14 +35,12 @@ public class MiniMaxExecutorUtil {
         }
         return bestMove;
     }
-
+    //NOTE: if you want to turn this into a expectiminimax you need an extra parameter for dice value
     private float minimax(Board board, int depth, int currentPlayer){
         if (depth == 0){
             return evaluator.evaluateBoard(board);
         }
         //board.printBoard();
-
-        //TODO: make getMoves function work with all pieces
         List<Move> movesList = new ArrayList<Move>();
         for (int i = 1; i <= 6; i++) {//get moves of all pieces
             addMoves(movesList,board,i,currentPlayer);
@@ -86,14 +84,22 @@ public class MiniMaxExecutorUtil {
         {
             for (int k = 0; k < pieces[i].length; k++)
             {
+
                 Piece piece = pieces[i][k];
-                if(piece == null || piece.getInt() != diceValue || piece.getPlayer() != player)
+                if(piece == null){continue;}
+                if((piece.getInt() != diceValue && piece.getInt() != 1) || piece.getPlayer() != player)
                 {
                     continue;//only get the relevant pieces
                 }
                 Position[] targets = piece.findMoves(board.getChessBoard());
                 for (int l = 0; l < targets.length; l++)
                 {
+                    if(piece.getInt() == 1 && !(targets[l].row == 0 || targets[l].column == 7))
+                    {
+                        //if its a pawn and we cant promote we cant move it
+                           continue;
+                    }
+                    //add the move to the list
                     Position pos = new Position(piece.getPos());
                     moves.add(new Move(pos,targets[l]));
                 }

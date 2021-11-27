@@ -141,9 +141,10 @@ public class Board {
 
             if(end.row == 0 || end.row == 7)
             {
-                if(isAI)
+                //if pawn can choose its resulting piece we default to queen for simplicity
+                //we would need to change too much in our implementation for the algorithm to support promoting to other pieces
+                if(isAI && (diceValue == 1 || diceValue == 6))
                 {
-                    //queen value, we dont have pawn promotion moves implemented in dice chess
                     chessBoard[end.row][end.column] = promotePawn(piece, 5);
                 }else
                 {
@@ -307,7 +308,8 @@ public class Board {
         Position pos = pawn.getPos();
         int player = pawn.getPlayer();
         switch (diceResult) {
-            case 1:
+            case 1://we let the player choose in this case
+            case 6:
                 PromotionChooser pc = new PromotionChooser(pawn);
                 return pc.getNewPiece();
             case 2:
@@ -315,19 +317,11 @@ public class Board {
             case 3:
                 return new Bishop(pos, player);
             case 4:
-                return new Rook(pos, player);
-            case 5:
-                //System.out.println("Pawn Promoted!!!");
-                return new Queen(pos, player);
-            case 6:
-                //dafuq
-                //yeah this shit not possible bro
-                break;
-            default:
+                return new Rook(pos, player);//System.out.println("Pawn Promoted!!!");
+            default://will also take a value of 5 into account which is the queen
                 return new Queen(pos, player);
                 
         }
-        return null;
     }
 
 

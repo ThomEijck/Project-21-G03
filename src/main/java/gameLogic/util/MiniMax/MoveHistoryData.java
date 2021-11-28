@@ -11,7 +11,8 @@ public class MoveHistoryData
     private Position leftEPPos;//position of the piece that has left en passant rights
     private Position rightEPPos;//position of the piece that has right en passant rights
     private Position capturedPos;
-    public MoveHistoryData(Move move,Position capturedPos, Piece toMove, Piece capture,boolean castling, Position leftEPPos,Position rightEPPos)
+    private int move50;
+    public MoveHistoryData(Move move,Position capturedPos, Piece toMove, Piece capture,boolean castling, Position leftEPPos,Position rightEPPos,int move50)
     {
 
         madeMove = move;
@@ -23,6 +24,8 @@ public class MoveHistoryData
         capturedPiece = createPiece(capture);
         movedPiece = createPiece(toMove);
     }
+
+    public int getMove50() {return move50;}
 
     public Move getMadeMove() {
         return madeMove;

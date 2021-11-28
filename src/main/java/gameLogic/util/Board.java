@@ -12,12 +12,15 @@ public class Board {
     private Piece[][] chessBoard = new Piece[8][8];
     private Stack<MoveHistoryData> moveHistory;
     private Piece[] possibleEnPassantPieces = new Piece[2];//always only 2 pieces can do enpassant
+    private int move50rule = 0;//counter to keep track of the 50 move rule
 
     public Board() {
         this.chessBoard = createBoard(chessBoard);
         moveHistory = new Stack<MoveHistoryData>();
 
     }
+
+    public int getMove50rule() {return move50rule;}
 
     public Piece[][] getChessBoard() {
         return this.chessBoard;
@@ -165,7 +168,7 @@ public class Board {
             rEPos = possibleEnPassantPieces[1].getPos();
             rEPos = new Position(rEPos.row,rEPos.column);
         }
-        moveHistory.push(new MoveHistoryData(move,capturedPos,piece,captured,false,lEPos,rEPos));
+        moveHistory.push(new MoveHistoryData(move,capturedPos,piece,captured,false,lEPos,rEPos,move50rule));
         piece.setPos(end);
 
         resetEnPassant();
@@ -204,10 +207,18 @@ public class Board {
             if(startPos != null)
             {
                 //add movement of the rook to move history
-                moveHistory.push(new MoveHistoryData(new Move(startPos,endPos),capturedPos,rook,null,true,null,null));
+                moveHistory.push(new MoveHistoryData(new Move(startPos,endPos),capturedPos,rook,null,true,null,null,move50rule));
                 rook.setPos(endPos);
             }
 
+        }
+        if(piece.getInt() != 1 && captured == null)
+        {
+            move50rule++;//if no pawn has been moved and if no piece has been captured we increase the move50rule variable
+        }
+        else
+        {
+            move50rule = 0;//reset the variable otherwise
         }
         piece.hasBeenMoved();
         //notify the game manager that a piece has been moved
@@ -228,10 +239,11 @@ public class Board {
         Position end = move.getEnd();
         Position capture = toRevert.getCapturedPos();
 
+        move50rule = toRevert.getMove50();
+
         chessBoard[end.row][end.column] = null;
         chessBoard[capture.row][capture.column] = toRevert.getCapturedPiece();
         chessBoard[start.row][start.column] = toRevert.getMovedPiece();
-
 
         //en passant stuff, if you encounter problems with en passant, good luck
         //im pretty sure en passant is evil
@@ -241,6 +253,8 @@ public class Board {
 
         Position leftPos = toRevert.getLeftEPPos();
         Position rightPos = toRevert.getRightEPPos();
+
+        //add en passant to the correct pieces
         if(leftPos != null)
         {
             possibleEnPassantPieces[0] = chessBoard[leftPos.row][leftPos.column];
@@ -252,6 +266,7 @@ public class Board {
             ((Peasant)possibleEnPassantPieces[1]).setLeftEnpassant();
         }
 
+        //if the current move was a castling move, we need to revert another move
         if(toRevert.isCastling())
         {
             revertMove();

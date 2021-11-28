@@ -23,16 +23,16 @@ public class MainGameLoop {
         Renderer renderer = new Renderer();
         StaticShader shader = new StaticShader();
 
-        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("../../../res/chess_texture_atlas.png"));
-        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("../../../res/dice_atlas.png"));
+        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("res/chess_texture_atlas.png"));
+        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("res/dice_atlas.png"));
         Board board = new Board(textureAtlas);
         MoveFinder mf = new MoveFinder(board);
         Dice dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
-        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("../../../res/play_againW.png"));
-        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("../../../res/play_againB.png"));
-        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("../../../res/play_againDraw.png"));
-        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("../../../res/replayButton.png"));
+        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
+        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
+        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
+        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/replayButton.png"));
         Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
         Button playAgainButtonB = new Button(375,550,500,150,playAgainTextureB);
         Button playAgainButtonDraw = new Button(375,550,500,150,playAgainTextureDraw);
@@ -47,6 +47,8 @@ public class MainGameLoop {
         Color turn = Color.White;
         Color winner = null;
         int diceRoll = dice.getValue(turn);
+        int move50rule = 0;
+
 
         while (!DisplayManager.isCloseRequested()) {
             if (DisplayManager.isClicked()) {
@@ -75,6 +77,7 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
+                                        Piece removedPiece = board.getSquares()[i][j].getPiece();//needed for 50 move rule
                                         Piece piece = board.getSquares()[i][j].removePiece();
                                         piece.setHasMoved();
 
@@ -91,6 +94,16 @@ public class MainGameLoop {
                                         }
 
                                         selectedSquare.setPiece(piece);
+
+                                        if(piece.getPieceType() != PieceType.Pawn && removedPiece == null)
+                                        {
+                                            move50rule++;
+                                        }
+                                        else
+                                        {
+                                            //if a pawn has been moved or if a piece has been captured we reset the counter
+                                            move50rule = 0;
+                                        }
 
                                         boolean rEnpassant = piece.getRightEnpassant();
                                         boolean lEnpassant = piece.getLeftEnpassant();
@@ -126,7 +139,8 @@ public class MainGameLoop {
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
                                         int positionCount = table.add(board.getSquares(),turn == Color.White);
-                                        if(positionCount >= 3)//if there is 3 repetition of a position
+                                        //if there is 3 repetition of a position or if the 50 move rule applies
+                                        if(positionCount >= 3 || move50rule >= 50)
                                         {
                                             setDraw();//let the game be a draw
                                         }

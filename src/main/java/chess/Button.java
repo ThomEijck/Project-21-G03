@@ -35,6 +35,7 @@ public class Button {
     }
 
     public boolean isClicked(float mouseX, float mouseY) {
+        mouseY = DisplayManager.getHeight() - mouseY;
         if (!enabled)
             return false;
         if (mouseX <= x + width && mouseX >= x) {

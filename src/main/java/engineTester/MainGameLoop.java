@@ -172,7 +172,8 @@ public class MainGameLoop {
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
                                         int positionCount = table.add(board.getSquares(), turn == Color.White);
-                                        if (positionCount >= 3)// if there is 3 repetition of a position
+                                        if (positionCount >= 3 || move50rule >= 50)// if there is 3 repetition of a
+                                                                                   // position
                                         {
                                             setDraw();// let the game be a draw
                                         }

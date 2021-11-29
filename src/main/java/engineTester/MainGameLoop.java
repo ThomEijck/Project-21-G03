@@ -31,8 +31,6 @@ public class MainGameLoop {
         MoveFinder mf = new MoveFinder(board);
         Dice dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
-<<<<<<< Updated upstream
-=======
         ModelTexture titleTexture = new ModelTexture(loader.loadTexture("res/title.png"));
         ModelTexture playTexture = new ModelTexture(loader.loadTexture("res/button_play.png"));
         ModelTexture exitTexture = new ModelTexture(loader.loadTexture("res/button_exit.png"));
@@ -45,13 +43,10 @@ public class MainGameLoop {
         ModelTexture blackTexture = new ModelTexture(loader.loadTexture("res/button_black.png"));
         ModelTexture whiteTexture = new ModelTexture(loader.loadTexture("res/button_white.png"));
 
->>>>>>> Stashed changes
         ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
         ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
         ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
         ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/replayButton.png"));
-<<<<<<< Updated upstream
-=======
 
         Button title = new Button(250, 850, 750, 150, titleTexture);
         Button playButton = new Button(375, 600, 500, 100, playTexture);
@@ -65,7 +60,6 @@ public class MainGameLoop {
         Button blackButton = new Button(375, 600, 500, 100, blackTexture);
         Button whiteButton = new Button(375, 450, 500, 100, whiteTexture);
 
->>>>>>> Stashed changes
         Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
         Button playAgainButtonB = new Button(375, 550, 500, 150, playAgainTextureB);
         Button playAgainButtonDraw = new Button(375, 550, 500, 150, playAgainTextureDraw);
@@ -86,7 +80,6 @@ public class MainGameLoop {
         Color winner = null;
         int diceRoll = dice.getValue(turn);
         int move50rule = 0;
-
 
         while (!DisplayManager.isCloseRequested()) {
             if (DisplayManager.isClicked()) {
@@ -126,7 +119,8 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
-                                        Piece removedPiece = board.getSquares()[i][j].getPiece();//needed for 50 move rule
+                                        Piece removedPiece = board.getSquares()[i][j].getPiece();// needed for 50 move
+                                                                                                 // rule
                                         Piece piece = board.getSquares()[i][j].removePiece();
                                         piece.setHasMoved();
                                         if (selectedSquare.getPiece() != null) {
@@ -141,20 +135,13 @@ public class MainGameLoop {
                                             }
                                         }
                                         selectedSquare.setPiece(piece);
-<<<<<<< Updated upstream
-
-                                        if(piece.getPieceType() != PieceType.Pawn && removedPiece == null)
-                                        {
+                                        if (piece.getPieceType() != PieceType.Pawn && removedPiece == null) {
                                             move50rule++;
-                                        }
-                                        else
-                                        {
-                                            //if a pawn has been moved or if a piece has been captured we reset the counter
+                                        } else {
+                                            // if a pawn has been moved or if a piece has been captured we reset the
+                                            // counter
                                             move50rule = 0;
                                         }
-
-=======
->>>>>>> Stashed changes
                                         boolean rEnpassant = piece.getRightEnpassant();
                                         boolean lEnpassant = piece.getLeftEnpassant();
                                         resetEnPassant();
@@ -184,14 +171,8 @@ public class MainGameLoop {
                                         }
                                         turn = (turn == Color.White) ? Color.Black : Color.White;
                                         diceRoll = dice.getValue(turn);
-<<<<<<< Updated upstream
-                                        int positionCount = table.add(board.getSquares(),turn == Color.White);
-                                        //if there is 3 repetition of a position or if the 50 move rule applies
-                                        if(positionCount >= 3 || move50rule >= 50)
-=======
                                         int positionCount = table.add(board.getSquares(), turn == Color.White);
                                         if (positionCount >= 3)// if there is 3 repetition of a position
->>>>>>> Stashed changes
                                         {
                                             setDraw();// let the game be a draw
                                         }

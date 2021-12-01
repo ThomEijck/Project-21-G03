@@ -22,18 +22,23 @@ public class GameManager
     }
 
     //call this function to advance the gamestate
-    public void movePiece(Move move)
+    public boolean movePiece(Move move,boolean isAi)
     {
         if(gameState == 0)//only make moves while the game is ongoing
-            board.movePiece(move, diceValue, currPlayer,false);
+            return board.movePiece(move, diceValue, currPlayer,isAi);
+        else if(gameState == 1)
+        {
+            System.out.println("White wins!!!");
+        }else
+        {
+            System.out.println("Black wins!!!");
+        }
+        return true;
     }
 
     //logic that needs to be handled after a piece has been moved
     public static void pieceMoved()
     {
-        //get a new dice value
-        diceValue = dice.getValue(currPlayer);
-
         //swap the player that can move a piece
         if(currPlayer == 1 )
         {
@@ -42,7 +47,12 @@ public class GameManager
         {
             currPlayer = 1;
         }
+
+        //get a new dice value
+        diceValue = dice.getValue(currPlayer);
     }
+
+    public Board getBoard() {return board;}
 
     public static int getDiceValue()
     {

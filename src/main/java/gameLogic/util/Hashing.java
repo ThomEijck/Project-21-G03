@@ -48,12 +48,14 @@ public class Hashing
         for (int i = 0; i < board.length; i++)
         {
             for (int j = 0; j < board.length; j++) {
-                Position pos = board[i][j].getPos();
-                hash ^= keyValues[(board[i][j].getInt() - 1)* board[i][j].getPlayer() *64 + pos.row * 8 + pos.column];
-                switch (board[i][j].getInt())//check for en passant
+                Piece piece = board[i][j];
+                if(piece == null){continue;}
+                Position pos = piece.getPos();
+                hash ^= keyValues[(piece.getInt() - 1)* piece.getPlayer() *64 + pos.row * 8 + pos.column];
+                switch (piece.getInt())//check for en passant
                 {
                     case 1:
-                        Peasant p = (Peasant) board[i][j];
+                        Peasant p = (Peasant) piece;
 
                         if (p.getLeftEnPassant()) {
                             enPassentColumn = pos.row - 1;
@@ -63,7 +65,7 @@ public class Hashing
                         }
                         break;
                     case 4:
-                        Rook rookPiece = (Rook) board[i][j];
+                        Rook rookPiece = (Rook) piece;
                         if (rookPiece.isFirstMove()) {
                             if (rookPiece.getPos().row == 0) {
                                 if (rookPiece.getPos().column == 0) {
@@ -81,7 +83,7 @@ public class Hashing
                         }
                         break;
                     case 6:
-                        King kingPiece = (King) board[i][j];
+                        King kingPiece = (King) piece;
                         if (kingPiece.isFirstMove()) {
                             if (kingPiece.getPlayer() == 1) {
                                 castlingWhite = true;
@@ -117,7 +119,7 @@ public class Hashing
         if(castling77 && castlingWhite)
         {
             hash ^= keyValues[64*12 + 8 + 3];
-            castling[4] = true;
+            castling[3] = true;
         }
 
         if(blackToMove){hash ^= keyValues[780];}

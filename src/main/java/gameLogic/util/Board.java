@@ -89,6 +89,7 @@ public class Board {
         //if a pawn can be promoted, a different number than 1 can be used
         else if(piece.getInt() == 1 && piece.getInt() != diceValue && !(end.row == 0 || end.row == 7))
         {
+            System.out.println("Invalid piece selected");
             return false;
         }
 
@@ -153,7 +154,7 @@ public class Board {
                 {
                     chessBoard[end.row][end.column] = promotePawn(piece, diceValue);
                 }
-
+                chessBoard[end.row][end.column].setPos(end);
             }
 
         }

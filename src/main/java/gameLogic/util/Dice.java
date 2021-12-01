@@ -20,6 +20,7 @@ public class Dice
         int positionCount = table.add(board.getChessBoard(),player != 1);
         if(positionCount >= 3)//if there is 3 repetition of a position
         {
+            System.out.println("3 repetition draw");
             GameManager.setGameState(3);//let the game be a draw
         }
 
@@ -73,13 +74,14 @@ public class Dice
             }
         }
 
-        if(count == 0)//no pieces can be moved
+        if(count == 0 || board.getMove50rule() >= 50)//no pieces can be moved or if 50 move rule has been activated
         {
+            System.out.println("50 move rule!!!!!!!!");
             GameManager.setGameState(3);//its a draw if a player cant move
             return 6;//exit out of the function
         }
 
-        System.out.println("White: " + whiteKingAlive +  " - black: " + blackKingAlive + "\n");
+        System.out.println("White: " + whiteKingAlive +  " - black: " + blackKingAlive);
 
         if(whiteKingAlive != blackKingAlive)//one king is dead and one is alive
         {

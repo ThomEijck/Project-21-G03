@@ -4,39 +4,13 @@ import gameLogic.util.*;
 import gameLogic.pieces.*;
 import java.util.*;
 
-public class ExpectiMiniMaxExecutorUtil {
-    private BoardEvaluatorUtil evaluator;
-    private MoveExecutorUtil moveExecutor;
-
+public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
 
     public ExpectiMiniMaxExecutorUtil(BoardEvaluatorUtil evaluator, MoveExecutorUtil moveExecutor){
-        this.evaluator = evaluator;
-        this.moveExecutor = moveExecutor;
-    }
-
-
-    public Move findBestMove(Board currentBoard, int player, int depth, int diceValue){
-
-        // first iteration of minimax done separately, to use the value of the dice
-        float bestValue = Integer.MIN_VALUE;
-        Move bestMove = null;
-        Move[] moves = getMoves(currentBoard, diceValue, player);
-        for(int i = 0; i < moves.length; i++){
-            if(moves[i].getEnd().row == -1)
-                continue;
-            //System.out.println(i);
-            moveExecutor.movePiece(currentBoard, moves[i]);
-            float newValue = minimax(currentBoard, depth - 1, nextPlayer(player));
-            moveExecutor.unMovePiece(currentBoard, moves[i]);
-            if (newValue > bestValue){
-                bestValue = newValue;
-                bestMove = moves[i];
-            }
-        }
-        return bestMove;
+        super(evaluator, moveExecutor);
     }
     //NOTE: if you want to turn this into a expectiminimax you need an extra parameter for dice value
-    private float minimax(Board board, int depth, int currentPlayer){
+    protected float minimax(Board board, int depth, int currentPlayer){
         if (depth == 0){
             return evaluator.evaluateBoard(board);
         }
@@ -103,56 +77,6 @@ public class ExpectiMiniMaxExecutorUtil {
             }
         }
     }
-
-    private Move[] getMoves(Board board, int diceValue, int player)
-    {
-        Piece[][] pieces = board.getChessBoard();
-        List<Move> moves = new ArrayList<Move>();
-        for (int i = 0; i < pieces.length; i++)
-        {
-            for (int k = 0; k < pieces[i].length; k++)
-            {
-
-                Piece piece = pieces[i][k];
-                if(piece == null){continue;}
-                if((piece.getInt() != diceValue && piece.getInt() != 1) || piece.getPlayer() != player)
-                {
-                    continue;//only get the relevant pieces
-                }
-                Position[] targets = piece.findMoves(board.getChessBoard());
-                for (int l = 0; l < targets.length; l++)
-                {
-                    if(piece.getInt() == 1 && !(targets[l].row == 0 || targets[l].column == 7))
-                    {
-                        //if its a pawn and we cant promote we cant move it
-                        continue;
-                    }
-                    //add the move to the list
-                    Position pos = new Position(piece.getPos());
-                    moves.add(new Move(pos,targets[l]));
-                }
-            }
-        }
-        return moves.toArray(new Move[0]);//not sure if this works
-    }
-
-
-    private int nextPlayer(int currPlayer){
-        if (currPlayer == 1){
-            return 2;
-        }
-        else return 1;
-    }
-
-    private void addMoves(List<Move> moves,Board board, int diceValue,int player)
-    {
-        Move[] pieceMoves = getMoves(board,diceValue,player);
-        for (int i = 0; i < pieceMoves.length; i++)
-        {
-            moves.add(pieceMoves[i]);
-        }
-    }
-
 
 }
 

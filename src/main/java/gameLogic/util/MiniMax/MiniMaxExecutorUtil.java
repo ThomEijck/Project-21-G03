@@ -5,8 +5,8 @@ import gameLogic.pieces.*;
 import java.util.*;
 
 public class MiniMaxExecutorUtil {
-    private BoardEvaluatorUtil evaluator;
-    private MoveExecutorUtil moveExecutor;
+    protected BoardEvaluatorUtil evaluator;
+    protected MoveExecutorUtil moveExecutor;
 
 
     public MiniMaxExecutorUtil(BoardEvaluatorUtil evaluator, MoveExecutorUtil moveExecutor){
@@ -18,9 +18,14 @@ public class MiniMaxExecutorUtil {
     public Move findBestMove(Board currentBoard, int player, int depth, int diceValue){
 
         // first iteration of minimax done separately, to use the value of the dice
-        float bestValue = Integer.MIN_VALUE;
+        float bestValue = -Float.MAX_VALUE;
+        if(player == 2)
+        {
+            bestValue = Float.MAX_VALUE;
+        }
         Move bestMove = null;
         Move[] moves = getMoves(currentBoard, diceValue, player);
+        System.out.println(Arrays.toString(moves));
         for(int i = 0; i < moves.length; i++){
             if(moves[i].getEnd().row == -1)
                 continue;
@@ -28,15 +33,21 @@ public class MiniMaxExecutorUtil {
             moveExecutor.movePiece(currentBoard, moves[i]);
             float newValue = minimax(currentBoard, depth - 1, nextPlayer(player));
             moveExecutor.unMovePiece(currentBoard, moves[i]);
-            if (newValue > bestValue){
+            if (player == 2 && newValue < bestValue){
+                bestValue = newValue;
+                bestMove = moves[i];
+            }
+
+            if (player == 1 && newValue > bestValue){
                 bestValue = newValue;
                 bestMove = moves[i];
             }
         }
+        System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
         return bestMove;
     }
     //NOTE: if you want to turn this into a expectiminimax you need an extra parameter for dice value
-    private float minimax(Board board, int depth, int currentPlayer){
+    protected float minimax(Board board, int depth, int currentPlayer){
         if (depth == 0){
             return evaluator.evaluateBoard(board);
         }
@@ -49,7 +60,7 @@ public class MiniMaxExecutorUtil {
         Move[] moves = movesList.toArray(new Move[0]);
 
         if (moves.length == 0){
-            return 0;//its a draw
+            return evaluator.evaluateBoard(board);//its a draw
         }
 
         if (currentPlayer == 1){
@@ -76,7 +87,7 @@ public class MiniMaxExecutorUtil {
         }
     }
 
-    private Move[] getMoves(Board board, int diceValue, int player)
+    protected Move[] getMoves(Board board, int diceValue, int player)
     {
         Piece[][] pieces = board.getChessBoard();
         List<Move> moves = new ArrayList<Move>();
@@ -94,9 +105,7 @@ public class MiniMaxExecutorUtil {
                 Position[] targets = piece.findMoves(board.getChessBoard());
                 for (int l = 0; l < targets.length; l++)
                 {
-                    if(piece.getInt() == 1 && !(targets[l].row == 0 || targets[l].column == 7))
-                    {
-                        //if its a pawn and we cant promote we cant move it
+                    if(piece.getInt() == 1 && piece.getInt() != diceValue && !(targets[l].row == 0 || targets[l].row == 7)){
                            continue;
                     }
                     //add the move to the list
@@ -109,14 +118,14 @@ public class MiniMaxExecutorUtil {
     }
 
 
-    private int nextPlayer(int currPlayer){
+    protected int nextPlayer(int currPlayer){
         if (currPlayer == 1){
             return 2;
         }
         else return 1;
     }
 
-    private void addMoves(List<Move> moves,Board board, int diceValue,int player)
+    protected void addMoves(List<Move> moves,Board board, int diceValue,int player)
     {
         Move[] pieceMoves = getMoves(board,diceValue,player);
         for (int i = 0; i < pieceMoves.length; i++)

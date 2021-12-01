@@ -47,8 +47,15 @@ public class Knight extends Piece{
                 continue;//position is invalid, so check next position
             }
             //knowing that the target is on the board
-            boolean correctTarget = board[pos.row][pos.column] == null
-                    || ( board[pos.row][pos.column] != null && board[pos.row][pos.column].getPlayer() != getPlayer());
+            Piece target = board[pos.row][pos.column];
+            boolean correctTarget = false;
+            if(target == null)
+            {
+                correctTarget = true;
+            }else if(target.getPlayer() != getPlayer())
+            {
+                correctTarget = true;
+            }
 
             if(!correctTarget)
             {

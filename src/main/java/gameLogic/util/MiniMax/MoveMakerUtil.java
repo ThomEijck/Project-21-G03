@@ -8,7 +8,18 @@ public class MoveMakerUtil implements MoveExecutorUtil
     @Override
     public boolean movePiece(Board board, Move move) {
         Piece piece = board.getChessBoard()[move.getStart().row][move.getStart().column];
-        return board.movePiece(move,piece.getInt(), piece.getPlayer(),true);
+        boolean value = false;
+        try {
+            board.movePiece(move,piece.getInt(), piece.getPlayer(),true);
+        }catch (Exception e)
+        {
+            System.out.println("\n");
+            board.printBoard();
+            System.out.println("Error causing move: " + move);
+            System.exit(0);
+        }
+        //System.out.println("Move: " + move);
+        return value;
     }
 
     @Override

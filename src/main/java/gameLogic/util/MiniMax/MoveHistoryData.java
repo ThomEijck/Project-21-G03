@@ -71,7 +71,7 @@ public class MoveHistoryData
             piece = new Rook(new Position(toCopy.getPos()),toCopy.getPlayer());
         }else if(toCopy.getClass() == King.class)
         {
-            piece = new Knight(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new King(new Position(toCopy.getPos()),toCopy.getPlayer());
         }else if(toCopy.getClass() == Bishop.class)
         {
             piece = new Bishop(new Position(toCopy.getPos()),toCopy.getPlayer());

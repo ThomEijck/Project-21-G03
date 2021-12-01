@@ -11,9 +11,6 @@ import gameLogic.util.Position;
 
 public class Square {
 
-
-
-
     private Loader loader = new Loader();
 
     private TexturedModel bg;
@@ -109,15 +106,14 @@ public class Square {
                 Square[] squares = Arrays.copyOf(diag, diag.length + ortho.length);
                 System.arraycopy(ortho, 0, squares, diag.length, ortho.length);
 
-                if(!this.getPiece().hasMoved){
+                if (!this.getPiece().hasMoved) {
                     Square castling[] = mf.moveCastling(this);
-                    if (castling.length != 0){
+                    if (castling.length != 0) {
                         Square[] newSquares = Arrays.copyOf(squares, squares.length + castling.length);
                         System.arraycopy(castling, 0, newSquares, squares.length, castling.length);
                         squares = newSquares;
                     }
                 }
-                System.out.print(squares);
                 return squares;
             }
             case Rook: {

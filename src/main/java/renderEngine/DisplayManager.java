@@ -124,4 +124,8 @@ public class DisplayManager {
         return (float) width / (float) height;
     }
 
+    public static void requestClose() {
+        glfwSetWindowShouldClose(window, true);
+    }
+
 }

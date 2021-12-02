@@ -38,6 +38,7 @@ public class MainGameLoop {
         ModelTexture modeTexture = new ModelTexture(loader.loadTexture("res/title_mode.png"));
         ModelTexture pvpTexture = new ModelTexture(loader.loadTexture("res/button_pvp.png"));
         ModelTexture aiTexture = new ModelTexture(loader.loadTexture("res/button_ai.png"));
+        ModelTexture backTexture = new ModelTexture(loader.loadTexture("res/button_back.png"));
 
         ModelTexture colorTexture = new ModelTexture(loader.loadTexture("res/title_color.png"));
         ModelTexture blackTexture = new ModelTexture(loader.loadTexture("res/button_black.png"));
@@ -55,6 +56,7 @@ public class MainGameLoop {
         Button modeButton = new Button(250, 850, 750, 150, modeTexture);
         Button pvpButton = new Button(375, 600, 500, 100, pvpTexture);
         Button aiButton = new Button(375, 450, 500, 100, aiTexture);
+        Button backButton = new Button(100, 100, 250, 50, backTexture);
 
         Button colorButton = new Button(250, 850, 750, 150, colorTexture);
         Button blackButton = new Button(375, 600, 500, 100, blackTexture);
@@ -63,7 +65,7 @@ public class MainGameLoop {
         Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
         Button playAgainButtonB = new Button(375, 550, 500, 150, playAgainTextureB);
         Button playAgainButtonDraw = new Button(375, 550, 500, 150, playAgainTextureDraw);
-        Button replayButton = new Button(1090, 540, 70, 70, playAgainTexture);
+        Button replayButton = new Button(1090, 970, 70, 70, playAgainTexture);
 
         title.setEnabled(false);
         modeButton.setEnabled(false);
@@ -101,9 +103,14 @@ public class MainGameLoop {
                 } else if (scene == 1) {
                     if (pvpButton.isClicked(x, y)) {
                         scene = 2;
-                    }
-                    if (aiButton.isClicked(x, y)) {
+                    } else if (aiButton.isClicked(x, y)) {
                         scene = 3;
+                    } else if (backButton.isClicked(x, y)) {
+                        scene = 0;
+                    }
+                } else if (scene == 3) {
+                    if (backButton.isClicked(x, y)) {
+                        scene = 1;
                     }
                 } else if (winner == null && !isDraw && scene == 2) {
                     if (replayButton.isClicked(x, y)) {
@@ -220,10 +227,12 @@ public class MainGameLoop {
                 renderer.render(modeButton.getTexturedModel());
                 renderer.render(pvpButton.getTexturedModel());
                 renderer.render(aiButton.getTexturedModel());
+                renderer.render(backButton.getTexturedModel());
             } else if (scene == 3) {
                 renderer.render(colorButton.getTexturedModel());
                 renderer.render(blackButton.getTexturedModel());
                 renderer.render(whiteButton.getTexturedModel());
+                renderer.render(backButton.getTexturedModel());
             } else if (winner == null && !isDraw) {
                 for (Square squares[] : board.getSquares()) {
                     for (Square square : squares) {
@@ -259,20 +268,20 @@ public class MainGameLoop {
     private static Piece promotePawn(Piece piece, int diceRoll) {
         Color col = piece.getColor();
         switch (diceRoll) {
-            case 1:
-                return new Piece(col, PieceType.Knight);
-            case 2:
-                return new Piece(col, PieceType.Bishop);
-            case 3:
-                return new Piece(col, PieceType.Rook);
-            case 4:
-                return new Piece(col, PieceType.Queen);
-            case 5:
-            case 0:
-                PromotionChooser2D pc = new PromotionChooser2D(piece);
-                return pc.getNewPiece();
-            default:
-                return new Piece(col, PieceType.Queen);
+        case 1:
+            return new Piece(col, PieceType.Knight);
+        case 2:
+            return new Piece(col, PieceType.Bishop);
+        case 3:
+            return new Piece(col, PieceType.Rook);
+        case 4:
+            return new Piece(col, PieceType.Queen);
+        case 5:
+        case 0:
+            PromotionChooser2D pc = new PromotionChooser2D(piece);
+            return pc.getNewPiece();
+        default:
+            return new Piece(col, PieceType.Queen);
 
         }
     }

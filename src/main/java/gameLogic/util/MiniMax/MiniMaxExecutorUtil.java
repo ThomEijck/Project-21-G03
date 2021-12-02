@@ -23,31 +23,35 @@ public class MiniMaxExecutorUtil {
         {
             bestValue = Float.MAX_VALUE;
         }
+
+        float a = Integer.MIN_VALUE;
+        float b = Integer.MAX_VALUE;
         Move bestMove = null;
         Move[] moves = getMoves(currentBoard, diceValue, player);
-        System.out.println(Arrays.toString(moves));
         for(int i = 0; i < moves.length; i++){
             if(moves[i].getEnd().row == -1)
                 continue;
             //System.out.println(i);
             moveExecutor.movePiece(currentBoard, moves[i]);
-            float newValue = minimax(currentBoard, depth - 1, nextPlayer(player));
+            float newValue = minimax(currentBoard, depth - 1, nextPlayer(player),a,b);
             moveExecutor.unMovePiece(currentBoard, moves[i]);
             if (player == 2 && newValue < bestValue){
                 bestValue = newValue;
                 bestMove = moves[i];
+                b = Float.max(newValue,b);
             }
 
             if (player == 1 && newValue > bestValue){
                 bestValue = newValue;
                 bestMove = moves[i];
+                a = Float.max(newValue,a);
             }
         }
         System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
         return bestMove;
     }
     //NOTE: if you want to turn this into a expectiminimax you need an extra parameter for dice value
-    protected float minimax(Board board, int depth, int currentPlayer){
+    protected float minimax(Board board, int depth, int currentPlayer,float a, float b){
         if (depth == 0){
             return evaluator.evaluateBoard(board);
         }
@@ -69,8 +73,15 @@ public class MiniMaxExecutorUtil {
                 if(moves[i].getEnd().row == -1)
                     continue;
                 moveExecutor.movePiece(board,moves[i]);
-                value = Float.max(value, minimax(board, depth - 1, nextPlayer(currentPlayer) ));
+                value = Float.max(value, minimax(board, depth - 1, nextPlayer(currentPlayer),a,b ));
                 moveExecutor.unMovePiece(board,moves[i]);
+
+                //alpha beta stuff
+                if(value >= b)
+                {
+                    return value;
+                }
+                a = Float.max(a,value);
             }
             return value;
         }
@@ -80,8 +91,15 @@ public class MiniMaxExecutorUtil {
                 if(moves[i].getEnd().row == -1)
                     continue;
                 moveExecutor.movePiece(board,moves[i]);
-                value = Float.min(value, minimax(board, depth - 1, nextPlayer(currentPlayer) ));
+                value = Float.min(value, minimax(board, depth - 1, nextPlayer(currentPlayer),a,b ));
                 moveExecutor.unMovePiece(board,moves[i]);
+
+                //alpha beta stuff
+                if(value <= a)
+                {
+                    return value;
+                }
+                b = Float.min(b,value);
             }
             return value;
         }
@@ -105,6 +123,7 @@ public class MiniMaxExecutorUtil {
                 Position[] targets = piece.findMoves(board.getChessBoard());
                 for (int l = 0; l < targets.length; l++)
                 {
+                    if(targets[l].row == -1){continue;}
                     if(piece.getInt() == 1 && piece.getInt() != diceValue && !(targets[l].row == 0 || targets[l].row == 7)){
                            continue;
                     }

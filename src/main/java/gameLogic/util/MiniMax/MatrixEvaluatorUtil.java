@@ -75,12 +75,12 @@ public class MatrixEvaluatorUtil implements BoardEvaluatorUtil
                 Piece piece = squares[i][k];
                 if(piece == null)
                     continue;
-                int player =  piece.getPlayer();
+                int player =  piece.getPlayer() == 1? 1: -1;
                 int pieceNumber = piece.getInt() - 1;
                 if(player > 0)
                     value += player * (pieceValues[pieceNumber] + pieceTables[pieceNumber][8*i + k]);//white value
                 else
-                    value += player * (pieceValues[pieceNumber] + pieceTables[pieceNumber][63 -  8*i + k]);//black value,with flipped piece square values
+                    value += player * (pieceValues[pieceNumber] + pieceTables[pieceNumber][63 -  (8*i + k)]);//black value,with flipped piece square values
             }
         }
         return value;

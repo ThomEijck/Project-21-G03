@@ -21,10 +21,10 @@ public class AIExperiments {
 
             if(player == 1)
             {
-                m = emm.findBestMove(g.getBoard(),player,depth,dice);
+                m = mm.findBestMove(g.getBoard(),player,depth,dice);
             }else
             {
-                m = mm.findBestMove(g.getBoard(),player,depth,dice);
+                m = emm.findBestMove(g.getBoard(),player,depth,dice);
             }
             System.out.println("=================================================================");
             System.out.println("Move: " + m);

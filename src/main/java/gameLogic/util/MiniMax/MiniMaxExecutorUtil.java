@@ -47,7 +47,7 @@ public class MiniMaxExecutorUtil {
                 a = Float.max(newValue,a);
             }
         }
-        System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
+        //System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
         return bestMove;
     }
     //NOTE: if you want to turn this into a expectiminimax you need an extra parameter for dice value

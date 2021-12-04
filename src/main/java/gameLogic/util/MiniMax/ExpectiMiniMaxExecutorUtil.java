@@ -38,7 +38,7 @@ public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
                 bestMove = moves[i];
             }
         }
-        System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
+        //System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
         return bestMove;
     }
 

@@ -13,6 +13,7 @@ public class GameManager
         board = new Board();
         dice = new Dice(board);
         diceValue = dice.getValue(currPlayer);
+        GameManager.gameState = 0;
     }
 
     public static void main(String[] args)

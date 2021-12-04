@@ -7,6 +7,9 @@ import textures.ModelTexture;
 
 import java.util.Arrays;
 
+import org.lwjgl.system.CallbackI.P;
+
+import engineTester.MainGameLoop;
 import gameLogic.util.Position;
 
 public class Square {
@@ -45,8 +48,12 @@ public class Square {
             float col = piece.getColor().getColorValue();
             float[] textureCoords = { val / 8.0f, col + 0.5f, val / 8.0f, col, (1 + val) / 8.0f, col, (1 + val) / 8.0f,
                     col + 0.5f };
-
-            RawModel pieceRaw = loader.loadToVAO(positions, textureCoords, indices);
+            float[] pieceVerts = { positions[6], positions[7], 0, positions[9], positions[10], 0, positions[0],
+                    positions[1], 0, positions[3], positions[4], 0 };
+            if (MainGameLoop.playerColor == Color.White) {
+                pieceVerts = positions;
+            }
+            RawModel pieceRaw = loader.loadToVAO(pieceVerts, textureCoords, indices);
             pieceModel = new TexturedModel(pieceRaw, textureAtlas);
         }
     }

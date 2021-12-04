@@ -17,6 +17,15 @@ public class MainGameLoop {
     private static boolean isDraw = false;
     private static Piece[] possibleEnPassantPieces = new Piece[2]; // only 2 pieces can en passant at each moment
     private static TranspositionTable table = new TranspositionTable();
+    public static Color playerColor = Color.Black;
+
+    private static Color turn = Color.White;
+    private static Color winner = null;
+    private static int diceRoll;
+    private static int move50rule = 0;
+    private static Dice dice;
+    private static Board board;
+    private static int diff;
 
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
@@ -27,9 +36,9 @@ public class MainGameLoop {
 
         ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("res/chess_texture_atlas.png"));
         ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("res/dice_atlas.png"));
-        Board board = new Board(textureAtlas);
+        board = new Board(textureAtlas);
         MoveFinder mf = new MoveFinder(board);
-        Dice dice = new Dice(board, mf, textureAtlas, diceAtlas);
+        dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
         ModelTexture titleTexture = new ModelTexture(loader.loadTexture("res/title.png"));
         ModelTexture playTexture = new ModelTexture(loader.loadTexture("res/button_play.png"));
@@ -43,6 +52,10 @@ public class MainGameLoop {
         ModelTexture colorTexture = new ModelTexture(loader.loadTexture("res/title_color.png"));
         ModelTexture blackTexture = new ModelTexture(loader.loadTexture("res/button_black.png"));
         ModelTexture whiteTexture = new ModelTexture(loader.loadTexture("res/button_white.png"));
+
+        ModelTexture diffTexture = new ModelTexture(loader.loadTexture("res/diff_title.png"));
+        ModelTexture diff1 = new ModelTexture(loader.loadTexture("res/diff_1.png"));
+        ModelTexture diff2 = new ModelTexture(loader.loadTexture("res/diff_2.png"));
 
         ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
         ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
@@ -62,6 +75,10 @@ public class MainGameLoop {
         Button blackButton = new Button(375, 600, 500, 100, blackTexture);
         Button whiteButton = new Button(375, 450, 500, 100, whiteTexture);
 
+        Button diffButton = new Button(250, 850, 750, 150, diffTexture);
+        Button diff1Button = new Button(375, 600, 500, 100, diff1);
+        Button diff2Button = new Button(375, 450, 500, 100, diff2);
+
         Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
         Button playAgainButtonB = new Button(375, 550, 500, 150, playAgainTextureB);
         Button playAgainButtonDraw = new Button(375, 550, 500, 150, playAgainTextureDraw);
@@ -77,11 +94,7 @@ public class MainGameLoop {
 
         int scene = 0;
 
-        initBoard(board);
-        Color turn = Color.White;
-        Color winner = null;
-        int diceRoll = dice.getValue(turn);
-        int move50rule = 0;
+        resetBoard();
 
         while (!DisplayManager.isCloseRequested()) {
             if (DisplayManager.isClicked()) {
@@ -94,6 +107,10 @@ public class MainGameLoop {
 
                 float yRatio = y / DisplayManager.getHeight();
                 int yIndex = (int) (8 - (yRatio * 8));
+                if (playerColor == Color.Black) {
+                    xIndex = 7 - xIndex;
+                    yIndex = 7 - yIndex;
+                }
                 if (scene == 0) {
                     if (playButton.isClicked(x, y)) {
                         scene = 1;
@@ -109,16 +126,30 @@ public class MainGameLoop {
                         scene = 0;
                     }
                 } else if (scene == 3) {
-                    if (backButton.isClicked(x, y)) {
+                    if (whiteButton.isClicked(x, y)) {
+                        playerColor = Color.White;
+                        resetBoard();
+                        scene = 4;
+                    } else if (blackButton.isClicked(x, y)) {
+                        playerColor = Color.Black;
+                        resetBoard();
+                        scene = 4;
+                    } else if (backButton.isClicked(x, y)) {
                         scene = 1;
+                    }
+                } else if (scene == 4) {
+                    if (diff1Button.isClicked(x, y)) {
+                        diff = 1;
+                        scene = 2;
+                    } else if (diff2Button.isClicked(x, y)) {
+                        diff = 2;
+                        scene = 2;
+                    } else if (backButton.isClicked(x, y)) {
+                        scene = 3;
                     }
                 } else if (winner == null && !isDraw && scene == 2) {
                     if (replayButton.isClicked(x, y)) {
-                        winner = null;
-                        isDraw = false;
-                        initBoard(board);
-                        turn = Color.White;
-                        diceRoll = dice.getValue(turn);
+                        resetBoard();
                     }
                     if (xIndex < 8 && yIndex < 8) {
                         Square selectedSquare = board.getSquares()[yIndex][xIndex];
@@ -126,8 +157,7 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
-                                        Piece removedPiece = board.getSquares()[i][j].getPiece();// needed for 50 move
-                                                                                                 // rule
+                                        Piece removedPiece = board.getSquares()[i][j].getPiece();
                                         Piece piece = board.getSquares()[i][j].removePiece();
                                         piece.setHasMoved();
                                         if (selectedSquare.getPiece() != null) {
@@ -233,6 +263,11 @@ public class MainGameLoop {
                 renderer.render(blackButton.getTexturedModel());
                 renderer.render(whiteButton.getTexturedModel());
                 renderer.render(backButton.getTexturedModel());
+            } else if (scene == 4) {
+                renderer.render(diffButton.getTexturedModel());
+                renderer.render(diff1Button.getTexturedModel());
+                renderer.render(diff2Button.getTexturedModel());
+                renderer.render(backButton.getTexturedModel());
             } else if (winner == null && !isDraw) {
                 for (Square squares[] : board.getSquares()) {
                     for (Square square : squares) {
@@ -268,20 +303,20 @@ public class MainGameLoop {
     private static Piece promotePawn(Piece piece, int diceRoll) {
         Color col = piece.getColor();
         switch (diceRoll) {
-        case 1:
-            return new Piece(col, PieceType.Knight);
-        case 2:
-            return new Piece(col, PieceType.Bishop);
-        case 3:
-            return new Piece(col, PieceType.Rook);
-        case 4:
-            return new Piece(col, PieceType.Queen);
-        case 5:
-        case 0:
-            PromotionChooser2D pc = new PromotionChooser2D(piece);
-            return pc.getNewPiece();
-        default:
-            return new Piece(col, PieceType.Queen);
+            case 1:
+                return new Piece(col, PieceType.Knight);
+            case 2:
+                return new Piece(col, PieceType.Bishop);
+            case 3:
+                return new Piece(col, PieceType.Rook);
+            case 4:
+                return new Piece(col, PieceType.Queen);
+            case 5:
+            case 0:
+                PromotionChooser2D pc = new PromotionChooser2D(piece);
+                return pc.getNewPiece();
+            default:
+                return new Piece(col, PieceType.Queen);
 
         }
     }
@@ -350,5 +385,14 @@ public class MainGameLoop {
             return false;
         }
         return piece.getColor() == Color.White ? row == 6 : row == 1;
+    }
+
+    private static void resetBoard() {
+        board.reconstruct();
+        winner = null;
+        isDraw = false;
+        initBoard(board);
+        turn = Color.White;
+        diceRoll = dice.getValue(turn);
     }
 }

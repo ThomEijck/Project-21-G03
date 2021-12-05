@@ -1,6 +1,6 @@
 package engineTester;
 
-import org.lwjgl.system.CallbackI.F;
+import java.util.ArrayList;
 
 import chess.*;
 import gameLogic.pieces.King;
@@ -17,7 +17,7 @@ public class MainGameLoop {
     private static boolean isDraw = false;
     private static Piece[] possibleEnPassantPieces = new Piece[2]; // only 2 pieces can en passant at each moment
     private static TranspositionTable table = new TranspositionTable();
-    public static Color playerColor = Color.Black;
+    public static Color playerColor = Color.White;
 
     private static Color turn = Color.White;
     private static Color winner = null;
@@ -26,6 +26,12 @@ public class MainGameLoop {
     private static Dice dice;
     private static Board board;
     private static int diff;
+    private static MoveFinder mf;
+
+    private static Button playAgainButtonW;
+    private static Button playAgainButtonB;
+    private static Button playAgainButtonDraw;
+    private static Button replayButton;
 
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
@@ -37,7 +43,7 @@ public class MainGameLoop {
         ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("res/chess_texture_atlas.png"));
         ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("res/dice_atlas.png"));
         board = new Board(textureAtlas);
-        MoveFinder mf = new MoveFinder(board);
+        mf = new MoveFinder(board);
         dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
         ModelTexture titleTexture = new ModelTexture(loader.loadTexture("res/title.png"));
@@ -79,10 +85,10 @@ public class MainGameLoop {
         Button diff1Button = new Button(375, 600, 500, 100, diff1);
         Button diff2Button = new Button(375, 450, 500, 100, diff2);
 
-        Button playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
-        Button playAgainButtonB = new Button(375, 550, 500, 150, playAgainTextureB);
-        Button playAgainButtonDraw = new Button(375, 550, 500, 150, playAgainTextureDraw);
-        Button replayButton = new Button(1090, 970, 70, 70, playAgainTexture);
+        playAgainButtonW = new Button(375, 550, 500, 150, playAgainTextureW);
+        playAgainButtonB = new Button(375, 550, 500, 150, playAgainTextureB);
+        playAgainButtonDraw = new Button(375, 550, 500, 150, playAgainTextureDraw);
+        replayButton = new Button(1090, 970, 70, 70, playAgainTexture);
 
         title.setEnabled(false);
         modeButton.setEnabled(false);
@@ -119,35 +125,35 @@ public class MainGameLoop {
                     }
                 } else if (scene == 1) {
                     if (pvpButton.isClicked(x, y)) {
-                        scene = 2;
+                        scene = 5;
                     } else if (aiButton.isClicked(x, y)) {
-                        scene = 3;
+                        scene = 2;
                     } else if (backButton.isClicked(x, y)) {
                         scene = 0;
                     }
-                } else if (scene == 3) {
+                } else if (scene == 2) {
                     if (whiteButton.isClicked(x, y)) {
                         playerColor = Color.White;
                         resetBoard();
-                        scene = 4;
+                        scene = 3;
                     } else if (blackButton.isClicked(x, y)) {
                         playerColor = Color.Black;
                         resetBoard();
-                        scene = 4;
+                        scene = 3;
                     } else if (backButton.isClicked(x, y)) {
                         scene = 1;
                     }
-                } else if (scene == 4) {
+                } else if (scene == 3) {
                     if (diff1Button.isClicked(x, y)) {
                         diff = 1;
-                        scene = 2;
+                        scene = 6;
                     } else if (diff2Button.isClicked(x, y)) {
                         diff = 2;
-                        scene = 2;
+                        scene = 7;
                     } else if (backButton.isClicked(x, y)) {
-                        scene = 3;
+                        scene = 2;
                     }
-                } else if (winner == null && !isDraw && scene == 2) {
+                } else if (winner == null && !isDraw && scene > 4) {
                     if (replayButton.isClicked(x, y)) {
                         resetBoard();
                     }
@@ -157,63 +163,7 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
-                                        Piece removedPiece = board.getSquares()[i][j].getPiece();
-                                        Piece piece = board.getSquares()[i][j].removePiece();
-                                        piece.setHasMoved();
-                                        if (selectedSquare.getPiece() != null) {
-                                            if (selectedSquare.getPiece().getPieceType() == PieceType.King) {
-                                                if (turn == Color.White) {
-                                                    playAgainButtonW.setEnabled(true);
-                                                }
-                                                if (turn == Color.Black) {
-                                                    playAgainButtonB.setEnabled(true);
-                                                }
-                                                winner = turn;
-                                            }
-                                        }
-                                        selectedSquare.setPiece(piece);
-                                        if (piece.getPieceType() != PieceType.Pawn && removedPiece == null) {
-                                            move50rule++;
-                                        } else {
-                                            // if a pawn has been moved or if a piece has been captured we reset the
-                                            // counter
-                                            move50rule = 0;
-                                        }
-                                        boolean rEnpassant = piece.getRightEnpassant();
-                                        boolean lEnpassant = piece.getLeftEnpassant();
-                                        resetEnPassant();
-                                        if (piece.getPieceType() == PieceType.Pawn) {
-                                            if ((j - xIndex == -1 && rEnpassant) || (j - xIndex == 1 && lEnpassant)) {
-                                                board.getSquares()[i][xIndex].removePiece();
-                                            }
-                                            if (Math.abs(i - yIndex) == 2) {
-                                                enableEnPassant(yIndex, xIndex, board.getSquares());
-                                            }
-                                            if (yIndex == 0 || yIndex == 7) {
-                                                selectedSquare.setPiece(promotePawn(piece, diceRoll));
-                                            }
-                                        }
-                                        // if piece type is king and the movement is two squares then castle
-                                        if (piece.getPieceType() == PieceType.King) {
-                                            if (j + 2 == xIndex) {
-                                                Piece rook = board.getSquares()[i][7].removePiece();
-                                                board.getSquares()[i][j + 1].setPiece(rook);
-                                                piece.setHasMoved();
-                                            }
-                                            if (j - 2 == xIndex) {
-                                                Piece rook = board.getSquares()[i][0].removePiece();
-                                                board.getSquares()[i][j - 1].setPiece(rook);
-                                                piece.setHasMoved();
-                                            }
-                                        }
-                                        turn = (turn == Color.White) ? Color.Black : Color.White;
-                                        diceRoll = dice.getValue(turn);
-                                        int positionCount = table.add(board.getSquares(), turn == Color.White);
-                                        if (positionCount >= 3 || move50rule >= 50)// if there is 3 repetition of a
-                                                                                   // position
-                                        {
-                                            setDraw();// let the game be a draw
-                                        }
+                                        movePiece(board.getSquares()[i][j], selectedSquare);
                                     }
                                 }
                             }
@@ -247,6 +197,10 @@ public class MainGameLoop {
                     }
                 }
             }
+            if (turn != playerColor && scene == 6) {
+                ArrayList<Square> move = getRandomMove();
+                movePiece(move.get(0), move.get(1));
+            }
             renderer.prepare();
             shader.start();
             if (scene == 0) {
@@ -258,12 +212,12 @@ public class MainGameLoop {
                 renderer.render(pvpButton.getTexturedModel());
                 renderer.render(aiButton.getTexturedModel());
                 renderer.render(backButton.getTexturedModel());
-            } else if (scene == 3) {
+            } else if (scene == 2) {
                 renderer.render(colorButton.getTexturedModel());
                 renderer.render(blackButton.getTexturedModel());
                 renderer.render(whiteButton.getTexturedModel());
                 renderer.render(backButton.getTexturedModel());
-            } else if (scene == 4) {
+            } else if (scene == 3) {
                 renderer.render(diffButton.getTexturedModel());
                 renderer.render(diff1Button.getTexturedModel());
                 renderer.render(diff2Button.getTexturedModel());
@@ -394,5 +348,92 @@ public class MainGameLoop {
         initBoard(board);
         turn = Color.White;
         diceRoll = dice.getValue(turn);
+    }
+
+    private static ArrayList<Square> getRandomMove() {
+        ArrayList<ArrayList<Square>> rmoves = new ArrayList<ArrayList<Square>>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board.getSquares()[i][j].getPiece() != null) {
+                    if (board.getSquares()[i][j].getPiece().getPieceType().getValue() == diceRoll) {
+                        if (board.getSquares()[i][j].getPiece().getColor() == turn) {
+                            Square[] foundMoves = board.getSquares()[i][j].getMoves(mf);
+                            for (int k = 0; k < foundMoves.length; k++) {
+                                ArrayList<Square> list = new ArrayList<>();
+                                list.add(board.getSquares()[i][j]);
+                                list.add(foundMoves[k]);
+                                rmoves.add(list);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        int random = (int) (Math.random() * rmoves.size());
+        return rmoves.get(random);
+    }
+
+    private static void movePiece(Square from, Square to) {
+        int i = from.getPosition().column;
+        int j = from.getPosition().row;
+        int xIndex = to.getPosition().column;
+        int yIndex = to.getPosition().row;
+        Piece removedPiece = from.getPiece();
+        Piece piece = from.removePiece();
+        piece.setHasMoved();
+        if (to.getPiece() != null) {
+            if (to.getPiece().getPieceType() == PieceType.King) {
+                if (turn == Color.White) {
+                    playAgainButtonW.setEnabled(true);
+                }
+                if (turn == Color.Black) {
+                    playAgainButtonB.setEnabled(true);
+                }
+                winner = turn;
+            }
+        }
+        to.setPiece(piece);
+        if (piece.getPieceType() != PieceType.Pawn && removedPiece == null) {
+            move50rule++;
+        } else {
+            // if a pawn has been moved or if a piece has been captured we reset the
+            // counter
+            move50rule = 0;
+        }
+        boolean rEnpassant = piece.getRightEnpassant();
+        boolean lEnpassant = piece.getLeftEnpassant();
+        resetEnPassant();
+        if (piece.getPieceType() == PieceType.Pawn) {
+            if ((j - xIndex == -1 && rEnpassant) || (j - xIndex == 1 && lEnpassant)) {
+                board.getSquares()[i][xIndex].removePiece();
+            }
+            if (Math.abs(i - yIndex) == 2) {
+                enableEnPassant(yIndex, xIndex, board.getSquares());
+            }
+            if (yIndex == 0 || yIndex == 7) {
+                to.setPiece(promotePawn(piece, diceRoll));
+            }
+        }
+        // if piece type is king and the movement is two squares then castle
+        if (piece.getPieceType() == PieceType.King) {
+            if (j + 2 == xIndex) {
+                Piece rook = board.getSquares()[i][7].removePiece();
+                board.getSquares()[i][j + 1].setPiece(rook);
+                piece.setHasMoved();
+            }
+            if (j - 2 == xIndex) {
+                Piece rook = board.getSquares()[i][0].removePiece();
+                board.getSquares()[i][j - 1].setPiece(rook);
+                piece.setHasMoved();
+            }
+        }
+        turn = (turn == Color.White) ? Color.Black : Color.White;
+        diceRoll = dice.getValue(turn);
+        int positionCount = table.add(board.getSquares(), turn == Color.White);
+        if (positionCount >= 3 || move50rule >= 50) // if there is 3 repetition of a
+                                                    // position
+        {
+            setDraw();// let the game be a draw
+        }
     }
 }

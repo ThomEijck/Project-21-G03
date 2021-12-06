@@ -4,11 +4,7 @@ import models.RawModel;
 import models.TexturedModel;
 import renderEngine.Loader;
 import textures.ModelTexture;
-
 import java.util.Arrays;
-
-import org.lwjgl.system.CallbackI.P;
-
 import engineTester.MainGameLoop;
 import gameLogic.util.Position;
 

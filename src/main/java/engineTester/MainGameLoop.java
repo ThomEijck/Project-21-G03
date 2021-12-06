@@ -1,12 +1,13 @@
 package engineTester;
 
 import java.util.ArrayList;
-
 import chess.*;
-import gameLogic.pieces.King;
-import gameLogic.pieces.Rook;
 import gameLogic.util.GameManager;
 import gameLogic.util.TranspositionTable;
+import gameLogic.util.MiniMax.ExpectiMiniMaxExecutorUtil;
+import gameLogic.util.MiniMax.MatrixEvaluatorUtil;
+import gameLogic.util.MiniMax.MiniMaxExecutorUtil;
+import gameLogic.util.MiniMax.MoveMakerUtil;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.Renderer;
@@ -32,6 +33,13 @@ public class MainGameLoop {
     private static Button playAgainButtonB;
     private static Button playAgainButtonDraw;
     private static Button replayButton;
+
+    static GameManager g = new GameManager();
+    static gameLogic.util.Board logicBoard = g.getBoard();
+    static MoveMakerUtil moveMaker = new MoveMakerUtil();
+    static MatrixEvaluatorUtil evaluator = new MatrixEvaluatorUtil();
+    static MiniMaxExecutorUtil mm = new MiniMaxExecutorUtil(evaluator, moveMaker);
+    static ExpectiMiniMaxExecutorUtil emm = new ExpectiMiniMaxExecutorUtil(evaluator, moveMaker);
 
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
@@ -156,13 +164,13 @@ public class MainGameLoop {
                 } else if (winner == null && !isDraw && scene > 4) {
                     if (replayButton.isClicked(x, y)) {
                         resetBoard();
-                    }
-                    if (xIndex < 8 && yIndex < 8) {
+                    } else if (xIndex < 8 && yIndex < 8) {
                         Square selectedSquare = board.getSquares()[yIndex][xIndex];
                         if (selectedSquare.getPossibleMove()) {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
+                                        // logicMove(board.getSquares()[i][j], selectedSquare, false);
                                         movePiece(board.getSquares()[i][j], selectedSquare);
                                     }
                                 }
@@ -200,6 +208,18 @@ public class MainGameLoop {
             if (turn != playerColor && scene == 6) {
                 ArrayList<Square> move = getRandomMove();
                 movePiece(move.get(0), move.get(1));
+            }
+            if (turn != playerColor && scene == 7) {
+                int playerTurn = (int) (turn.getColorValue() * 2.0f) + 1;
+                System.out.println(playerTurn);
+                gameLogic.util.Move newMove = mm.findBestMove(logicBoard, playerTurn, 5, diceRoll + 1);
+                int sc = 7 - newMove.getStart().row;
+                int sr = newMove.getStart().column;
+                int ec = 7 - newMove.getEnd().row;
+                int er = newMove.getEnd().column;
+                // System.out.printf("(%d, %d) (%d, %d)", sc, sr, ec, er);
+                logicMove(board.getSquares()[sc][sr], board.getSquares()[ec][er], true);
+                movePiece(board.getSquares()[sc][sr], board.getSquares()[ec][er]);
             }
             renderer.prepare();
             shader.start();
@@ -348,6 +368,7 @@ public class MainGameLoop {
         initBoard(board);
         turn = Color.White;
         diceRoll = dice.getValue(turn);
+        move50rule = 0;
     }
 
     private static ArrayList<Square> getRandomMove() {
@@ -414,19 +435,6 @@ public class MainGameLoop {
                 to.setPiece(promotePawn(piece, diceRoll));
             }
         }
-        // if piece type is king and the movement is two squares then castle
-        if (piece.getPieceType() == PieceType.King) {
-            if (j + 2 == xIndex) {
-                Piece rook = board.getSquares()[i][7].removePiece();
-                board.getSquares()[i][j + 1].setPiece(rook);
-                piece.setHasMoved();
-            }
-            if (j - 2 == xIndex) {
-                Piece rook = board.getSquares()[i][0].removePiece();
-                board.getSquares()[i][j - 1].setPiece(rook);
-                piece.setHasMoved();
-            }
-        }
         turn = (turn == Color.White) ? Color.Black : Color.White;
         diceRoll = dice.getValue(turn);
         int positionCount = table.add(board.getSquares(), turn == Color.White);
@@ -435,5 +443,18 @@ public class MainGameLoop {
         {
             setDraw();// let the game be a draw
         }
+    }
+
+    private static void logicMove(Square from, Square to, boolean isAI) {
+        int fr = from.getPosition().column;
+        int fc = from.getPosition().row;
+        int tr = to.getPosition().column;
+        int tc = to.getPosition().row;
+        gameLogic.util.Position start = new gameLogic.util.Position(fr, fc);
+        gameLogic.util.Position end = new gameLogic.util.Position(tr, tc);
+        gameLogic.util.Move move = new gameLogic.util.Move(start, end);
+        int playerTurn = (int) (turn.getColorValue() * 2.0f) + 1;
+        System.out.println("LOGIC: " + move.toString());
+        logicBoard.movePiece(move, diceRoll + 1, playerTurn, isAI);
     }
 }

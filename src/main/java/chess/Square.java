@@ -55,10 +55,16 @@ public class Square {
     }
 
     public Piece removePiece() {
-        Piece temp = this.piece;
-        this.piece = null;
-        this.pieceModel = null;
-        return temp;
+        if (this.piece != null) {
+            Piece temp = new Piece(this.piece.getColor(), this.piece.getPieceType());
+            if (this.piece.hasMoved()) {
+                temp.setHasMoved();
+            }
+            this.piece = null;
+            this.pieceModel = null;
+            return temp;
+        }
+        return null;
     }
 
     public TexturedModel getPieceModel() {
@@ -108,15 +114,6 @@ public class Square {
 
                 Square[] squares = Arrays.copyOf(diag, diag.length + ortho.length);
                 System.arraycopy(ortho, 0, squares, diag.length, ortho.length);
-
-                if (!this.getPiece().hasMoved) {
-                    Square castling[] = mf.moveCastling(this);
-                    if (castling.length != 0) {
-                        Square[] newSquares = Arrays.copyOf(squares, squares.length + castling.length);
-                        System.arraycopy(castling, 0, newSquares, squares.length, castling.length);
-                        squares = newSquares;
-                    }
-                }
                 return squares;
             }
             case Rook: {

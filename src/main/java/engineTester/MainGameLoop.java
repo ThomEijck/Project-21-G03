@@ -1,8 +1,10 @@
 package engineTester;
 
+import java.lang.management.LockInfo;
 import java.util.ArrayList;
 import chess.*;
 import gameLogic.util.GameManager;
+import gameLogic.util.Position;
 import gameLogic.util.TranspositionTable;
 import gameLogic.util.MiniMax.ExpectiMiniMaxExecutorUtil;
 import gameLogic.util.MiniMax.MatrixEvaluatorUtil;
@@ -34,8 +36,7 @@ public class MainGameLoop {
     private static Button playAgainButtonDraw;
     private static Button replayButton;
 
-    static GameManager g = new GameManager();
-    static gameLogic.util.Board logicBoard = g.getBoard();
+    static gameLogic.util.Board logicBoard = new gameLogic.util.Board();
     static MoveMakerUtil moveMaker = new MoveMakerUtil();
     static MatrixEvaluatorUtil evaluator = new MatrixEvaluatorUtil();
     static MiniMaxExecutorUtil mm = new MiniMaxExecutorUtil(evaluator, moveMaker);
@@ -43,7 +44,6 @@ public class MainGameLoop {
 
     public static void main(String[] args) {
         DisplayManager.createDisplay(1250, 1000, "Dice Chess");
-
         Loader loader = new Loader();
         Renderer renderer = new Renderer();
         StaticShader shader = new StaticShader();
@@ -170,7 +170,12 @@ public class MainGameLoop {
                             for (int i = 0; i < 8; i++) {
                                 for (int j = 0; j < 8; j++) {
                                     if (board.getSquares()[i][j].getHighlight()) {
-                                        // logicMove(board.getSquares()[i][j], selectedSquare, false);
+                                        // logicBoard.hardMove(7 - board.getSquares()[i][j].getPosition().row,
+                                        // board.getSquares()[i][j].getPosition().column,
+                                        // 7 - selectedSquare.getPosition().row,
+                                        // selectedSquare.getPosition().column);
+                                        logicMove(board.getSquares()[i][j], selectedSquare, false);
+                                        logicBoard.printBoard();
                                         movePiece(board.getSquares()[i][j], selectedSquare);
                                     }
                                 }
@@ -211,15 +216,18 @@ public class MainGameLoop {
             }
             if (turn != playerColor && scene == 7) {
                 int playerTurn = (int) (turn.getColorValue() * 2.0f) + 1;
-                System.out.println(playerTurn);
-                gameLogic.util.Move newMove = mm.findBestMove(logicBoard, playerTurn, 5, diceRoll + 1);
-                int sc = 7 - newMove.getStart().row;
-                int sr = newMove.getStart().column;
-                int ec = 7 - newMove.getEnd().row;
-                int er = newMove.getEnd().column;
+                // gameLogic.util.Board copyOfLogicBoard = logicBoard;
+                gameLogic.util.Move newMove = emm.findBestMove(logicBoard, playerTurn, 4, diceRoll + 1);
+                int sr = 7 - newMove.getStart().row;
+                int sc = newMove.getStart().column;
+                int er = 7 - newMove.getEnd().row;
+                int ec = newMove.getEnd().column;
                 // System.out.printf("(%d, %d) (%d, %d)", sc, sr, ec, er);
-                logicMove(board.getSquares()[sc][sr], board.getSquares()[ec][er], true);
-                movePiece(board.getSquares()[sc][sr], board.getSquares()[ec][er]);
+                movePiece(board.getSquares()[sr][sc], board.getSquares()[er][ec]);
+                logicBoard.printBoard();
+                System.out.println("LOGIC: " + newMove.toString());
+                logicMove(board.getSquares()[sr][sc], board.getSquares()[er][ec], true);
+                // logicBoard.hardMove(7 - sr, sc, 7 - er, ec);
             }
             renderer.prepare();
             shader.start();
@@ -369,6 +377,7 @@ public class MainGameLoop {
         turn = Color.White;
         diceRoll = dice.getValue(turn);
         move50rule = 0;
+        logicBoard = new gameLogic.util.Board();
     }
 
     private static ArrayList<Square> getRandomMove() {
@@ -399,9 +408,11 @@ public class MainGameLoop {
         int j = from.getPosition().row;
         int xIndex = to.getPosition().column;
         int yIndex = to.getPosition().row;
-        Piece removedPiece = from.getPiece();
+        Piece removedPiece = to.getPiece();
         Piece piece = from.removePiece();
-        piece.setHasMoved();
+        if (piece != null) {
+            piece.setHasMoved();
+        }
         if (to.getPiece() != null) {
             if (to.getPiece().getPieceType() == PieceType.King) {
                 if (turn == Color.White) {
@@ -446,10 +457,10 @@ public class MainGameLoop {
     }
 
     private static void logicMove(Square from, Square to, boolean isAI) {
-        int fr = from.getPosition().column;
-        int fc = from.getPosition().row;
-        int tr = to.getPosition().column;
-        int tc = to.getPosition().row;
+        int fc = from.getPosition().column;
+        int fr = 7 - from.getPosition().row;
+        int tc = to.getPosition().column;
+        int tr = 7 - to.getPosition().row;
         gameLogic.util.Position start = new gameLogic.util.Position(fr, fc);
         gameLogic.util.Position end = new gameLogic.util.Position(tr, tc);
         gameLogic.util.Move move = new gameLogic.util.Move(start, end);

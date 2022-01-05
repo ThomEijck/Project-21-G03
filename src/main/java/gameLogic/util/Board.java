@@ -86,11 +86,13 @@ public class Board {
         Position capturedPos = move.getEnd();
         // cant move the other players pieces
         if (piece.getPlayer() != playerTurn) {
+            System.out.println("Piece does not belong to player: " + playerTurn);
             return false;
         }
 
         // if the piece that wants to be moved is not allowed by the dice
         if (piece.getInt() != 1 && piece.getInt() != diceValue) {
+            System.out.println("Invalid piece selected");
             return false;
         }
         // if a pawn can be promoted, a different number than 1 can be used
@@ -176,43 +178,41 @@ public class Board {
         if (piece.getInt() == 1 && Math.abs(start.row - end.row) == 2) {
             enableEnPassant(end);
         }
-        /*
-         * // Check if castling is done
-         * if (piece.getInt() == 6) {
-         * Position startPos = null;
-         * Position endPos = null;
-         * Piece rook = null;
-         * // Check if castling is done on queen side
-         * if (start.row == end.row && start.column - 2 == end.column) {
-         * Rook rook1 = (Rook) chessBoard[start.row][start.column - 4];
-         * rook = rook1;
-         * startPos = new Position(start.row, start.column - 4);
-         * endPos = new Position(start.row, start.column - 1);
-         * chessBoard[start.row][start.column - 1] = rook1;
-         * chessBoard[start.row][start.column - 4] = null;
-         * }
-         * 
-         * // Check if castling is done on king side
-         * 
-         * if (start.row == end.row && start.column + 2 == end.column) {
-         * Rook rook2 = (Rook) chessBoard[start.row][start.column + 3];
-         * rook = rook2;
-         * startPos = new Position(start.row, start.column + 3);
-         * endPos = new Position(start.row, start.column + 1);
-         * chessBoard[start.row][start.column + 1] = rook2;
-         * chessBoard[start.row][start.column + 3] = null;
-         * }
-         * if (startPos != null) {
-         * // add movement of the rook to move history
-         * moveHistory.push(new MoveHistoryData(new Move(startPos, endPos), capturedPos,
-         * rook, null, true, null,
-         * null, move50rule));
-         * rook.setPos(endPos);
-         * }
-         * 
-         * 
-         * }
-         */
+         // Check if castling is done
+         if (piece.getInt() == 6) {
+            Position startPos = null;
+            Position endPos = null;
+            Piece rook = null;
+            // Check if castling is done on queen side
+            if (start.row == end.row && start.column - 2 == end.column) {
+                Rook rook1 = (Rook) chessBoard[start.row][start.column - 4];
+                rook = rook1;
+                startPos = new Position(start.row, start.column - 4);
+                endPos = new Position(start.row, start.column - 1);
+                chessBoard[start.row][start.column - 1] = rook1;
+                chessBoard[start.row][start.column - 4] = null;
+            }
+
+             // Check if castling is done on king side
+
+             if (start.row == end.row && start.column + 2 == end.column) {
+                Rook rook2 = (Rook) chessBoard[start.row][start.column + 3];
+                rook = rook2;
+                startPos = new Position(start.row, start.column + 3);
+                endPos = new Position(start.row, start.column + 1);
+                chessBoard[start.row][start.column + 1] = rook2;
+                chessBoard[start.row][start.column + 3] = null;
+             }
+             if (startPos != null) {
+             // add movement of the rook to move history
+                moveHistory.push(new MoveHistoryData(new Move(startPos, endPos), capturedPos,
+                rook, null, true, null,
+                null, move50rule));
+                rook.setPos(endPos);
+             }
+
+
+         }
         if (piece.getInt() != 1 && captured == null)
 
         {
@@ -264,9 +264,9 @@ public class Board {
         }
 
         // if the current move was a castling move, we need to revert another move
-        // if (toRevert.isCastling()) {
-        // revertMove();
-        // }
+        if (toRevert.isCastling()) {
+            revertMove();
+        }
 
         return true;
     }

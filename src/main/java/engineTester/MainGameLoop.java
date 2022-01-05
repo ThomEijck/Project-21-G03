@@ -48,33 +48,33 @@ public class MainGameLoop {
         Renderer renderer = new Renderer();
         StaticShader shader = new StaticShader();
 
-        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("res/chess_texture_atlas.png"));
-        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("res/dice_atlas.png"));
+        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("../../../res/chess_texture_atlas.png"));
+        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("../../../res/dice_atlas.png"));
         board = new Board(textureAtlas);
         mf = new MoveFinder(board);
         dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
-        ModelTexture titleTexture = new ModelTexture(loader.loadTexture("res/title.png"));
-        ModelTexture playTexture = new ModelTexture(loader.loadTexture("res/button_play.png"));
-        ModelTexture exitTexture = new ModelTexture(loader.loadTexture("res/button_exit.png"));
+        ModelTexture titleTexture = new ModelTexture(loader.loadTexture("../../../res/title.png"));
+        ModelTexture playTexture = new ModelTexture(loader.loadTexture("../../../res/button_play.png"));
+        ModelTexture exitTexture = new ModelTexture(loader.loadTexture("../../../res/button_exit.png"));
 
-        ModelTexture modeTexture = new ModelTexture(loader.loadTexture("res/title_mode.png"));
-        ModelTexture pvpTexture = new ModelTexture(loader.loadTexture("res/button_pvp.png"));
-        ModelTexture aiTexture = new ModelTexture(loader.loadTexture("res/button_ai.png"));
-        ModelTexture backTexture = new ModelTexture(loader.loadTexture("res/button_back.png"));
+        ModelTexture modeTexture = new ModelTexture(loader.loadTexture("../../../res/title_mode.png"));
+        ModelTexture pvpTexture = new ModelTexture(loader.loadTexture("../../../res/button_pvp.png"));
+        ModelTexture aiTexture = new ModelTexture(loader.loadTexture("../../../res/button_ai.png"));
+        ModelTexture backTexture = new ModelTexture(loader.loadTexture("../../../res/button_back.png"));
 
-        ModelTexture colorTexture = new ModelTexture(loader.loadTexture("res/title_color.png"));
-        ModelTexture blackTexture = new ModelTexture(loader.loadTexture("res/button_black.png"));
-        ModelTexture whiteTexture = new ModelTexture(loader.loadTexture("res/button_white.png"));
+        ModelTexture colorTexture = new ModelTexture(loader.loadTexture("../../../res/title_color.png"));
+        ModelTexture blackTexture = new ModelTexture(loader.loadTexture("../../../res/button_black.png"));
+        ModelTexture whiteTexture = new ModelTexture(loader.loadTexture("../../../res/button_white.png"));
 
-        ModelTexture diffTexture = new ModelTexture(loader.loadTexture("res/diff_title.png"));
-        ModelTexture diff1 = new ModelTexture(loader.loadTexture("res/diff_1.png"));
-        ModelTexture diff2 = new ModelTexture(loader.loadTexture("res/diff_2.png"));
+        ModelTexture diffTexture = new ModelTexture(loader.loadTexture("../../../res/diff_title.png"));
+        ModelTexture diff1 = new ModelTexture(loader.loadTexture("../../../res/diff_1.png"));
+        ModelTexture diff2 = new ModelTexture(loader.loadTexture("../../../res/diff_2.png"));
 
-        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
-        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
-        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
-        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/replayButton.png"));
+        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("../../../res/play_againW.png"));
+        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("../../../res/play_againB.png"));
+        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("../../../res/play_againDraw.png"));
+        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("../../../res/replayButton.png"));
 
         Button title = new Button(250, 850, 750, 150, titleTexture);
         Button playButton = new Button(375, 600, 500, 100, playTexture);
@@ -175,8 +175,8 @@ public class MainGameLoop {
                                         // 7 - selectedSquare.getPosition().row,
                                         // selectedSquare.getPosition().column);
                                         logicMove(board.getSquares()[i][j], selectedSquare, false);
-                                        logicBoard.printBoard();
                                         movePiece(board.getSquares()[i][j], selectedSquare);
+                                        logicBoard.printBoard();
                                     }
                                 }
                             }
@@ -223,10 +223,9 @@ public class MainGameLoop {
                 int er = 7 - newMove.getEnd().row;
                 int ec = newMove.getEnd().column;
                 // System.out.printf("(%d, %d) (%d, %d)", sc, sr, ec, er);
+                logicMove(board.getSquares()[sr][sc], board.getSquares()[er][ec], true);
                 movePiece(board.getSquares()[sr][sc], board.getSquares()[er][ec]);
                 logicBoard.printBoard();
-                System.out.println("LOGIC: " + newMove.toString());
-                logicMove(board.getSquares()[sr][sc], board.getSquares()[er][ec], true);
                 // logicBoard.hardMove(7 - sr, sc, 7 - er, ec);
             }
             renderer.prepare();
@@ -464,8 +463,9 @@ public class MainGameLoop {
         gameLogic.util.Position start = new gameLogic.util.Position(fr, fc);
         gameLogic.util.Position end = new gameLogic.util.Position(tr, tc);
         gameLogic.util.Move move = new gameLogic.util.Move(start, end);
-        int playerTurn = (int) (turn.getColorValue() * 2.0f) + 1;
+        int playerTurn = turn == Color.White? 1 : 2;
+        System.out.println("PlayerTurn: " + playerTurn);
         System.out.println("LOGIC: " + move.toString());
-        logicBoard.movePiece(move, diceRoll + 1, playerTurn, isAI);
+        System.out.println("MOVE SUCCES: " + logicBoard.movePiece(move, diceRoll + 1, playerTurn, isAI));
     }
 }

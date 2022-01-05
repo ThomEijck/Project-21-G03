@@ -13,28 +13,24 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
     public float evaluateBoard(Board board)
     {
-        //weight for all the pieces for each position on the board
-        //weights of a pawn
-
-        /*
-        float value = 0;
+        float evaluation = 0;
         Piece[][] squares = board.getChessBoard();
-        for (int i = 0; i < squares.length; i++) {
-            for (int k = 0; k < squares[i].length; k++) {
-                Piece piece = squares[i][k];
-                if(piece == null)
-                    continue;
-                int player =  piece.getPlayer() == 1? 1: -1;
-                int pieceNumber = piece.getInt() - 1;
-                if(player > 0)
-                    value += player * (pieceValues[pieceNumber] + pieceTables[pieceNumber][8*i + k]);//white value
-                else
-                    value += player * (pieceValues[pieceNumber] + pieceTables[pieceNumber][63 -  (8*i + k)]);//black value,with flipped piece square values
+
+        for(int i = 0; i < squares.length; i++) {
+            for(int j = 0; j < squares[0].length; j++) {
+                Piece piece = squares[i][j];
+                if(piece == null) continue;
+                int pieceNum = piece.getInt() - 1;
+                if(piece.getPlayer() == 1) {
+                    evaluation += pieceValues[pieceNum] + PSTs[pieceNum][i][j];
+                }
+                else {
+                    evaluation -= pieceValues[pieceNum] + PSTs[pieceNum][i][j];
+                }
             }
         }
-        return value;
-         */
-        return 0;
+
+        return evaluation;
     }
 
     /***

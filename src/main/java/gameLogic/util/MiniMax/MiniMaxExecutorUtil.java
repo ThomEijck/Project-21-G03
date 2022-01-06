@@ -7,6 +7,7 @@ import java.util.*;
 public class MiniMaxExecutorUtil {
     protected BoardEvaluatorUtil evaluator;
     protected MoveExecutorUtil moveExecutor;
+    private float curBestValue;
 
     public MiniMaxExecutorUtil(BoardEvaluatorUtil evaluator, MoveExecutorUtil moveExecutor) {
         this.evaluator = evaluator;
@@ -44,6 +45,7 @@ public class MiniMaxExecutorUtil {
                 a = Float.max(newValue, a);
             }
         }
+        curBestValue = bestValue;
         // System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
         return bestMove;
     }
@@ -146,4 +148,7 @@ public class MiniMaxExecutorUtil {
         }
     }
 
+    public float getCurBestValue() {
+        return curBestValue;
+    }
 }

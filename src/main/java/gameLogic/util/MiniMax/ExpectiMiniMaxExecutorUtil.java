@@ -6,6 +6,8 @@ import java.util.*;
 
 public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
 
+    private float curBestValue;
+
     public ExpectiMiniMaxExecutorUtil(BoardEvaluatorUtil evaluator, MoveExecutorUtil moveExecutor){
         super(evaluator, moveExecutor);
     }
@@ -40,7 +42,12 @@ public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
             }
         }
         //System.out.println("Best move: " + bestMove + " Best value: " + bestValue);
+        curBestValue = bestValue;
         return bestMove;
+    }
+
+    public float getCurBestValue() {
+        return curBestValue;
     }
 
     //NOTE: if you want to turn this into a expectiminimax you need an extra parameter for dice value

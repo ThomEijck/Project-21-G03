@@ -18,10 +18,7 @@ public class Camera {
     private Player player;
 
 
-    /**
-     * assign camera to player
-     * @param player entity
-     */
+
     public Camera(Player player){
         this.player = player;
     }
@@ -38,11 +35,7 @@ public class Camera {
 
     }
 
-    /**
-     * calculate camera position in proportion with player
-     * @param horDistance float
-     * @param vertDistance float
-     */
+
     private void calculateCameraPosition(float horDistance, float vertDistance){
         float theta = player.getRotY() + angleAroundPlayer;
         float offsetX = (float) (horDistance*Math.sin(Math.toRadians(theta)));

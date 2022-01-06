@@ -10,22 +10,14 @@ public class MoveListener implements ActionListener{
     private JTextField y;
     private JFrame theFrame;
 
-    /**
-     * create listener for shot input
-     * @param textfield1 JTextField, speed of shot
-     * @param textfield2 JTextField, angle of shot
-     * @param frame Frame
-     */
+
     public MoveListener(JTextField textfield1, JTextField textfield2, JFrame frame){
         x = textfield1;
         y = textfield2;
         theFrame = frame;
     }
 
-    /**
-     * read velocity input from textfields and send to physics engine to take shot
-     * @param event ActionEvent
-     */
+
     public void actionPerformed(ActionEvent event){
         try {
             String xField = x.getText();

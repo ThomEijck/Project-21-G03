@@ -11,16 +11,7 @@ public class Entity {
     private int textureIndex = 0;
 
 
-    /**
-     *  create entity
-     * @param model TexturedModel
-     * @param position Vector3f, position of entity in terrain
-     * @param rotX float, rotation to X axis
-     * @param rotY float, rotation to Y axis
-     * @param rotZ float, rotation to Z axis
-     * @param scale float, scale of entity
-     */
-    
+
     public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
         this.model = model;
         this.position = position;

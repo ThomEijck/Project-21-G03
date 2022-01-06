@@ -15,20 +15,14 @@ public class GUIRenderer {
     private final RawModel quad;
     private GUIShader shader;
 
-    /**
-     * create renderer for small GUI that appears when ball landed at hole
-     * @param loader Loader
-     */
+
     public GUIRenderer(@NotNull Loader loader){
         float[] positions = {-1,1,-1,-1,1,1,1,-1};
         quad = loader.loadToVAO(positions, 2);
         shader = new GUIShader();
     }
 
-    /**
-     * render small GUI screen
-     * @param guis List<GUITexture>, list of GUI's to render
-     */
+
     public void render(@NotNull List<GUITexture> guis){
         shader.start();
         GL30.glBindVertexArray(quad.getVaoID());

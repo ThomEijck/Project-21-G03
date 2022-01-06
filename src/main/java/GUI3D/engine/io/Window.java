@@ -28,21 +28,13 @@ public class Window {
 	private int[] windowPosX = new int[1], windowPosY = new int[1];
 
 
-	/**
-	 * create window
-	 * @param width int, width of window
-	 * @param height int, height of window
-	 * @param title String, title of window
-	 */
 	public Window(int width, int height, String title) {
 		this.width = width;
 		this.height = height;
 		this.title = title;
 	}
 
-	/**
-	 * create display function
-	 */
+
 	public void create() {
 		if (!GLFW.glfwInit()) {
 			System.err.println("ERROR: GLFW wasn't initializied");
@@ -89,9 +81,6 @@ public class Window {
 		GLFW.glfwSetWindowSizeCallback(window, sizeCallback);
 	}
 
-	/**
-	 * Update display frames
-	 */
 	public void update() {
 
 		if (isResized) {

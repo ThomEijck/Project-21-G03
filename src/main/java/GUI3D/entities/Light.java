@@ -8,11 +8,7 @@ public class Light {
     private Vector3f colour;
     private Vector3f attenuation = new Vector3f(1,0,0);
 
-    /**
-     * creates Light
-     * @param position Vector3f, position of Light in game
-     * @param colour Vector3f, colour of light
-     */
+
     public Light(Vector3f position, Vector3f colour) {
         this.position = position;
         this.colour = colour;

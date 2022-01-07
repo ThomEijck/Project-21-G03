@@ -11,6 +11,10 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] PSTs = generateRandomPSTs();
     private double[] pieceValues = generateRandomArray(6);
 
+    public TDMatrixEvaluatorUtil() {
+        pieceValues[pieceValues.length-1] = 1000;
+    }
+
     public float evaluateBoard(Board board)
     {
         float evaluation = 0;
@@ -25,7 +29,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                     evaluation += pieceValues[pieceNum] + PSTs[pieceNum][i][j];
                 }
                 else {
-                    evaluation -= pieceValues[pieceNum] + PSTs[pieceNum][i][j];
+                    evaluation -= pieceValues[pieceNum] + PSTs[pieceNum][(squares.length-1)-i][j];
                 }
             }
         }
@@ -47,7 +51,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
     /**
-     * @return a array containing random weights
+     * @return a array containing random weights between 0.0 and 0.5
      */
     public static double[] generateRandomArray(int size) {
         Random r = new Random();
@@ -61,7 +65,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
     /**
-     * @return a 3d matrix containing 8 PSTs with weights initialized randomly between 0 and 0.5
+     * @return a 3d matrix containing 8 PSTs with weights initialized randomly between 0.0 and 0.5
      */
     public static double[][][] generateRandomPSTs() {
         double[][][] pieceSquareTables = new double[6][8][8];

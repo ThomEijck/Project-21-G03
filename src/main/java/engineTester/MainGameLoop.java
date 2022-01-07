@@ -202,11 +202,7 @@ public class MainGameLoop {
                 } else {
                     if (playAgainButtonW.isClicked(x, y) || playAgainButtonB.isClicked(x, y)
                             || playAgainButtonDraw.isClicked(x, y)) {
-                        winner = null;
-                        isDraw = false;
-                        initBoard(board);
-                        turn = Color.White;
-                        diceRoll = dice.getValue(turn);
+                        resetBoard();
                     }
                 }
             }
@@ -377,6 +373,7 @@ public class MainGameLoop {
         diceRoll = dice.getValue(turn);
         move50rule = 0;
         logicBoard = new gameLogic.util.Board();
+        System.out.println("RESET GAME");
     }
 
     private static ArrayList<Square> getRandomMove() {

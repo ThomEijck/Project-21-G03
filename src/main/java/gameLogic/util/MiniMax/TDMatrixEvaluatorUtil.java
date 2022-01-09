@@ -2,6 +2,7 @@ package gameLogic.util.MiniMax;
 
 import gameLogic.pieces.Piece;
 import gameLogic.util.Board;
+import gameLogic.util.Move;
 
 import java.util.Random;
 
@@ -9,10 +10,26 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 {
 
     private double[][][] PSTs = generateRandomPSTs();
-    private double[] pieceValues = generateRandomArray(6);
+    private double[] pieceValues = {1,1,1,1,1,100};
+    private final double ALPHA = 0.5;
 
     public TDMatrixEvaluatorUtil() {
-        pieceValues[pieceValues.length-1] = 1000;
+
+    }
+
+    // NOTE: need to make weight update depend on player
+    public void updateWeights(Move move, float error) {
+        System.out.println(move);
+        int pieceInt = move.getPiece().getInt();
+        int row = -1;
+        if(move.getPiece().getPlayer() == 1) {
+            row = move.getEnd().getRow();
+        }
+        else {
+            row = 7 - move.getEnd().getRow();
+        }
+        System.out.println("Updated weight at (" + (row+1) + ", " + (move.getEnd().getColumn()+1) + ") with: " + (double)(ALPHA*error));
+        PSTs[pieceInt-1][row][move.getEnd().getColumn()] += ALPHA * error;
     }
 
     public float evaluateBoard(Board board)
@@ -51,14 +68,14 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
     /**
-     * @return a array containing random weights between 0.0 and 0.5
+     * @return an array containing random weights between 1.0 and 10.0
      */
     public static double[] generateRandomArray(int size) {
         Random r = new Random();
         double[] array = new double[size];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = r.nextDouble() * 0.05;
+            array[i] = 1.0 + (10.0-1.0) * r.nextDouble();
         }
 
         return array;
@@ -75,5 +92,18 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         }
 
         return pieceSquareTables;
+    }
+
+    public void printPSTs() {
+        for(int i = 0; i < PSTs.length; i++) {
+            for(int j = 0; j < PSTs[0].length; j++) {
+                for(int k = 0; k < PSTs[0][0].length; k++) {
+                    System.out.print(PSTs[i][j][k]);
+                    if(k != 7) System.out.print(" - ");
+                }
+                System.out.println();
+            }
+            System.out.println("\n");
+        }
     }
 }

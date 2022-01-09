@@ -23,7 +23,6 @@ public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
 
         Move bestMove = null;
         Move[] moves = getMoves(currentBoard, diceValue, player);
-        System.out.println(Arrays.toString(moves));
         for(int i = 0; i < moves.length; i++){
             if(moves[i].getEnd().row == -1)
                 continue;

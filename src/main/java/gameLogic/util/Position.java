@@ -14,6 +14,14 @@ public class Position {
         this.column = pos.column;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
     public boolean isEqual(Position other)
     {
         return (other.row == row && other.column == column);

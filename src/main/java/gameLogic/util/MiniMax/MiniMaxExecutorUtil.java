@@ -127,7 +127,7 @@ public class MiniMaxExecutorUtil {
                     }
                     // add the move to the list
                     Position pos = new Position(piece.getPos());
-                    moves.add(new Move(pos, targets[l]));
+                    moves.add(new Move(piece, pos, targets[l]));
                 }
             }
         }

@@ -13,6 +13,8 @@ public class TDLearner {
     private List<Move> movesP2 = new ArrayList<>();
     private int indexP1;
     private int indexP2;
+    private float steepness = 0.5F;
+    private float sumOfEvalUntilNow;
 
     public TDLearner() {
         indexP1 = -1;
@@ -22,6 +24,7 @@ public class TDLearner {
     public void updatePST(int player, TDMatrixEvaluatorUtil evaluator) {
         if(indexP1<1) return;
         float error = calculateError(player);
+        sumOfEvalUntilNow += derivativeOfSigmoidFunction(player);
         Move move;
         if(player == 1) {
             move = movesP1.get(indexP1-1);
@@ -29,7 +32,21 @@ public class TDLearner {
         else {
             move = movesP2.get(indexP2-1);
         }
-        evaluator.updateWeights(move, error);
+        evaluator.updateWeights(move, error, sumOfEvalUntilNow);
+    }
+
+    public float derivativeOfSigmoidFunction(int player){
+        float sigmoidValue = 0;
+        float value = 0;
+        if(player == 1){
+            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP1.get(indexP1))));
+            value = sigmoidValue*(1-sigmoidValue);
+        }
+        else{
+            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP2.get(indexP2))));
+            value = sigmoidValue*(1-sigmoidValue);
+        }
+        return value;
     }
 
     public Float calculateError(int player) {

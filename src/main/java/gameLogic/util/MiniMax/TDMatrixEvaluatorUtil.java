@@ -10,15 +10,18 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 {
 
     private double[][][] PSTs = generateRandomPSTs();
+    private double[][][] lambdaTable = generateRandomLambdaTables();
+    private float derivateOfSigmoid;
     private double[] pieceValues = {1,1,1,1,1,100};
     private final double ALPHA = 0.5;
+    private float sumOfEvaluations;
 
     public TDMatrixEvaluatorUtil() {
 
     }
 
     // NOTE: need to make weight update depend on player
-    public void updateWeights(Move move, float error) {
+    public void updateWeights(Move move, float error, float sumOfEvaluations) {
         System.out.println(move);
         int pieceInt = move.getPiece().getInt();
         int row = -1;
@@ -28,8 +31,11 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         else {
             row = 7 - move.getEnd().getRow();
         }
-        System.out.println("Updated weight at (" + (row+1) + ", " + (move.getEnd().getColumn()+1) + ") with: " + (double)(ALPHA*error));
-        PSTs[pieceInt-1][row][move.getEnd().getColumn()] += ALPHA * error;
+        float lambdaValue = 0.5F;
+
+        PSTs[pieceInt-1][row][move.getEnd().getColumn()] += ALPHA * error *lambdaValue*sumOfEvaluations;
+        float change = (float) (ALPHA * error *lambdaValue*sumOfEvaluations);
+        System.out.println("Updated weight at (" + (row+1) + ", " + (move.getEnd().getColumn()+1) + ") with: " + (double)(change));
     }
 
     public float evaluateBoard(Board board)
@@ -90,8 +96,16 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         for(int i = 0; i < pieceSquareTables.length; i++) {
             pieceSquareTables[i] = generateRandomMatrix();
         }
-
         return pieceSquareTables;
+    }
+
+    public static double[][][] generateRandomLambdaTables() {
+        double[][][] lambdaTables = new double[6][8][8];
+
+        for(int i = 0; i < lambdaTables.length; i++) {
+            lambdaTables[i] = generateRandomMatrix();
+        }
+        return lambdaTables;
     }
 
     public void printPSTs() {

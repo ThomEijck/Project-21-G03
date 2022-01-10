@@ -3,6 +3,7 @@ package gameLogic.util.MiniMax;
 import gameLogic.pieces.Piece;
 import gameLogic.util.Board;
 import gameLogic.util.Move;
+import gameLogic.util.Position;
 
 import java.util.Random;
 
@@ -13,7 +14,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] learningRateTable = generateRandomLearningRateTables();
     private float derivateOfSigmoid;
     private double[] pieceValues = {1,1,1,1,1,100};
-    private final double ALPHA = 0.5;
+    private final double ALPHA = 0.05;
     private float sumOfEvaluations;
     private float sumOfNetChangeToWeight;
     private float sumOfAbsoluteChangeToWeight;
@@ -48,8 +49,28 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
        // float change = (float) (learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] * error *lambdaValue*sumOfEvaluations);
        // PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change;
-        PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
+        for (int i = 0; i < board.length; i++)
+        {
+            for (int j = 0; j < board.length; j++)
+            {
+                Piece currPiece = board[i][j];
+                if(currPiece == null){continue;}
+                Position piecePos = currPiece.getPos();
+                PSTs[currPiece.getInt()-1][piecePos.row][piecePos.column] += ALPHA * error * getFeatureValue(currPiece);
+            }
+        }
+
+        //PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
         System.out.println("Updated weight at (" + (row+1) + ", " + (move.getEnd().getColumn()+1) + ") with: " + (double)(change2));
+    }
+
+
+    private int getFeatureValue(Piece piece)
+    {
+        if(piece.getPlayer() == 1)
+            return 1;
+        else
+            return -1;
     }
 
     public float evaluateBoard(Board board)

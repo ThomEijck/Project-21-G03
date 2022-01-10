@@ -8,76 +8,50 @@ import java.util.List;
 
 public class TDLearner {
 
-    private List<Float> evaluationsP1 = new ArrayList<>();
-    private List<Float> evaluationsP2 = new ArrayList<>();
-    private List<Move> movesP1 = new ArrayList<>();
-    private List<Move> movesP2 = new ArrayList<>();
-    private int indexP1;
-    private int indexP2;
+    private List<Float> evaluations = new ArrayList<>();
+    private List<Move> moves = new ArrayList<>();
+    private int index;
     private float steepness = 0.5F;
     private float sumOfEvalUntilNow;
 
     public TDLearner() {
-        indexP1 = -1;
-        indexP2 = -1;
+        index = -1;
     }
 
-    public void updatePST(int player, TDMatrixEvaluatorUtil evaluator, Piece[][] board) {
-        if(indexP1<1) return;
-        float error = calculateError(player);
-        sumOfEvalUntilNow += derivativeOfSigmoidFunction(player);
+    public void updatePST( TDMatrixEvaluatorUtil evaluator, Piece[][] board) {
+        if(index<1) return;
+
+        float error = calculateError();
+        sumOfEvalUntilNow += derivativeOfSigmoidFunction();
         Move move;
-        if(player == 1) {
-            move = movesP1.get(indexP1);
-        }
-        else {
-            move = movesP2.get(indexP2);
-        }
+
+        move = moves.get(index);
         evaluator.updateWeights(move, error, sumOfEvalUntilNow,board);
     }
 
-    public float derivativeOfSigmoidFunction(int player){
+    public float derivativeOfSigmoidFunction(){
         float sigmoidValue = 0;
         float value = 0;
-        if(player == 1){
-            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP1.get(indexP1-1))));
-            value = sigmoidValue*(1-sigmoidValue);
-        }
-        else{
-            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP2.get(indexP2-1))));
-            value = sigmoidValue*(1-sigmoidValue);
-        }
+
+        sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluations.get(index-1))));
+        value = sigmoidValue*(1-sigmoidValue);
         return value;
     }
 
-    public Float calculateError(int player) {
-        if(indexP1 < 1) {
+    public Float calculateError() {
+        if(index < 1) {
             return null;
         }
-        float errorP1 = 0;
-        float errorP2 = 0;
+        float error = 0;
 
-        if(player == 1) {
-            errorP1 = evaluationsP1.get(indexP1) - evaluationsP1.get(indexP1-1);
-            System.out.println("Error for P1: " + errorP1);
-            return errorP1;
-        }
-        else {
-            errorP2 = evaluationsP2.get(indexP2) - evaluationsP2.get(indexP2-1);
-            System.out.println("Error for P2: " + errorP2);
-            return errorP2;
-        }
+        error = evaluations.get(index) - evaluations.get(index-1);
+        System.out.println("Error: " + error);
+        return error;
     }
 
-    public void addMoveP1(Move move, float evaluation) {
-        this.movesP1.add(move);
-        this.evaluationsP1.add(evaluation);
-        indexP1++;
-    }
-
-    public void addMoveP2(Move move, float evaluation) {
-        this.movesP2.add(move);
-        this.evaluationsP2.add(evaluation);
-        indexP2++;
+    public void addMove(Move move, float evaluation) {
+        this.moves.add(move);
+        this.evaluations.add(evaluation);
+        index++;
     }
 }

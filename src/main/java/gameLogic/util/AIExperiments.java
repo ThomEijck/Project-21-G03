@@ -56,7 +56,7 @@ public class AIExperiments {
             } else {
                 learner.addMoveP2(m, mm.getCurBestValue());
             }
-            learner.updatePST(player, TDevaluator);
+            learner.updatePST(player, TDevaluator,g.getBoard().getChessBoard());
             g.movePiece(m, true);
             GameManager.pieceMoved();
             moveCount[player - 1]++;

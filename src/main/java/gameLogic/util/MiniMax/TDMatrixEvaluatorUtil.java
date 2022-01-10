@@ -10,22 +10,27 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 {
 
     private double[][][] PSTs = generateRandomPSTs();
-    private double[][][] lambdaTable = generateRandomLambdaTables();
+    private double[][][] learningRateTable = generateRandomLearningRateTables();
     private float derivateOfSigmoid;
     private double[] pieceValues = {1,1,1,1,1,100};
     private final double ALPHA = 0.5;
     private float sumOfEvaluations;
+    private float sumOfNetChangeToWeight;
+    private float sumOfAbsoluteChangeToWeight;
+    private int totalNumberOfAdjustableWeights = 6*8*8;
 
     public TDMatrixEvaluatorUtil() {
 
     }
 
     // NOTE: need to make weight update depend on player
-    public void updateWeights(Move move, float error, float sumOfEvaluations) {
+    public void updateWeights(Move move, float error, float sumOfEvaluations, Piece[][] board) {
         System.out.println(move);
-        int pieceInt = move.getPiece().getInt();
+        Piece piece = board[move.getStart().row][move.getStart().column];
+        int pieceInt = piece.getInt();
+
         int row = -1;
-        if(move.getPiece().getPlayer() == 1) {
+        if(piece.getPlayer() == 1) {
             row = move.getEnd().getRow();
         }
         else {
@@ -33,9 +38,18 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         }
         float lambdaValue = 0.5F;
 
-        PSTs[pieceInt-1][row][move.getEnd().getColumn()] += ALPHA * error *lambdaValue*sumOfEvaluations;
-        float change = (float) (ALPHA * error *lambdaValue*sumOfEvaluations);
-        System.out.println("Updated weight at (" + (row+1) + ", " + (move.getEnd().getColumn()+1) + ") with: " + (double)(change));
+
+      //  sumOfNetChangeToWeight += error*lambdaValue*sumOfEvaluations;
+      //  sumOfAbsoluteChangeToWeight += Math.abs(error*lambdaValue*sumOfEvaluations);
+      //  learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] = (1/totalNumberOfAdjustableWeights)*(sumOfNetChangeToWeight/sumOfAbsoluteChangeToWeight);
+
+
+        double change2 = ALPHA*error;
+
+       // float change = (float) (learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] * error *lambdaValue*sumOfEvaluations);
+       // PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change;
+        PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
+        System.out.println("Updated weight at (" + (row+1) + ", " + (move.getEnd().getColumn()+1) + ") with: " + (double)(change2));
     }
 
     public float evaluateBoard(Board board)
@@ -49,10 +63,10 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 if(piece == null) continue;
                 int pieceNum = piece.getInt() - 1;
                 if(piece.getPlayer() == 1) {
-                    evaluation += pieceValues[pieceNum] + PSTs[pieceNum][i][j];
+                    evaluation += PSTs[pieceNum][i][j];
                 }
                 else {
-                    evaluation -= pieceValues[pieceNum] + PSTs[pieceNum][(squares.length-1)-i][j];
+                    evaluation -= PSTs[pieceNum][(squares.length-1)-i][j];
                 }
             }
         }
@@ -99,13 +113,13 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         return pieceSquareTables;
     }
 
-    public static double[][][] generateRandomLambdaTables() {
-        double[][][] lambdaTables = new double[6][8][8];
+    public static double[][][] generateRandomLearningRateTables() {
+        double[][][] alphaTables = new double[6][8][8];
 
-        for(int i = 0; i < lambdaTables.length; i++) {
-            lambdaTables[i] = generateRandomMatrix();
+        for(int i = 0; i < alphaTables.length; i++) {
+            alphaTables[i] = generateRandomMatrix();
         }
-        return lambdaTables;
+        return alphaTables;
     }
 
     public void printPSTs() {

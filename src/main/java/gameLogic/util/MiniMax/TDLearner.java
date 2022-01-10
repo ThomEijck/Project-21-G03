@@ -1,5 +1,6 @@
 package gameLogic.util.MiniMax;
 
+import gameLogic.pieces.Piece;
 import gameLogic.util.Move;
 
 import java.util.ArrayList;
@@ -21,29 +22,29 @@ public class TDLearner {
         indexP2 = -1;
     }
 
-    public void updatePST(int player, TDMatrixEvaluatorUtil evaluator) {
+    public void updatePST(int player, TDMatrixEvaluatorUtil evaluator, Piece[][] board) {
         if(indexP1<1) return;
         float error = calculateError(player);
         sumOfEvalUntilNow += derivativeOfSigmoidFunction(player);
         Move move;
         if(player == 1) {
-            move = movesP1.get(indexP1-1);
+            move = movesP1.get(indexP1);
         }
         else {
-            move = movesP2.get(indexP2-1);
+            move = movesP2.get(indexP2);
         }
-        evaluator.updateWeights(move, error, sumOfEvalUntilNow);
+        evaluator.updateWeights(move, error, sumOfEvalUntilNow,board);
     }
 
     public float derivativeOfSigmoidFunction(int player){
         float sigmoidValue = 0;
         float value = 0;
         if(player == 1){
-            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP1.get(indexP1))));
+            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP1.get(indexP1-1))));
             value = sigmoidValue*(1-sigmoidValue);
         }
         else{
-            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP2.get(indexP2))));
+            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP2.get(indexP2-1))));
             value = sigmoidValue*(1-sigmoidValue);
         }
         return value;
@@ -57,12 +58,12 @@ public class TDLearner {
         float errorP2 = 0;
 
         if(player == 1) {
-            errorP1 = evaluationsP1.get(indexP1-1) - evaluationsP1.get(indexP1);
+            errorP1 = evaluationsP1.get(indexP1) - evaluationsP1.get(indexP1-1);
             System.out.println("Error for P1: " + errorP1);
             return errorP1;
         }
         else {
-            errorP2 = evaluationsP2.get(indexP2-1) - evaluationsP2.get(indexP2);
+            errorP2 = evaluationsP2.get(indexP2) - evaluationsP2.get(indexP2-1);
             System.out.println("Error for P2: " + errorP2);
             return errorP2;
         }

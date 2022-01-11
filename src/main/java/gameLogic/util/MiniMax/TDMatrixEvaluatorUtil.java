@@ -38,27 +38,44 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
        // float change = (float) (learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] * error *lambdaValue*sumOfEvaluations);
        // PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change;
 
-        for (int i = 0; i < board.length; i++)
-        {
-            for (int j = 0; j < board.length; j++)
-            {
+        updateWeightUpdateTable(lambdaValue,board,eligibilityTrace);
+
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
                 Piece currPiece = board[i][j];
-                if(currPiece == null){continue;}
-                int row,column;
-                if(currPiece.getPlayer() == 1) {
+                if (currPiece == null) {
+                    continue;
+                }
+                int row, column;
+                if (currPiece.getPlayer() == 1) {
                     row = currPiece.getPos().getRow();
-                    column = currPiece.getPos().getColumn();
-                }
-                else {
+                } else {
                     row = 7 - currPiece.getPos().getRow();
-                    column = 7 - currPiece.getPos().getColumn();
                 }
+                column = currPiece.getPos().getColumn();
 
                 Position piecePos = currPiece.getPos();
-                PSTs[currPiece.getInt()-1][row][column] += ALPHA * error * getFeatureValue(currPiece)*weightUpdateTable[currPiece.getInt()-1][row][column];
+                double f = getFeatureValue(currPiece);
+                double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+
+                if (currPiece.getPlayer() == 2) {
+                    System.out.println("delta: " + delta + " - f: " + f);
+
+                }
+
+                PSTs[currPiece.getInt() - 1][row][column] += delta;
 
             }
         }
+
+
+
+        //PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
+    }
+
+    public void updateWeightUpdateTable(double lambdaValue, Piece[][] board, double eligibilityTrace)
+    {
         //update eligibility trace
         lambdaMult(lambdaValue);
         for (int i = 0; i < board.length; i++)
@@ -69,19 +86,17 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 int row,column;
                 if(currPiece.getPlayer() == 1) {
                     row = currPiece.getPos().getRow();
-                    column = currPiece.getPos().getColumn();
                 }
                 else {
                     row = 7 - currPiece.getPos().getRow();
-                    column = 7 - currPiece.getPos().getColumn();
                 }
+                column = currPiece.getPos().getColumn();
 
 
                 Position piecePos = currPiece.getPos();
                 weightUpdateTable[currPiece.getInt()-1][row][column] += eligibilityTrace*getFeatureValue(currPiece);
             }
         }
-        //PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
     }
 
     private void lambdaMult(double lambdaValue) {
@@ -150,7 +165,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         double[] array = new double[size];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = 1.0 + (10.0-1.0) * r.nextDouble();
+            array[i] = 1.0; //+ (10.0-1.0) * r.nextDouble();
         }
 
         return array;

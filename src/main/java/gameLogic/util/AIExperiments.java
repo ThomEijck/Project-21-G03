@@ -8,7 +8,7 @@ public class AIExperiments {
         int simAmount = 40;
         double maxTime = 0.1;
         for (int i = 0; i < simAmount; i++) {
-            runSim(1,maxTime);
+            runSim(4,maxTime);
         }
 
     }
@@ -36,7 +36,7 @@ public class AIExperiments {
             int dice = GameManager.getDiceValue();
             double start = System.nanoTime();
             double end = System.nanoTime();
-            depth = 1;
+            depth = 4;
             while((end - start) / 1e9 <= maxTime){
                 m = newMove;
                 start = System.nanoTime();
@@ -47,7 +47,7 @@ public class AIExperiments {
                 m = newMove;
             }
 
-            learner.addMove(m, TDevaluator.evaluateBoard(g.getBoard()));
+            learner.addEvaluation(TDevaluator.evaluateBoard(g.getBoard()));
 
             learner.updatePST(TDevaluator,g.getBoard().getChessBoard());
             g.movePiece(m, true);

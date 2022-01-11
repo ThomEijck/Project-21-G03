@@ -9,10 +9,10 @@ import java.util.Vector;
 
 public class TDLearner {
 
-    private List<Float> evaluations = new ArrayList<>();
-    private List<Move> moves = new ArrayList<>();
-    private Vector<Float> derivatives = new Vector<>();
-    private Vector<Float> eTrace = new Vector<>();
+    private double currEvaluation;
+    private double prevEvaluation;
+    private double derivative;
+    private double eTrace;
     private int index;
 
     private float steepness = 0.5F;
@@ -25,56 +25,52 @@ public class TDLearner {
     public void updatePST(TDMatrixEvaluatorUtil evaluator, Piece[][] board) {
         if(index<1) return;
 
-        float error = calculateError();
-        derivatives = derivativeOfSigmoidFunction();
-        eTrace = eligibilityTrace(derivatives);
-        Move move;
-        move = moves.get(index);
-        evaluator.updateWeights(move, error, eTrace, index, board);
+        double error = calculateError();
+        derivative = derivativeOfSigmoidFunction();
+        eTrace = eligibilityTrace(derivative);
+        evaluator.updateWeights(error, eTrace, index, board);
     }
 
-    public Vector<Float> eligibilityTrace(Vector<Float> derivatives){
-        float prevTrace;
-
+    public double eligibilityTrace(double derivative){
         if (index==1){
-            eTrace.add(0,(float) (derivatives.elementAt(0)*Math.pow(lambda, 0)));
+            eTrace=derivative;
         }
         else{
-            prevTrace = eTrace.get(index-2);
-            eTrace.add(index-1,derivatives.elementAt(index-1)+(lambda*prevTrace));
-            System.out.println(eTrace.toString());
-            System.out.println(derivatives.toString());
+            double prevTrace = eTrace;
+            eTrace= derivative+(lambda*prevTrace);
+            System.out.println(eTrace);
+            System.out.println(derivative);
         }
         return eTrace;
     }
 
-    public Vector<Float> derivativeOfSigmoidFunction(){
+    public Double derivativeOfSigmoidFunction(){
         if(index < 1) {
             return null;
         }
-        float sigmoidValue;
-        float value;
+        double sigmoidValue;
+        double value;
 
-        sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluations.get(index-1))));
-        value = (float) (sigmoidValue*(1-sigmoidValue));
-        derivatives.insertElementAt(value,index-1);
-        return derivatives;
+        sigmoidValue =(1/(1 + Math.exp(-steepness*prevEvaluation)));
+        value = (sigmoidValue*(1-sigmoidValue));
+        derivative=value;
+        return derivative;
     }
 
-    public Float calculateError() {
+    public Double calculateError() {
         if(index < 1) {
             return null;
         }
-        float error = 0;
+        double error = 0;
 
-        error = evaluations.get(index) - evaluations.get(index-1);
+        error = currEvaluation - prevEvaluation;
         System.out.println("Error: " + error);
         return error;
     }
 
-    public void addMove(Move move, float evaluation) {
-        this.moves.add(move);
-        this.evaluations.add(evaluation);
+    public void addEvaluation(float evaluation) {
+        prevEvaluation = currEvaluation;
+        currEvaluation = evaluation;
         index++;
     }
 }

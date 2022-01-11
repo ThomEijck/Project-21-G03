@@ -36,7 +36,8 @@ public class AIExperiments {
 
             m = emm.findBestMove(g.getBoard(), player, depth, dice);
 
-            learner.addEvaluation(TDevaluator.evaluateBoard(g.getBoard()));
+            double evaluation = TDevaluator.evaluateBoard(g.getBoard());
+            learner.addEvaluation(evaluation);
 
             learner.updatePST(TDevaluator,g.getBoard().getChessBoard());
             g.movePiece(m, true);
@@ -46,7 +47,7 @@ public class AIExperiments {
             if(DEBUG) {
                 System.out.println("=================================================================");
 
-                System.out.println("Best value belonging to move shown for player " + player + ": " + emm.getCurBestValue());
+                System.out.println("Board evaluation: " + evaluation);
 
                 System.out.println("Depth: " + depth);
                 System.out.println("Move: " + m);

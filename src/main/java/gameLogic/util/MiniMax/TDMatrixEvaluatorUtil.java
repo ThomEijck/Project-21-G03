@@ -27,8 +27,8 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
     // NOTE: need to make weight update depend on player
-    public void updateWeights(double error, double eligibilityTrace, int index, Piece[][] board) {
-        float lambdaValue = 0.5F;
+    public void updateWeights(double error, double derivative, int index, Piece[][] board) {
+        double lambdaValue = 0.5;
 
 
       //  sumOfNetChangeToWeight += error*lambdaValue*sumOfEvaluations;
@@ -38,7 +38,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
        // float change = (float) (learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] * error *lambdaValue*sumOfEvaluations);
        // PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change;
 
-        updateWeightUpdateTable(lambdaValue,board,eligibilityTrace);
+        updateWeightUpdateTable(lambdaValue,board,derivative);
 
 
         for (int i = 0; i < board.length; i++) {
@@ -59,7 +59,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 double f = getFeatureValue(currPiece);
                 double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
-                if (currPiece.getPlayer() == 2) {
+                if (currPiece.getPlayer() == 1 && currPiece.getInt() == 5) {
                     System.out.println("delta: " + delta + " - f: " + f);
 
                 }
@@ -74,10 +74,11 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         //PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
     }
 
-    public void updateWeightUpdateTable(double lambdaValue, Piece[][] board, double eligibilityTrace)
+    public void updateWeightUpdateTable(double lambdaValue, Piece[][] board, double derivative)
     {
         //update eligibility trace
         lambdaMult(lambdaValue);
+
         for (int i = 0; i < board.length; i++)
         {
             for (int j = 0; j < board.length; j++) {
@@ -91,18 +92,23 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                     row = 7 - currPiece.getPos().getRow();
                 }
                 column = currPiece.getPos().getColumn();
+                double addition =  derivative*getFeatureValue(currPiece);
+                weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
 
+                if (currPiece.getPlayer() == 1 && currPiece.getInt() == 5) {
+                    System.out.println("derivative: " + derivative + " - trace: " + weightUpdateTable[currPiece.getInt()-1][row][column] + " - addition: " + addition);
 
-                Position piecePos = currPiece.getPos();
-                weightUpdateTable[currPiece.getInt()-1][row][column] += eligibilityTrace*getFeatureValue(currPiece);
+                }
+
             }
         }
+        System.out.println("--------------------------------");
     }
 
     private void lambdaMult(double lambdaValue) {
-        for (int i = 0; i < weightUpdateTable.length; i++) {
-            for (int j = 0; j < weightUpdateTable[i].length; j++) {
-                for (int k = 0; k < weightUpdateTable[i][j].length; k++) {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                for (int k = 0; k < 8; k++) {
                     weightUpdateTable[i][j][k] *= lambdaValue;
                 }
             }
@@ -165,7 +171,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         double[] array = new double[size];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = 1.0; //+ (10.0-1.0) * r.nextDouble();
+            array[i] = 1.5 - r.nextDouble();
         }
 
         return array;

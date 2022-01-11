@@ -15,7 +15,7 @@ public class AIExperiments {
 
     private static void runSim(int d,double maxTime)
     {
-        final boolean DEBUG = true;
+        final boolean DEBUG = false;
 
         GameManager g = new GameManager();
         MoveMakerUtil moveMaker = new MoveMakerUtil();
@@ -32,20 +32,9 @@ public class AIExperiments {
         {
             int player = GameManager.getCurrPlayer();
             Move m = null;
-            Move newMove = null;
             int dice = GameManager.getDiceValue();
-            double start = System.nanoTime();
-            double end = System.nanoTime();
-            depth = 4;
-            while((end - start) / 1e9 <= maxTime){
-                m = newMove;
-                start = System.nanoTime();
 
-                newMove = emm.findBestMove(g.getBoard(), player, depth++, dice);
-
-                end = System.nanoTime();
-                m = newMove;
-            }
+            m = emm.findBestMove(g.getBoard(), player, depth, dice);
 
             learner.addEvaluation(TDevaluator.evaluateBoard(g.getBoard()));
 

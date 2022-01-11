@@ -6,6 +6,7 @@ import gameLogic.util.Move;
 import gameLogic.util.Position;
 
 import java.util.Random;
+import java.util.Vector;
 
 public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 {
@@ -14,7 +15,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] learningRateTable = generateRandomLearningRateTables();
     private float derivateOfSigmoid;
     private double[] pieceValues = {1,1,1,1,1,100};
-    private final double ALPHA = 0.05;
+    private final double ALPHA = 0.50;
     private float sumOfEvaluations;
     private float sumOfNetChangeToWeight;
     private float sumOfAbsoluteChangeToWeight;
@@ -25,7 +26,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
     // NOTE: need to make weight update depend on player
-    public void updateWeights(Move move, float error, float sumOfEvaluations, Piece[][] board) {
+    public void updateWeights(Move move, float error, Vector<Float> eligibilityTrace, int index, Piece[][] board) {
         System.out.println(move);
         Piece piece = board[move.getStart().row][move.getStart().column];
         int pieceInt = piece.getInt();
@@ -45,10 +46,11 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
       //  learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] = (1/totalNumberOfAdjustableWeights)*(sumOfNetChangeToWeight/sumOfAbsoluteChangeToWeight);
 
 
-        double change2 = ALPHA*error;
+        double change2 = 0;
 
        // float change = (float) (learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] * error *lambdaValue*sumOfEvaluations);
        // PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change;
+
         for (int i = 0; i < board.length; i++)
         {
             for (int j = 0; j < board.length; j++)
@@ -56,7 +58,9 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 Piece currPiece = board[i][j];
                 if(currPiece == null){continue;}
                 Position piecePos = currPiece.getPos();
-                PSTs[currPiece.getInt()-1][piecePos.row][piecePos.column] += ALPHA * error * getFeatureValue(currPiece);
+
+                change2 = ALPHA * error * getFeatureValue(currPiece)*eligibilityTrace.get(index-1);
+                PSTs[currPiece.getInt()-1][piecePos.row][piecePos.column] += ALPHA * error * getFeatureValue(currPiece)*eligibilityTrace.get(index-1);
             }
         }
 
@@ -67,6 +71,9 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
     private int getFeatureValue(Piece piece)
     {
+        if(piece == null){
+            return 0;
+        }
         if(piece.getPlayer() == 1)
             return 1;
         else

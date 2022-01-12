@@ -6,11 +6,11 @@ import gameLogic.pieces.*;
 public class MoveMakerUtil implements MoveExecutorUtil
 {
     @Override
-    public boolean movePiece(Board board, Move move) {
+    public int movePiece(Board board, Move move) {
         Piece piece = board.getChessBoard()[move.getStart().row][move.getStart().column];
-        boolean value = false;
+        int value = -1;
         try {
-            board.movePiece(move,piece.getInt(), piece.getPlayer(),true);
+            value = board.movePiece(move,piece.getInt(), piece.getPlayer(),true);
         }catch (Exception e)
         {
             System.out.println("\n");

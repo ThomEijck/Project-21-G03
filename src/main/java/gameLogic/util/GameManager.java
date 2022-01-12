@@ -23,7 +23,7 @@ public class GameManager {
     // call this function to advance the gamestate
     public boolean movePiece(Move move, boolean isAi) {
         if (gameState == 0)// only make moves while the game is ongoing
-            return board.movePiece(move, diceValue, currPlayer, isAi);
+            return board.movePiece(move, diceValue, currPlayer, isAi) >=0;
         else if (gameState == 1) {
             System.out.println("White wins!!!");
         } else {

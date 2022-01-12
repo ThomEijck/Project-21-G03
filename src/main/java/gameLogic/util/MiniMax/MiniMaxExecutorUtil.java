@@ -73,8 +73,13 @@ public class MiniMaxExecutorUtil {
             for (int i = 0; i < moves.length; i++) {
                 if (moves[i].getEnd().row == -1)
                     continue;
-                moveExecutor.movePiece(board, moves[i]);
-                value = Float.max(value, minimax(board, depth - 1, nextPlayer(currentPlayer), a, b));
+                if(moveExecutor.movePiece(board, moves[i]) >= 1)
+                {
+                    value = Float.max(value, evaluator.evaluateBoard(board));
+                }else
+                {
+                    value = Float.max(value, minimax(board, depth - 1, nextPlayer(currentPlayer),a,b));
+                }
                 moveExecutor.unMovePiece(board, moves[i]);
 
                 // alpha beta stuff
@@ -89,8 +94,13 @@ public class MiniMaxExecutorUtil {
             for (int i = 0; i < moves.length; i++) {
                 if (moves[i].getEnd().row == -1)
                     continue;
-                moveExecutor.movePiece(board, moves[i]);
-                value = Float.min(value, minimax(board, depth - 1, nextPlayer(currentPlayer), a, b));
+                if(moveExecutor.movePiece(board, moves[i]) >= 1)
+                {
+                    value = Float.min(value, evaluator.evaluateBoard(board));
+                }else
+                {
+                    value = Float.min(value, minimax(board, depth - 1, nextPlayer(currentPlayer),a,b));
+                }
                 moveExecutor.unMovePiece(board, moves[i]);
 
                 // alpha beta stuff

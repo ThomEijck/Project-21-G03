@@ -78,7 +78,7 @@ public class Board {
      * }
      */
 
-    public boolean movePiece(Move move, int diceValue, int playerTurn, boolean isAI) {
+    public int movePiece(Move move, int diceValue, int playerTurn, boolean isAI) {
         Position start = move.getStart();
         Position end = move.getEnd();
         Piece piece = chessBoard[start.row][start.column];
@@ -87,23 +87,23 @@ public class Board {
         // cant move the other players pieces
         if (piece.getPlayer() != playerTurn) {
             System.out.println("Piece does not belong to player: " + playerTurn);
-            return false;
+            return -1;
         }
 
         // if the piece that wants to be moved is not allowed by the dice
         if (piece.getInt() != 1 && piece.getInt() != diceValue) {
             System.out.println("Invalid piece selected");
-            return false;
+            return -1;
         }
         // if a pawn can be promoted, a different number than 1 can be used
         else if (piece.getInt() == 1 && piece.getInt() != diceValue && !(end.row == 0 || end.row == 7)) {
             System.out.println("Invalid piece selected");
-            return false;
+            return -1;
         }
 
         if (piece == null) {
             System.out.println("No piece selected");
-            return false;
+            return -1;
         }
 
         if (validTarget(piece, end)) {
@@ -124,7 +124,7 @@ public class Board {
             printBoard();
             revertMove();
             printBoard();
-            return false;
+            return -1;
         }
 
         boolean rEnpassant = false;
@@ -213,6 +213,11 @@ public class Board {
 
 
          }
+
+         if(captured != null && captured.getInt() == 6)
+         {
+             return captured.getInt();
+         }
         if (piece.getInt() != 1 && captured == null)
 
         {
@@ -224,7 +229,7 @@ public class Board {
         piece.hasBeenMoved();
         // notify the game manager that a piece has been moved
         // GameManager.pieceMoved();
-        return true;
+        return 0;
     }
 
     public boolean revertMove() {

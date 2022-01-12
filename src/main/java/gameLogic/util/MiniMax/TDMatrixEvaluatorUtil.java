@@ -14,11 +14,12 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] PSTs = generateRandomPSTs();
     private double[][][] learningRateTable = generateLearningTables();
     private double[][][] weightUpdateTable = new double[6][8][8];
+    private double[][][] sumOfNetChange = new double[6][8][8];
+    private double[][][] sumOfAbsoluteChange = new double[6][8][8];
     private float derivateOfSigmoid;
-    private final double ALPHA = 0.50;
-    private float sumOfEvaluations;
-    private float sumOfNetChangeToWeight;
-    private float sumOfAbsoluteChangeToWeight;
+    private final double ALPHA = 1;
+    private final double LEARNINGRATECONSTANT = 0.1;
+
 
     public TDMatrixEvaluatorUtil() {
 
@@ -27,6 +28,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     // NOTE: need to make weight update depend on player
     public void updateWeights(double error, double derivative, int index, Piece[][] board) {
         double lambdaValue = 0.5;
+
 
       //  sumOfNetChangeToWeight += error*lambdaValue*sumOfEvaluations;
       //  sumOfAbsoluteChangeToWeight += Math.abs(error*lambdaValue*sumOfEvaluations);
@@ -56,22 +58,24 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 double f = getFeatureValue(currPiece);
 
                 //Temporal Coherence (Adjusting learning Rates)
-                sumOfNetChangeToWeight += error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
-                sumOfAbsoluteChangeToWeight += Math.abs(error * f * weightUpdateTable[currPiece.getInt() - 1][row][column]);
+                sumOfNetChange[currPiece.getInt()-1][row][column] += error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+                sumOfAbsoluteChange[currPiece.getInt()-1][row][column] += Math.abs(error * f * weightUpdateTable[currPiece.getInt() - 1][row][column]);
                 double numberOfLearningRates = 6 * 8 * 8;
-                if(sumOfAbsoluteChangeToWeight>=sumOfNetChangeToWeight){
-                    learningRateTable[currPiece.getInt()-1][row][column] = (1/ numberOfLearningRates)*(sumOfNetChangeToWeight/sumOfAbsoluteChangeToWeight);
+                if(sumOfAbsoluteChange[currPiece.getInt()-1][row][column]!= 0){
+                    learningRateTable[currPiece.getInt()-1][row][column] = (Math.abs(sumOfNetChange[currPiece.getInt()-1][row][column])/sumOfAbsoluteChange[currPiece.getInt()-1][row][column]);
                 }
                 else{
-                    learningRateTable[currPiece.getInt()-1][row][column] = 1;
+                    learningRateTable[currPiece.getInt()-1][row][column] = ALPHA;
                 }
 
-
-
-                double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+                double delta = learningRateTable[currPiece.getInt()-1][row][column] * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
                 if (currPiece.getPlayer() == 1) {
                     System.out.println("delta: " + delta + " - f: " + f);
+                    System.out.println("net change : " + (sumOfNetChange[currPiece.getInt()-1][row][column] + " abs Change: " + sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
+                    System.out.println("learning rate: " + learningRateTable[currPiece.getInt()-1][row][column]);
+                    System.out.println("");
+
                 }
 
 

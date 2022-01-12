@@ -12,15 +12,13 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 {
 
     private double[][][] PSTs = generateRandomPSTs();
-    private double[][][] learningRateTable = generateRandomLearningRateTables();
+    private double[][][] learningRateTable = generateLearningTables();
     private double[][][] weightUpdateTable = new double[6][8][8];
     private float derivateOfSigmoid;
-    private double[] pieceValues = {1,1,1,1,1,100};
     private final double ALPHA = 0.50;
     private float sumOfEvaluations;
     private float sumOfNetChangeToWeight;
     private float sumOfAbsoluteChangeToWeight;
-    private int totalNumberOfAdjustableWeights = 6*8*8;
 
     public TDMatrixEvaluatorUtil() {
 
@@ -57,12 +55,28 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
                 Position piecePos = currPiece.getPos();
                 double f = getFeatureValue(currPiece);
+
+                //Temporal Coherence (Adjusting learning Rates)
+                sumOfNetChangeToWeight += error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+                sumOfAbsoluteChangeToWeight += Math.abs(error * f * weightUpdateTable[currPiece.getInt() - 1][row][column]);
+                double numberOfLearningRates = 6 * 8 * 8;
+                if(sumOfAbsoluteChangeToWeight>=sumOfNetChangeToWeight){
+                    learningRateTable[currPiece.getInt()-1][row][column] = (1/ numberOfLearningRates)*(sumOfNetChangeToWeight/sumOfAbsoluteChangeToWeight);
+                }
+                else{
+                    learningRateTable[currPiece.getInt()-1][row][column] = 1;
+                }
+
+
+
                 double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
                 if (currPiece.getPlayer() == 1 && currPiece.getInt() == 5) {
                     System.out.println("delta: " + delta + " - f: " + f);
 
                 }
+
+
 
                 PSTs[currPiece.getInt() - 1][row][column] += delta;
 
@@ -115,6 +129,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         }
 
     }
+
 
 
     private int getFeatureValue(Piece piece)
@@ -177,6 +192,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         return array;
     }
 
+
     /**
      * @return a 3d matrix containing 8 PSTs with weights initialized randomly between 0.0 and 0.5
      */
@@ -189,11 +205,20 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         return pieceSquareTables;
     }
 
-    public static double[][][] generateRandomLearningRateTables() {
+    /***
+     * @return a matrix containing random weights
+     */
+    public static double[][][] generateLearningTables() {
+        Random random = new Random();
         double[][][] alphaTables = new double[6][8][8];
 
-        for(int i = 0; i < alphaTables.length; i++) {
-            alphaTables[i] = generateRandomMatrix();
+        for(int i = 0; i < alphaTables.length; i++){
+            for (int j = 0; j < 8 ; j++) {
+                for (int k = 0; k < 8 ; k++) {
+                    alphaTables[i][j][k] = 0.5;
+
+                }
+            }
         }
         return alphaTables;
     }
@@ -203,6 +228,19 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
             for(int j = 0; j < PSTs[0].length; j++) {
                 for(int k = 0; k < PSTs[0][0].length; k++) {
                     System.out.print(PSTs[i][j][k]);
+                    if(k != 7) System.out.print(" - ");
+                }
+                System.out.println();
+            }
+            System.out.println("\n");
+        }
+    }
+
+    public void printLearningTable() {
+        for(int i = 0; i < learningRateTable.length; i++) {
+            for(int j = 0; j < learningRateTable[0].length; j++) {
+                for(int k = 0; k < learningRateTable[0][0].length; k++) {
+                    System.out.print(learningRateTable[i][j][k]);
                     if(k != 7) System.out.print(" - ");
                 }
                 System.out.println();

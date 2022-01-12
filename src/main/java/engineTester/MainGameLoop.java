@@ -175,7 +175,7 @@ public class MainGameLoop {
                                         // 7 - selectedSquare.getPosition().row,
                                         // selectedSquare.getPosition().column);
                                         logicMove(board.getSquares()[i][j], selectedSquare, false);
-                                        movePiece(board.getSquares()[i][j], selectedSquare);
+                                        movePiece(board.getSquares()[i][j], selectedSquare, false);
                                         logicBoard.printBoard();
                                     }
                                 }
@@ -206,24 +206,7 @@ public class MainGameLoop {
                     }
                 }
             }
-            if (turn != playerColor && scene == 6) {
-                ArrayList<Square> move = getRandomMove();
-                movePiece(move.get(0), move.get(1));
-            }
-            if (turn != playerColor && scene == 7) {
-                int playerTurn = (int) (turn.getColorValue() * 2.0f) + 1;
-                // gameLogic.util.Board copyOfLogicBoard = logicBoard;
-                gameLogic.util.Move newMove = emm.findBestMove(logicBoard, playerTurn, 4, diceRoll + 1);
-                int sr = 7 - newMove.getStart().row;
-                int sc = newMove.getStart().column;
-                int er = 7 - newMove.getEnd().row;
-                int ec = newMove.getEnd().column;
-                // System.out.printf("(%d, %d) (%d, %d)", sc, sr, ec, er);
-                logicMove(board.getSquares()[sr][sc], board.getSquares()[er][ec], true);
-                movePiece(board.getSquares()[sr][sc], board.getSquares()[er][ec]);
-                logicBoard.printBoard();
-                // logicBoard.hardMove(7 - sr, sc, 7 - er, ec);
-            }
+
             renderer.prepare();
             shader.start();
             if (scene == 0) {
@@ -271,6 +254,27 @@ public class MainGameLoop {
             }
             shader.stop();
             DisplayManager.updateDisplay();
+
+            //these two if statements need t be after win check
+            //This works, and actually makes the GUI look better,
+            if (turn != playerColor && scene == 6) {
+                ArrayList<Square> move = getRandomMove();
+                movePiece(move.get(0), move.get(1),true);
+            }
+            if (turn != playerColor && scene == 7) {
+                int playerTurn = (int) (turn.getColorValue() * 2.0f) + 1;
+                // gameLogic.util.Board copyOfLogicBoard = logicBoard;
+                gameLogic.util.Move newMove = emm.findBestMove(logicBoard, playerTurn, 4, diceRoll + 1);
+                int sr = 7 - newMove.getStart().row;
+                int sc = newMove.getStart().column;
+                int er = 7 - newMove.getEnd().row;
+                int ec = newMove.getEnd().column;
+                // System.out.printf("(%d, %d) (%d, %d)", sc, sr, ec, er);
+                logicMove(board.getSquares()[sr][sc], board.getSquares()[er][ec], true);
+                movePiece(board.getSquares()[sr][sc], board.getSquares()[er][ec], true);
+                logicBoard.printBoard();
+                // logicBoard.hardMove(7 - sr, sc, 7 - er, ec);
+            }
         }
         shader.cleanUp();
         loader.cleanUp();
@@ -399,7 +403,7 @@ public class MainGameLoop {
         return rmoves.get(random);
     }
 
-    private static void movePiece(Square from, Square to) {
+    private static void movePiece(Square from, Square to, boolean isAI) {
         int i = from.getPosition().column;
         int j = from.getPosition().row;
         int xIndex = to.getPosition().column;
@@ -432,14 +436,21 @@ public class MainGameLoop {
         boolean lEnpassant = piece.getLeftEnpassant();
         resetEnPassant();
         if (piece.getPieceType() == PieceType.Pawn) {
-            if ((j - xIndex == -1 && rEnpassant) || (j - xIndex == 1 && lEnpassant)) {
+            if ((i - xIndex == -1 && rEnpassant) || (i - xIndex == 1 && lEnpassant)) {
                 board.getSquares()[i][xIndex].removePiece();
             }
             if (Math.abs(i - yIndex) == 2) {
                 enableEnPassant(yIndex, xIndex, board.getSquares());
             }
             if (yIndex == 0 || yIndex == 7) {
-                to.setPiece(promotePawn(piece, diceRoll));
+                if(isAI && (diceRoll == 1 || diceRoll == 6))
+                {
+                    to.setPiece(promotePawn(piece, 5));
+                }else
+                {
+                    to.setPiece(promotePawn(piece, diceRoll));
+                }
+
             }
         }
         turn = (turn == Color.White) ? Color.Black : Color.White;

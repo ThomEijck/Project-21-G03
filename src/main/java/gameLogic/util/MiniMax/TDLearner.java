@@ -1,11 +1,6 @@
 package gameLogic.util.MiniMax;
 
 import gameLogic.pieces.Piece;
-import gameLogic.util.Move;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 public class TDLearner {
 

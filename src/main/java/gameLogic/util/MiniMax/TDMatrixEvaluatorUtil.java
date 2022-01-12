@@ -28,7 +28,6 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     public void updateWeights(double error, double derivative, int index, Piece[][] board) {
         double lambdaValue = 0.5;
 
-
       //  sumOfNetChangeToWeight += error*lambdaValue*sumOfEvaluations;
       //  sumOfAbsoluteChangeToWeight += Math.abs(error*lambdaValue*sumOfEvaluations);
       //  learningRateTable[pieceInt-1][row][move.getEnd().getColumn()] = (1/totalNumberOfAdjustableWeights)*(sumOfNetChangeToWeight/sumOfAbsoluteChangeToWeight);
@@ -71,9 +70,8 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
                 double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
-                if (currPiece.getPlayer() == 1 && currPiece.getInt() == 5) {
+                if (currPiece.getPlayer() == 1) {
                     System.out.println("delta: " + delta + " - f: " + f);
-
                 }
 
 
@@ -82,8 +80,6 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
             }
         }
-
-
 
         //PSTs[pieceInt-1][row][move.getEnd().getColumn()] += change2;
     }
@@ -109,7 +105,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 double addition =  derivative*getFeatureValue(currPiece);
                 weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
 
-                if (currPiece.getPlayer() == 1 && currPiece.getInt() == 5) {
+                if (currPiece.getPlayer() == 1) {
                     System.out.println("derivative: " + derivative + " - trace: " + weightUpdateTable[currPiece.getInt()-1][row][column] + " - addition: " + addition);
 
                 }

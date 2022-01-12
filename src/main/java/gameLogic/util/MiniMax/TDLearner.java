@@ -23,7 +23,7 @@ public class TDLearner {
         double error = calculateError();
         derivative = derivativeOfSigmoidFunction();
         //eTrace = eligibilityTrace(derivative);
-        evaluator.updateWeights(error, derivative, index, board);
+        evaluator.updateWeights(error, derivative, board);
     }
 
     public double eligibilityTrace(double derivative){

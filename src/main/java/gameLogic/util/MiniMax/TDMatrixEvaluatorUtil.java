@@ -16,9 +16,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] weightUpdateTable = new double[6][8][8];
     private double[][][] sumOfNetChange = new double[6][8][8];
     private double[][][] sumOfAbsoluteChange = new double[6][8][8];
-    private float derivateOfSigmoid;
     private final double ALPHA = 1;
-    private final double LEARNINGRATECONSTANT = 0.1;
 
 
     public TDMatrixEvaluatorUtil() {
@@ -26,7 +24,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
     // NOTE: need to make weight update depend on player
-    public void updateWeights(double error, double derivative, int index, Piece[][] board) {
+    public void updateWeights(double error, double derivative, Piece[][] board) {
         double lambdaValue = 0.5;
 
 
@@ -75,7 +73,6 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                     System.out.println("net change : " + (sumOfNetChange[currPiece.getInt()-1][row][column] + " abs Change: " + sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
                     System.out.println("learning rate: " + learningRateTable[currPiece.getInt()-1][row][column]);
                     System.out.println("");
-
                 }
 
 

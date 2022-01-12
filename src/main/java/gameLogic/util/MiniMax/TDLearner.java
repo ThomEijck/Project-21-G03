@@ -1,82 +1,71 @@
 package gameLogic.util.MiniMax;
 
-import gameLogic.util.Move;
-
-import java.util.ArrayList;
-import java.util.List;
+import gameLogic.pieces.Piece;
 
 public class TDLearner {
 
-    private List<Float> evaluationsP1 = new ArrayList<>();
-    private List<Float> evaluationsP2 = new ArrayList<>();
-    private List<Move> movesP1 = new ArrayList<>();
-    private List<Move> movesP2 = new ArrayList<>();
-    private int indexP1;
-    private int indexP2;
+    private double currEvaluation;
+    private double prevEvaluation;
+    private double derivative;
+    private double eTrace;
+    private int index;
+
     private float steepness = 0.5F;
-    private float sumOfEvalUntilNow;
+    private float lambda = 0.5F;
 
     public TDLearner() {
-        indexP1 = -1;
-        indexP2 = -1;
+        index = -1;
     }
 
-    public void updatePST(int player, TDMatrixEvaluatorUtil evaluator) {
-        if(indexP1<1) return;
-        float error = calculateError(player);
-        sumOfEvalUntilNow += derivativeOfSigmoidFunction(player);
-        Move move;
-        if(player == 1) {
-            move = movesP1.get(indexP1-1);
-        }
-        else {
-            move = movesP2.get(indexP2-1);
-        }
-        evaluator.updateWeights(move, error, sumOfEvalUntilNow);
+    public void updatePST(TDMatrixEvaluatorUtil evaluator, Piece[][] board) {
+        if(index<1) return;
+
+        double error = calculateError();
+        derivative = derivativeOfSigmoidFunction();
+        //eTrace = eligibilityTrace(derivative);
+        evaluator.updateWeights(error, derivative, board);
     }
 
-    public float derivativeOfSigmoidFunction(int player){
-        float sigmoidValue = 0;
-        float value = 0;
-        if(player == 1){
-            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP1.get(indexP1))));
-            value = sigmoidValue*(1-sigmoidValue);
+    public double eligibilityTrace(double derivative){
+        if (index==1){
+            eTrace=derivative;
         }
         else{
-            sigmoidValue = (float) (1/(1 + Math.exp(-steepness*evaluationsP2.get(indexP2))));
-            value = sigmoidValue*(1-sigmoidValue);
+            double prevTrace = eTrace;
+            eTrace= derivative+(lambda*prevTrace);
+            System.out.println(eTrace);
+            System.out.println(derivative);
         }
-        return value;
+        return eTrace;
     }
 
-    public Float calculateError(int player) {
-        if(indexP1 < 1) {
+    public Double derivativeOfSigmoidFunction(){
+        if(index < 1) {
             return null;
         }
-        float errorP1 = 0;
-        float errorP2 = 0;
+        double sigmoidValue;
+        double value;
 
-        if(player == 1) {
-            errorP1 = evaluationsP1.get(indexP1-1) - evaluationsP1.get(indexP1);
-            System.out.println("Error for P1: " + errorP1);
-            return errorP1;
-        }
-        else {
-            errorP2 = evaluationsP2.get(indexP2-1) - evaluationsP2.get(indexP2);
-            System.out.println("Error for P2: " + errorP2);
-            return errorP2;
-        }
+        sigmoidValue =(1/(1 + Math.exp(-steepness*prevEvaluation)));
+        value = (sigmoidValue*(1-sigmoidValue));
+        derivative=value;
+        return derivative;
     }
 
-    public void addMoveP1(Move move, float evaluation) {
-        this.movesP1.add(move);
-        this.evaluationsP1.add(evaluation);
-        indexP1++;
+    public Double calculateError() {
+        if(index < 1) {
+            return null;
+        }
+        double error = 0;
+
+        error = currEvaluation - prevEvaluation;
+        System.out.println("Error: " + error);
+        return error;
     }
 
-    public void addMoveP2(Move move, float evaluation) {
-        this.movesP2.add(move);
-        this.evaluationsP2.add(evaluation);
-        indexP2++;
+    public void addEvaluation(double evaluation) {
+        prevEvaluation = currEvaluation;
+        currEvaluation = evaluation;
+        index++;
     }
 }

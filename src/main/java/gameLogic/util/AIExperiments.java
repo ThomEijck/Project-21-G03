@@ -8,7 +8,7 @@ public class AIExperiments {
         int simAmount = 40;
         double maxTime = 0.1;
         for (int i = 0; i < simAmount; i++) {
-            runSim(1,maxTime);
+            runSim(4,maxTime);
         }
 
     }
@@ -32,49 +32,29 @@ public class AIExperiments {
         {
             int player = GameManager.getCurrPlayer();
             Move m = null;
-            Move newMove = null;
             int dice = GameManager.getDiceValue();
-            double start = System.nanoTime();
-            double end = System.nanoTime();
-            depth = 1;
-            while((end - start) / 1e9 <= maxTime){
-                m = newMove;
-                start = System.nanoTime();
 
-                if (player == 1) {
-                    newMove = emm.findBestMove(g.getBoard(), player, depth++, dice);
+            m = emm.findBestMove(g.getBoard(), player, depth, dice);
 
-                } else {
-                    newMove = mm.findBestMove(g.getBoard(), player, depth++, dice);
-                }
+            double evaluation = TDevaluator.evaluateBoard(g.getBoard());
+            learner.addEvaluation(evaluation);
 
-                end = System.nanoTime();
-                m = newMove;
-            }
-            if (player == 1) {
-                learner.addMoveP1(m, emm.getCurBestValue());
-            } else {
-                learner.addMoveP2(m, mm.getCurBestValue());
-            }
-            learner.updatePST(player, TDevaluator);
+            learner.updatePST(TDevaluator,g.getBoard().getChessBoard());
             g.movePiece(m, true);
             GameManager.pieceMoved();
             moveCount[player - 1]++;
             totalDepth[player - 1]+= depth-1;
             if(DEBUG) {
                 System.out.println("=================================================================");
-                if (player == 1) {
-                    System.out.println("Best value belonging to move shown for player " + player + ": " + emm.getCurBestValue());
 
-                } else {
-                    System.out.println("Best value belonging to move shown for player " + player + ": " + mm.getCurBestValue());
-                }
-                learner.calculateError(player);
+                System.out.println("Board evaluation: " + evaluation);
+
                 System.out.println("Depth: " + depth);
                 System.out.println("Move: " + m);
                 System.out.println("Dice value: " + dice);
                 System.out.println("GameState " + GameManager.getGameState());
                 g.getBoard().printBoard();
+                System.out.println("\n");
             }
         }
         double wAvg = totalDepth[0]/moveCount[0];

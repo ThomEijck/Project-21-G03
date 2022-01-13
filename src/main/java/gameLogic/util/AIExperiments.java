@@ -5,7 +5,7 @@ import gameLogic.util.MiniMax.*;
 public class AIExperiments {
 
     public static void main(String[] args) {
-        int simAmount = 20;
+        int simAmount = 100;
         double maxTime = 0.1;
         long start = System.nanoTime();
         TDMatrixEvaluatorUtil TDevaluator = new TDMatrixEvaluatorUtil();
@@ -14,6 +14,7 @@ public class AIExperiments {
         }
         long end = System.nanoTime();
         double delta = (end - start)/1e9;
+        TDevaluator.printPSTs();
         System.out.println("total time :" + delta);
     }
 
@@ -62,7 +63,7 @@ public class AIExperiments {
         }
         double wAvg = totalDepth[0]/moveCount[0];
         double bAvg = totalDepth[1]/moveCount[1];
-        System.out.println(GameManager.getGameState() + ";" + wAvg + ";" + bAvg);
+        //System.out.println(GameManager.getGameState() + ";" + wAvg + ";" + bAvg);
         if(GameManager.getGameState() == 1)//white win
         {
             learner.addEvaluation(100);
@@ -74,7 +75,9 @@ public class AIExperiments {
             learner.addEvaluation(0);
         }
         learner.updatePST(TDevaluator,g.getBoard().getChessBoard());
-        TDevaluator.printPSTs();
+        double[] average = TDevaluator.calcuateAverage();
 
+
+        System.out.println(average[0] + "," + average[1] + "," + average[2] + "," +average[3] + "," +average[4] + "," +average[5]);
     }
 }

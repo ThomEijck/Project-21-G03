@@ -246,6 +246,21 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         }
     }
 
+    public double[] calcuateAverage()
+    {
+        double[] average = new double[6];
+
+        for(int i = 0; i < PSTs.length; i++) {
+            for(int j = 0; j < PSTs[0].length; j++) {
+                for(int k = 0; k < PSTs[0][0].length; k++) {
+                    average[i] += PSTs[i][j][k];
+                }
+            }
+            average[i] /= 64;
+        }
+        return average;
+    }
+
     public void newGame()
     {
         //learningRateTable = generateLearningTables();

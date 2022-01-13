@@ -16,7 +16,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] weightUpdateTable = new double[6][8][8];
     private double[][][] sumOfNetChange = new double[6][8][8];
     private double[][][] sumOfAbsoluteChange = new double[6][8][8];
-    private final double ALPHA = 0.5;
+    private final double ALPHA = 0.1;
 
 
     public TDMatrixEvaluatorUtil() {

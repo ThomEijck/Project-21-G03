@@ -73,11 +73,12 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                     //System.out.println("net change : " + (sumOfNetChange[currPiece.getInt()-1][row][column] + " abs Change: " + sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
                     //System.out.println("learning rate: " + learningRateTable[currPiece.getInt()-1][row][column]);
                     //System.out.println("");
+                    PSTs[currPiece.getInt() - 1][row][column] += delta;
                 }
 
 
 
-                PSTs[currPiece.getInt() - 1][row][column] += delta;
+
 
             }
         }
@@ -104,11 +105,11 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 }
                 column = currPiece.getPos().getColumn();
                 double addition =  derivative*getFeatureValue(currPiece);
-                weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
+
 
                 if (currPiece.getPlayer() == 1) {
                     //System.out.println("derivative: " + derivative + " - trace: " + weightUpdateTable[currPiece.getInt()-1][row][column] + " - addition: " + addition);
-
+                    weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
                 }
 
             }

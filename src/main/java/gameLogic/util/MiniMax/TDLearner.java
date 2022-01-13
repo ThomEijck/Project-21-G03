@@ -33,8 +33,8 @@ public class TDLearner {
         else{
             double prevTrace = eTrace;
             eTrace= derivative+(lambda*prevTrace);
-            System.out.println(eTrace);
-            System.out.println(derivative);
+            //System.out.println(eTrace);
+            //System.out.println(derivative);
         }
         return eTrace;
     }
@@ -59,7 +59,7 @@ public class TDLearner {
         double error = 0;
 
         error = currEvaluation - prevEvaluation;
-        System.out.println("Error: " + error);
+        //System.out.println("Error: " + error);
         return error;
     }
 

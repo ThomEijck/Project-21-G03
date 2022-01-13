@@ -16,7 +16,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     private double[][][] weightUpdateTable = new double[6][8][8];
     private double[][][] sumOfNetChange = new double[6][8][8];
     private double[][][] sumOfAbsoluteChange = new double[6][8][8];
-    private final double ALPHA = 1;
+    private final double ALPHA = 0.5;
 
 
     public TDMatrixEvaluatorUtil() {
@@ -66,13 +66,13 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                     learningRateTable[currPiece.getInt()-1][row][column] = ALPHA;
                 }
 
-                double delta = learningRateTable[currPiece.getInt()-1][row][column] * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+                double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];;//learningRateTable[currPiece.getInt()-1][row][column] * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
                 if (currPiece.getPlayer() == 1) {
-                    System.out.println("delta: " + delta + " - f: " + f);
-                    System.out.println("net change : " + (sumOfNetChange[currPiece.getInt()-1][row][column] + " abs Change: " + sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
-                    System.out.println("learning rate: " + learningRateTable[currPiece.getInt()-1][row][column]);
-                    System.out.println("");
+                    //System.out.println("delta: " + delta + " - f: " + f);
+                    //System.out.println("net change : " + (sumOfNetChange[currPiece.getInt()-1][row][column] + " abs Change: " + sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
+                    //System.out.println("learning rate: " + learningRateTable[currPiece.getInt()-1][row][column]);
+                    //System.out.println("");
                 }
 
 
@@ -107,13 +107,13 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
 
                 if (currPiece.getPlayer() == 1) {
-                    System.out.println("derivative: " + derivative + " - trace: " + weightUpdateTable[currPiece.getInt()-1][row][column] + " - addition: " + addition);
+                    //System.out.println("derivative: " + derivative + " - trace: " + weightUpdateTable[currPiece.getInt()-1][row][column] + " - addition: " + addition);
 
                 }
 
             }
         }
-        System.out.println("--------------------------------");
+        //System.out.println("--------------------------------");
     }
 
     private void lambdaMult(double lambdaValue) {
@@ -183,7 +183,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         double[] array = new double[size];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = 1.5 - r.nextDouble();
+            array[i] = 1;//.5 - r.nextDouble();
         }
 
         return array;
@@ -244,5 +244,13 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
             }
             System.out.println("\n");
         }
+    }
+
+    public void newGame()
+    {
+        //learningRateTable = generateLearningTables();
+        weightUpdateTable = new double[6][8][8];
+        sumOfNetChange = new double[6][8][8];
+        sumOfAbsoluteChange = new double[6][8][8];
     }
 }

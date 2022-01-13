@@ -5,7 +5,7 @@ import gameLogic.util.MiniMax.*;
 public class AIExperiments {
 
     public static void main(String[] args) {
-        int simAmount = 100;
+        int simAmount = 20;
         double maxTime = 0.1;
         long start = System.nanoTime();
         TDMatrixEvaluatorUtil TDevaluator = new TDMatrixEvaluatorUtil();
@@ -73,7 +73,6 @@ public class AIExperiments {
         {
             learner.addEvaluation(0);
         }
-
         learner.updatePST(TDevaluator,g.getBoard().getChessBoard());
         TDevaluator.printPSTs();
 

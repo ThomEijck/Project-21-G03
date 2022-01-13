@@ -56,15 +56,15 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 double f = getFeatureValue(currPiece);
 
                 //Temporal Coherence (Adjusting learning Rates)
-                sumOfNetChange[currPiece.getInt()-1][row][column] += error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
-                sumOfAbsoluteChange[currPiece.getInt()-1][row][column] += Math.abs(error * f * weightUpdateTable[currPiece.getInt() - 1][row][column]);
-                double numberOfLearningRates = 6 * 8 * 8;
-                if(sumOfAbsoluteChange[currPiece.getInt()-1][row][column]!= 0){
-                    learningRateTable[currPiece.getInt()-1][row][column] = (Math.abs(sumOfNetChange[currPiece.getInt()-1][row][column])/sumOfAbsoluteChange[currPiece.getInt()-1][row][column]);
-                }
-                else{
-                    learningRateTable[currPiece.getInt()-1][row][column] = ALPHA;
-                }
+                //sumOfNetChange[currPiece.getInt()-1][row][column] += error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+                //sumOfAbsoluteChange[currPiece.getInt()-1][row][column] += Math.abs(error * f * weightUpdateTable[currPiece.getInt() - 1][row][column]);
+                //double numberOfLearningRates = 6 * 8 * 8;
+                //if(sumOfAbsoluteChange[currPiece.getInt()-1][row][column]!= 0){
+                //    learningRateTable[currPiece.getInt()-1][row][column] = (Math.abs(sumOfNetChange[currPiece.getInt()-1][row][column])/sumOfAbsoluteChange[currPiece.getInt()-1][row][column]);
+                //}
+                //else{
+                //    learningRateTable[currPiece.getInt()-1][row][column] = ALPHA;
+                //}
 
                 double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];;//learningRateTable[currPiece.getInt()-1][row][column] * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
@@ -154,7 +154,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                     evaluation += PSTs[pieceNum][i][j];
                 }
                 else {
-                    evaluation -= PSTs[pieceNum][(squares.length-1)-i][(squares.length-1)-j];
+                    evaluation -= PSTs[pieceNum][(squares.length-1)-i][j];
                 }
             }
         }
@@ -183,7 +183,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         double[] array = new double[size];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = 1;//.5 - r.nextDouble();
+            array[i] = 0;//.5 - r.nextDouble();
         }
 
         return array;

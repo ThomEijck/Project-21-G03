@@ -1,71 +1,68 @@
 package gameLogic.util.MiniMax;
 
 import gameLogic.pieces.Piece;
-
-public class TDLearner {
-
-    private double currEvaluation;
-    private double prevEvaluation;
-    private double derivative;
-    private double eTrace;
-    private int index;
-
-    private float steepness = 0.5F;
-    private float lambda = 0.5F;
-
-    public TDLearner() {
-        index = -1;
+import gameLogic.util.*;
+public class TDLearner
+{
+    float[] weightDelta;
+    float[] weightTrace;//i'th value is the partial derivative with respect to the i'th weight
+    float prevEval;
+    final float ALPHA = 0.1F;//learning rate
+    final float LAMBDA = 0.0F;//
+    public TDLearner()
+    {
+        weightDelta = new float[6*64];
+        weightTrace = new float[6*64];
     }
 
-    public void updatePST(TDMatrixEvaluatorUtil evaluator, Piece[][] board) {
-        if(index<1) return;
+    public void updateDelta(float newEval)
+    {
+        float error = (newEval - prevEval);
+        for (int i = 0; i < weightDelta.length; i++) {
 
-        double error = calculateError();
-        derivative = derivativeOfSigmoidFunction();
-        //eTrace = eligibilityTrace(derivative);
-        evaluator.updateWeights(error, derivative, board);
-    }
-
-    public double eligibilityTrace(double derivative){
-        if (index==1){
-            eTrace=derivative;
+            weightDelta[i] += ALPHA * error * weightTrace[i];
         }
-        else{
-            double prevTrace = eTrace;
-            eTrace= derivative+(lambda*prevTrace);
-            //System.out.println(eTrace);
-            //System.out.println(derivative);
-        }
-        return eTrace;
+        System.out.println("error: " + error);
+        prevEval = newEval;
     }
 
-    public Double derivativeOfSigmoidFunction(){
-        if(index < 1) {
-            return null;
+    public void updateWeightTrace(Board board)
+    {
+        for (int i = 0; i < weightTrace.length; i++) {
+            weightTrace[i] *= LAMBDA;
         }
-        double sigmoidValue;
-        double value;
 
-        sigmoidValue =(1/(1 + Math.exp(-steepness*prevEvaluation)));
-        value = (sigmoidValue*(1-sigmoidValue));
-        derivative=value;
-        return derivative;
+        Piece[][] pieces = board.getChessBoard();
+
+        for (int i = 0; i < pieces.length; i++) {
+            for (int j = 0; j < pieces.length; j++) {
+                Piece piece = pieces[i][j];
+                if(piece == null){continue;}
+
+                weightTrace[TDMatrixEvaluatorUtil.getWeightIndex(piece)] += TDMatrixEvaluatorUtil.getFeatureValue(piece);
+            }
+        }
+
+        //printTrace();
+        //board.printBoard();
     }
 
-    public Double calculateError() {
-        if(index < 1) {
-            return null;
-        }
-        double error = 0;
-
-        error = currEvaluation - prevEvaluation;
-        //System.out.println("Error: " + error);
-        return error;
+    public float[] getWeightDelta() {
+        return weightDelta;
     }
 
-    public void addEvaluation(double evaluation) {
-        prevEvaluation = currEvaluation;
-        currEvaluation = evaluation;
-        index++;
+    public void printTrace()
+    {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                for (int k = 0; k < 8; k++) {
+                    System.out.print(weightTrace[i * 64 + j* 8 + k]);
+                    if(k!= 7)
+                        System.out.print(" ");
+                }
+                System.out.println();
+            }
+            System.out.println("\n");
+        }
     }
 }

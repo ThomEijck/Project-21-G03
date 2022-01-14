@@ -3,7 +3,6 @@ package GUI3D.engine.graphics;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import GUI3D.engine.graphics.models.RawModel;
 import GUI3D.engine.graphics.textures.TextureData;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.*;
 import org.lwjglx.BufferUtils;
 import org.newdawn.slick.opengl.Texture;
@@ -138,14 +137,14 @@ public class Loader {
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
     }
 
-    private @NotNull IntBuffer storeDataInIntBuffer(int @NotNull [] data){
+    private IntBuffer storeDataInIntBuffer(int [] data){
         IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
         buffer.put(data);
         buffer.flip();
         return buffer;
     }
 
-    private @NotNull FloatBuffer storeDataInFloatBuffer(float @NotNull [] data){
+    private FloatBuffer storeDataInFloatBuffer(float [] data){
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
         buffer.put(data);
         buffer.flip();

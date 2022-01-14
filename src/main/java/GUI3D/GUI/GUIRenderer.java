@@ -3,7 +3,6 @@ package GUI3D.GUI;
 import GUI3D.engine.graphics.Loader;
 import GUI3D.engine.graphics.models.RawModel;
 import GUI3D.maths.Maths;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.*;
 import org.lwjglx.util.vector.Matrix4f;
 
@@ -16,14 +15,14 @@ public class GUIRenderer {
     private GUIShader shader;
 
 
-    public GUIRenderer(@NotNull Loader loader){
+    public GUIRenderer(Loader loader){
         float[] positions = {-1,1,-1,-1,1,1,1,-1};
         quad = loader.loadToVAO(positions, 2);
         shader = new GUIShader();
     }
 
 
-    public void render(@NotNull List<GUITexture> guis){
+    public void render(List<GUITexture> guis){
         shader.start();
         GL30.glBindVertexArray(quad.getVaoID());
         GL20.glEnableVertexAttribArray(0);

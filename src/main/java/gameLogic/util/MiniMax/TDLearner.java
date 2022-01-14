@@ -1,6 +1,7 @@
 package gameLogic.util.MiniMax;
 
 import gameLogic.pieces.Piece;
+import gameLogic.util.GameManager;
 
 public class TDLearner {
 
@@ -9,6 +10,7 @@ public class TDLearner {
     private double derivative;
     private double eTrace;
     private int index;
+    private double constant = 0.5;
 
     private float steepness = 0.5F;
     private float lambda = 0.5F;
@@ -26,6 +28,29 @@ public class TDLearner {
         evaluator.updateWeights(error, derivative, board);
     }
 
+    public void gameEnd(TDMatrixEvaluatorUtil evaluator){
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 8; j++) {
+                    for (int k = 0; k < 8; k++) {
+
+                        evaluator.sumOfNetChange[i][j][k] += evaluator.PSTsDelta[i][j][k];
+                        evaluator.sumOfAbsoluteChange[i][j][k] += Math.abs(evaluator.PSTsDelta[i][j][k]);
+
+                        evaluator.PSTsDelta[i][j][k] *= evaluator.learningRateTable[i][j][k]*constant;
+                        evaluator.PSTs[i][j][k] += evaluator.PSTsDelta[i][j][k];
+
+                        if(evaluator.sumOfAbsoluteChange[i][j][k]!= 0){
+                            evaluator.learningRateTable[i][j][k] = ((Math.abs(evaluator.sumOfNetChange[i][j][k])/evaluator.sumOfAbsoluteChange[i][j][k]));
+                        }
+                        else{
+                            evaluator.learningRateTable[i][j][k] = 1;
+                        }
+
+                    }
+                }
+            }
+    }
+
     public double eligibilityTrace(double derivative){
         if (index==1){
             eTrace=derivative;
@@ -33,7 +58,7 @@ public class TDLearner {
         else{
             double prevTrace = eTrace;
             eTrace= derivative+(lambda*prevTrace);
-            //System.out.println(eTrace);
+           // System.out.println(eTrace);
             //System.out.println(derivative);
         }
         return eTrace;
@@ -68,4 +93,5 @@ public class TDLearner {
         currEvaluation = evaluation;
         index++;
     }
+
 }

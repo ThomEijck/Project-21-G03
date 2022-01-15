@@ -1,6 +1,5 @@
 package GUI3D.engine.graphics.textures.objConverter;
 
-import org.jetbrains.annotations.NotNull;
 import org.lwjglx.util.vector.Vector2f;
 import org.lwjglx.util.vector.Vector3f;
 
@@ -12,7 +11,7 @@ public class OBJFileLoader {
 
     private static final String RES_LOC = "res/3D/";
 
-    public static @NotNull ModelData loadOBJ(String objFileName) {
+    public static ModelData loadOBJ(String objFileName) {
         FileReader read = null;
         File objFile = new File(RES_LOC + objFileName + ".obj");
         try {
@@ -78,7 +77,7 @@ public class OBJFileLoader {
         return data;
     }
 
-    private static void processVertex(String @NotNull [] vertex, @NotNull List<Vertex> vertices, List<Integer> indices) {
+    private static void processVertex(String [] vertex, List<Vertex> vertices, List<Integer> indices) {
         int index = Integer.parseInt(vertex[0]) - 1;
         Vertex currentVertex = vertices.get(index);
         int textureIndex = Integer.parseInt(vertex[1]) - 1;
@@ -93,7 +92,7 @@ public class OBJFileLoader {
         }
     }
 
-    private static int @NotNull [] convertIndicesListToArray(@NotNull List<Integer> indices) {
+    private static int [] convertIndicesListToArray(List<Integer> indices) {
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indicesArray.length; i++) {
             indicesArray[i] = indices.get(i);
@@ -101,7 +100,7 @@ public class OBJFileLoader {
         return indicesArray;
     }
 
-    private static float convertDataToArrays(@NotNull List<Vertex> vertices, List<Vector2f> textures,
+    private static float convertDataToArrays(List<Vertex> vertices, List<Vector2f> textures,
                                              List<Vector3f> normals, float[] verticesArray, float[] texturesArray,
                                              float[] normalsArray) {
         float furthestPoint = 0;
@@ -125,7 +124,7 @@ public class OBJFileLoader {
         return furthestPoint;
     }
 
-    private static void dealWithAlreadyProcessedVertex(@NotNull Vertex previousVertex, int newTextureIndex,
+    private static void dealWithAlreadyProcessedVertex(Vertex previousVertex, int newTextureIndex,
                                                        int newNormalIndex, List<Integer> indices, List<Vertex> vertices) {
         if (previousVertex.hasSameTextureAndNormal(newTextureIndex, newNormalIndex)) {
             indices.add(previousVertex.getIndex());
@@ -146,7 +145,7 @@ public class OBJFileLoader {
         }
     }
 
-    private static void removeUnusedVertices(@NotNull List<Vertex> vertices){
+    private static void removeUnusedVertices(List<Vertex> vertices){
         for(Vertex vertex:vertices){
             if(!vertex.isSet()){
                 vertex.setTextureIndex(0);

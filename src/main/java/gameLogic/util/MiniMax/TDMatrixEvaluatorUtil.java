@@ -11,15 +11,12 @@ import java.util.Vector;
 public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 {
 
-    private static final double STARTINGWEIGHTSVALUE = 0;
-    private static final double LEARNINGRATEATSTART = 1.0;
-    public double[][][] PSTs = generateRandomPSTs();
-    public double[][][] learningRateTable = generateLearningTables();
-    public double[][][] weightUpdateTable = new double[6][8][8];
-    public double[][][] sumOfNetChange = new double[6][8][8];
-    public double[][][] sumOfAbsoluteChange = new double[6][8][8];
-    public double[][][] PSTsDelta = new double[6][8][8];
-    private final double ALPHA = 1;
+    private double[][][] PSTs = generateRandomPSTs();
+    private double[][][] learningRateTable = generateLearningTables();
+    private double[][][] weightUpdateTable = new double[6][8][8];
+    private double[][][] sumOfNetChange = new double[6][8][8];
+    private double[][][] sumOfAbsoluteChange = new double[6][8][8];
+    private final double ALPHA = 0.1;
 
 
     public TDMatrixEvaluatorUtil() {
@@ -61,27 +58,26 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 //Temporal Coherence (Adjusting learning Rates)
                 //sumOfNetChange[currPiece.getInt()-1][row][column] += error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
                 //sumOfAbsoluteChange[currPiece.getInt()-1][row][column] += Math.abs(error * f * weightUpdateTable[currPiece.getInt() - 1][row][column]);
-               // double numberOfLearningRates = 6 * 8 * 8;
+                //double numberOfLearningRates = 6 * 8 * 8;
+                //if(sumOfAbsoluteChange[currPiece.getInt()-1][row][column]!= 0){
+                //    learningRateTable[currPiece.getInt()-1][row][column] = (Math.abs(sumOfNetChange[currPiece.getInt()-1][row][column])/sumOfAbsoluteChange[currPiece.getInt()-1][row][column]);
+                //}
+                //else{
+                //    learningRateTable[currPiece.getInt()-1][row][column] = ALPHA;
+                //}
 
-               /* if(sumOfAbsoluteChange[currPiece.getInt()-1][row][column]!= 0){
-                    learningRateTable[currPiece.getInt()-1][row][column] = ((Math.abs(sumOfNetChange[currPiece.getInt()-1][row][column])/sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
-                }
-                else{
-                    learningRateTable[currPiece.getInt()-1][row][column] = ALPHA;
-                }
-
-                */
-
-                double delta = error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];;//learningRateTable[currPiece.getInt()-1][row][column] * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
+                double delta = ALPHA * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];;//learningRateTable[currPiece.getInt()-1][row][column] * error * f * weightUpdateTable[currPiece.getInt() - 1][row][column];
 
                 if (currPiece.getPlayer() == 1) {
                     //System.out.println("delta: " + delta + " - f: " + f);
                     //System.out.println("net change : " + (sumOfNetChange[currPiece.getInt()-1][row][column] + " abs Change: " + sumOfAbsoluteChange[currPiece.getInt()-1][row][column]));
                     //System.out.println("learning rate: " + learningRateTable[currPiece.getInt()-1][row][column]);
                     //System.out.println("");
+                    PSTs[currPiece.getInt() - 1][row][column] += delta;
                 }
 
-                PSTsDelta[currPiece.getInt() - 1][row][column] += delta;
+
+
 
 
             }
@@ -113,10 +109,9 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
                 if (currPiece.getPlayer() == 1) {
                     //System.out.println("derivative: " + derivative + " - trace: " + weightUpdateTable[currPiece.getInt()-1][row][column] + " - addition: " + addition);
-
+                    weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
                 }
 
-                weightUpdateTable[currPiece.getInt()-1][row][column] += addition;
             }
         }
         //System.out.println("--------------------------------");
@@ -150,9 +145,6 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     {
         float evaluation = 0;
         Piece[][] squares = board.getChessBoard();
-        int countWhite = 0;
-        int countBlack = 0;
-        int difference = 0;
 
         for(int i = 0; i < squares.length; i++) {
             for(int j = 0; j < squares[0].length; j++) {
@@ -160,11 +152,9 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
                 if(piece == null) continue;
                 int pieceNum = piece.getInt() - 1;
                 if(piece.getPlayer() == 1) {
-                    countWhite++;
                     evaluation += PSTs[pieceNum][i][j];
                 }
                 else {
-                    countBlack++;
                     evaluation -= PSTs[pieceNum][(squares.length-1)-i][j];
                 }
             }
@@ -194,7 +184,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         double[] array = new double[size];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = STARTINGWEIGHTSVALUE;//.5 - r.nextDouble();
+            array[i] = 0;//.5 - r.nextDouble();
         }
 
         return array;
@@ -223,7 +213,7 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         for(int i = 0; i < alphaTables.length; i++){
             for (int j = 0; j < 8 ; j++) {
                 for (int k = 0; k < 8 ; k++) {
-                    alphaTables[i][j][k] = 1;
+                    alphaTables[i][j][k] = 0.5;
 
                 }
             }
@@ -272,27 +262,11 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
         return average;
     }
 
-    public double[] calcuateLRateAverage()
-    {
-        double[] average = new double[6];
-
-        for(int i = 0; i < learningRateTable.length; i++) {
-            for(int j = 0; j < learningRateTable[0].length; j++) {
-                for(int k = 0; k < learningRateTable[0][0].length; k++) {
-                    average[i] += learningRateTable[i][j][k];
-                }
-            }
-            average[i] /= 64;
-        }
-        return average;
-    }
-
     public void newGame()
     {
         //learningRateTable = generateLearningTables();
-        PSTsDelta = new double[6][8][8];
         weightUpdateTable = new double[6][8][8];
-        //sumOfNetChange = new double[6][8][8];
-        //sumOfAbsoluteChange = new double[6][8][8];
+        sumOfNetChange = new double[6][8][8];
+        sumOfAbsoluteChange = new double[6][8][8];
     }
 }

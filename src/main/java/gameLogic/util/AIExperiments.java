@@ -99,7 +99,7 @@ public class AIExperiments {
     {
         try
         {
-            File file = new File("results.txt");
+            File file = new File("results2.txt");
             file.createNewFile();
             FileWriter fw = new FileWriter(file,true);
             fw.write("\n" + string);

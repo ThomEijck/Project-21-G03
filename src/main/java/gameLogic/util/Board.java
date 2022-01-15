@@ -214,10 +214,7 @@ public class Board {
 
          }
 
-         if(captured != null && captured.getInt() == 6)
-         {
-             return captured.getInt();
-         }
+
         if (piece.getInt() != 1 && captured == null)
 
         {
@@ -229,6 +226,10 @@ public class Board {
         piece.hasBeenMoved();
         // notify the game manager that a piece has been moved
         // GameManager.pieceMoved();
+        if(captured != null && captured.getInt() == 6)
+        {
+            return captured.getPlayer();
+        }
         return 0;
     }
 

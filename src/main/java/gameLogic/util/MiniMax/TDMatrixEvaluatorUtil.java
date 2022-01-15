@@ -81,22 +81,24 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
     }
 
 
-    public void printWeights()
+    public String printWeights()
     {
+        String output = "";
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 8; j++) {
                 for (int k = 0; k < 8; k++) {
-                    System.out.print(weights[i * 64 + j* 8 + k]);
+                    output += weights[i * 64 + j* 8 + k];
                     if(k!= 7)
-                        System.out.print(" ");
+                        output += " ";
                 }
-                System.out.println();
+                output += "\n";
             }
-            System.out.println("\n");
+            output += "\n\n";
         }
+        return output;
     }
 
-    public void printAverage()
+    public String printAverage()
     {
         float[] values = new float[6];
         for (int i = 0; i < 6; i++) {
@@ -107,6 +109,6 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
             }
             values[i] /= 64;
         }
-        System.out.println(values[0] + ", " + values[1] + ", "+ values[2] + ", " + values[3] + ", " +values[4] + ", " + values[5]);
+        return values[0] + ", " + values[1] + ", "+ values[2] + ", " + values[3] + ", " +values[4] + ", " + values[5];
     }
 }

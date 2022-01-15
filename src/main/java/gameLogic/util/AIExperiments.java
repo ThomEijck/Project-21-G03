@@ -2,7 +2,7 @@ package gameLogic.util;
 
 import gameLogic.pieces.*;
 import gameLogic.util.MiniMax.*;
-
+import java.io.*;
 public class AIExperiments {
 
     public static void main(String[] args) {
@@ -16,7 +16,7 @@ public class AIExperiments {
         System.out.println(TDMatrixEvaluatorUtil.getWeightIndex(new Queen(new Position(7,0),2)));
         System.out.println(TDMatrixEvaluatorUtil.getWeightIndex(new King(new Position(7,0),2)));
         */
-        int simAmount = 100;
+        int simAmount = 2000;
         double maxTime = 0.1;
         long start = System.nanoTime();
         for (int i = 0; i < simAmount; i++) {
@@ -24,8 +24,12 @@ public class AIExperiments {
         }
         long end = System.nanoTime();
         double delta = (end - start)/1e9;
-        evaluator.printWeights();
-        evaluator.printAverage();
+        String average = evaluator.printAverage();
+        String w = evaluator.printWeights();
+        System.out.println(w);
+        System.out.println(average);
+        printString(average);
+        printString(w);
         System.out.println("total time :" + delta);
     }
 
@@ -85,6 +89,24 @@ public class AIExperiments {
         double bAvg = totalDepth[1]/moveCount[1];
         //System.out.println("GameState " + GameManager.getGameState());
         TDevaluator.updateWeights(learner.getWeightDelta());
-        TDevaluator.printAverage();
+        String average = TDevaluator.printAverage();
+
+        printString(average);
+        System.out.println(average);
+    }
+
+    public static void printString(String string)
+    {
+        try
+        {
+            File file = new File("results.txt");
+            file.createNewFile();
+            FileWriter fw = new FileWriter(file,true);
+            fw.write("\n" + string);
+            fw.close();
+        }catch (Exception e)
+        {
+            System.out.println("Error in file or something!");
+        }
     }
 }

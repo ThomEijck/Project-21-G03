@@ -40,7 +40,7 @@ public class AIExperiments {
         GameManager g = new GameManager();
         MoveMakerUtil moveMaker = new MoveMakerUtil();
         MatrixEvaluatorUtil evaluator =new MatrixEvaluatorUtil();
-        ExpectiMiniMaxExecutorUtil emm = new ExpectiMiniMaxExecutorUtil(evaluator,moveMaker);
+        ExpectiMiniMaxExecutorUtil emm = new ExpectiMiniMaxExecutorUtil(TDevaluator,moveMaker);
 
         TDLearner learner = new TDLearner();
 

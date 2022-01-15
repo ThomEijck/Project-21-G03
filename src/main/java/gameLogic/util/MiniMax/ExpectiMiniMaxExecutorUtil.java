@@ -7,7 +7,6 @@ import java.util.*;
 public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
 
     private float curBestValue;
-
     public ExpectiMiniMaxExecutorUtil(BoardEvaluatorUtil evaluator, MoveExecutorUtil moveExecutor){
         super(evaluator, moveExecutor);
     }
@@ -76,9 +75,13 @@ public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
                     for (int i = 0; i < moves.length; i++) {
                         if (moves[i].getEnd().row == -1)
                             continue;
-                        if(moveExecutor.movePiece(board, moves[i]) >= 1)
+                        int moveResult = moveExecutor.movePiece(board, moves[i]);
+                        if(moveResult >= 1)
                         {
-                            value = Float.max(value, evaluator.evaluateBoard(board));
+                            if(moveResult == 1)
+                                value = Float.max(value, -winValue);
+                            else
+                                value = Float.max(value, winValue);
                         }else
                         {
                             value = Float.max(value, minimax(board, depth - 1, nextPlayer(currentPlayer)));
@@ -106,11 +109,13 @@ public class ExpectiMiniMaxExecutorUtil extends  MiniMaxExecutorUtil{
                     possibleDiceValues++;
                     float value = Integer.MAX_VALUE;
                     for (int i = 0; i < moves.length; i++) {
-                        if (moves[i].getEnd().row == -1)
-                            continue;
-                        if(moveExecutor.movePiece(board, moves[i]) >= 1)
+                        int moveResult = moveExecutor.movePiece(board, moves[i]);
+                        if(moveResult >= 1)
                         {
-                            value = Float.min(value, evaluator.evaluateBoard(board));
+                            if(moveResult == 1)
+                                value = Float.min(value, -winValue);
+                            else
+                                value = Float.min(value, winValue);
                         }else
                         {
                             value = Float.min(value, minimax(board, depth - 1, nextPlayer(currentPlayer)));

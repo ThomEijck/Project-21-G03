@@ -27,11 +27,15 @@ public class TDMatrixEvaluatorUtil implements BoardEvaluatorUtil
 
     private void initWeights()
     {
-        for (int i = 0; i < weights.length; i++) {
-            weights[i] = 1;//equal weight for all pieces
+        float[] initWeights = {1,3,3,4,8,100};
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 64; j++) {
+                weights[64*i + j] = initWeights[i];
+            }
         }
 
-        weights = imported;
+        //weights = imported;
     }
 
     public float evaluateBoard(Board board)

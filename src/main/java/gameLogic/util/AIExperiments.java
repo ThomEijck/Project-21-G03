@@ -16,20 +16,32 @@ public class AIExperiments {
         System.out.println(TDMatrixEvaluatorUtil.getWeightIndex(new Queen(new Position(7,0),2)));
         System.out.println(TDMatrixEvaluatorUtil.getWeightIndex(new King(new Position(7,0),2)));
         */
-        int simAmount = 1;
+        int simAmount = 100;
         double maxTime = 0.1;
+        int w= 0;
+        int b = 0;
+        int d = 0;
         long start = System.nanoTime();
         for (int i = 0; i < simAmount; i++) {
-            runSim(4,maxTime,evaluator);
+            runSim(3,maxTime,evaluator);
+            if(GameManager.getGameState() == 1)
+                w++;
+            else if(GameManager.getGameState() == 2)
+                b++;
+            else
+                d++;
+            //System.out.println(i);
         }
         long end = System.nanoTime();
         double delta = (end - start)/1e9;
-        String average = evaluator.printAverage();
-        String w = evaluator.printWeights();
-        System.out.println(w);
-        System.out.println(average);
-        printString(average);
-        printString(w);
+        //String average = evaluator.printAverage();
+        //String we = evaluator.printWeights();
+        //System.out.println(w);
+        //System.out.println(average);
+        //printString(average);
+        //printString(we);
+        System.out.println(w + " - " + b + " - " + d);
+
         System.out.println("total time :" + delta);
     }
 
@@ -39,7 +51,9 @@ public class AIExperiments {
 
         GameManager g = new GameManager();
         MoveMakerUtil moveMaker = new MoveMakerUtil();
-        ExpectiMiniMaxExecutorUtil emm = new ExpectiMiniMaxExecutorUtil(TDevaluator,moveMaker);
+        MatrixEvaluatorUtil Meval = new MatrixEvaluatorUtil();
+        ExpectiMiniMaxExecutorUtil player1 = new ExpectiMiniMaxExecutorUtil(TDevaluator,moveMaker);
+        ExpectiMiniMaxExecutorUtil player2 = new ExpectiMiniMaxExecutorUtil(Meval,moveMaker);
 
         TDLearner learner = new TDLearner();
 
@@ -52,13 +66,16 @@ public class AIExperiments {
             int player = GameManager.getCurrPlayer();
             int dice = GameManager.getDiceValue();
 
-            learner.updateWeightTrace(g.getBoard());//update weight trace up until P_t
+            //learner.updateWeightTrace(g.getBoard());//update weight trace up until P_t
+            if(player == 2)
+                m = player2.findBestMove(g.getBoard(), player, depth, dice);
+            else
+                m = player1.findBestMove(g.getBoard(), player, depth, dice);
 
-            m = emm.findBestMove(g.getBoard(), player, depth, dice);
             g.movePiece(m, true);
             GameManager.pieceMoved();
 
-            if(GameManager.getGameState() == 0) {
+            /*if(GameManager.getGameState() == 0) {
                 learner.updateDelta(TDevaluator.evaluateBoard(g.getBoard()));//update weight delta knowing P_t+1
             }else if(GameManager.getGameState() == 1)
             {
@@ -71,7 +88,7 @@ public class AIExperiments {
             else if(GameManager.getGameState() == 3)
             {
                 learner.updateDelta(0);
-            }
+            }*/
             moveCount[player - 1]++;
             totalDepth[player - 1]+= depth-1;
             if(DEBUG) {
@@ -87,18 +104,18 @@ public class AIExperiments {
         double wAvg = totalDepth[0]/moveCount[0];
         double bAvg = totalDepth[1]/moveCount[1];
         //System.out.println("GameState " + GameManager.getGameState());
-        TDevaluator.updateWeights(learner.getWeightDelta());
-        String average = TDevaluator.printAverage();
+        //TDevaluator.updateWeights(learner.getWeightDelta());
+        //String average = TDevaluator.printAverage();
 
-        printString(average);
-        System.out.println(average);
+        //printString(average);
+        //System.out.println(GameManager.getGameState());
     }
 
     public static void printString(String string)
     {
         try
         {
-            File file = new File("results3.txt");
+            File file = new File("test.txt");
             file.createNewFile();
             FileWriter fw = new FileWriter(file,true);
             fw.write("\n" + string);

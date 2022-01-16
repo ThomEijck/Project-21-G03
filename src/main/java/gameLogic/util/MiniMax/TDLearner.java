@@ -7,8 +7,8 @@ public class TDLearner
     float[] weightDelta;
     float[] weightTrace;//i'th value is the partial derivative with respect to the i'th weight
     float prevEval;
-    final float ALPHA = 0.05F;//learning rate
-    final float LAMBDA = 0.2F;//
+    final float ALPHA = 0.005F;//learning rate
+    final float LAMBDA = 0.3F;//
     public TDLearner()
     {
         weightDelta = new float[6*64];

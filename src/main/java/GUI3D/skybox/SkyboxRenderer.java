@@ -4,7 +4,6 @@ import GUI3D.engine.graphics.Loader;
 import GUI3D.engine.graphics.models.RawModel;
 import GUI3D.engine.io.Window;
 import GUI3D.entities.Camera;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL46;
 import org.lwjglx.util.vector.Matrix4f;
 
@@ -72,7 +71,7 @@ public class SkyboxRenderer {
     }
 // Constructor for skybox
 
-    public SkyboxRenderer(@NotNull Loader loader, Matrix4f projectionMatrix){
+    public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix){
 
         cube = loader.loadToVAO(VERTICES, 3);
         texture = loader.loadCubeMap(TEXTURE_FILES);

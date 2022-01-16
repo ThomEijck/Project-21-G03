@@ -5,21 +5,25 @@ import gameLogic.util.MiniMax.*;
 public class AIExperiments {
 
     public static void main(String[] args) {
-        int simAmount = 40;
+        int simAmount = 100;
         double maxTime = 0.1;
+        long start = System.nanoTime();
+        TDMatrixEvaluatorUtil TDevaluator = new TDMatrixEvaluatorUtil();
         for (int i = 0; i < simAmount; i++) {
-            runSim(4,maxTime);
+            runSim(4,maxTime,TDevaluator);
         }
-
+        long end = System.nanoTime();
+        double delta = (end - start)/1e9;
+        TDevaluator.printPSTs();
+        System.out.println("total time :" + delta);
     }
 
-    private static void runSim(int d,double maxTime)
+    private static void runSim(int d,double maxTime,TDMatrixEvaluatorUtil TDevaluator)
     {
-        final boolean DEBUG = true;
-
+        final boolean DEBUG = false;
+        TDevaluator.newGame();
         GameManager g = new GameManager();
         MoveMakerUtil moveMaker = new MoveMakerUtil();
-        TDMatrixEvaluatorUtil TDevaluator = new TDMatrixEvaluatorUtil();
         MatrixEvaluatorUtil evaluator =new MatrixEvaluatorUtil();
         MiniMaxExecutorUtil mm = new MiniMaxExecutorUtil(TDevaluator,moveMaker);
         ExpectiMiniMaxExecutorUtil emm = new ExpectiMiniMaxExecutorUtil(TDevaluator,moveMaker);
@@ -59,7 +63,21 @@ public class AIExperiments {
         }
         double wAvg = totalDepth[0]/moveCount[0];
         double bAvg = totalDepth[1]/moveCount[1];
-        System.out.println(GameManager.getGameState() + ";" + wAvg + ";" + bAvg);
-        TDevaluator.printPSTs();
+        //System.out.println(GameManager.getGameState() + ";" + wAvg + ";" + bAvg);
+        if(GameManager.getGameState() == 1)//white win
+        {
+            learner.addEvaluation(100);
+        }else if(GameManager.getGameState() == 2)//black win
+        {
+            learner.addEvaluation(-100);
+        }else//draw
+        {
+            learner.addEvaluation(0);
+        }
+        learner.updatePST(TDevaluator,g.getBoard().getChessBoard());
+        double[] average = TDevaluator.calcuateAverage();
+
+
+        System.out.println(average[0] + "," + average[1] + "," + average[2] + "," +average[3] + "," +average[4] + "," +average[5]);
     }
 }

@@ -16,7 +16,7 @@ public class AIExperiments {
         System.out.println(TDMatrixEvaluatorUtil.getWeightIndex(new Queen(new Position(7,0),2)));
         System.out.println(TDMatrixEvaluatorUtil.getWeightIndex(new King(new Position(7,0),2)));
         */
-        int simAmount = 2000;
+        int simAmount = 1;
         double maxTime = 0.1;
         long start = System.nanoTime();
         for (int i = 0; i < simAmount; i++) {
@@ -39,7 +39,6 @@ public class AIExperiments {
 
         GameManager g = new GameManager();
         MoveMakerUtil moveMaker = new MoveMakerUtil();
-        MatrixEvaluatorUtil evaluator =new MatrixEvaluatorUtil();
         ExpectiMiniMaxExecutorUtil emm = new ExpectiMiniMaxExecutorUtil(TDevaluator,moveMaker);
 
         TDLearner learner = new TDLearner();
@@ -99,7 +98,7 @@ public class AIExperiments {
     {
         try
         {
-            File file = new File("results2.txt");
+            File file = new File("results3.txt");
             file.createNewFile();
             FileWriter fw = new FileWriter(file,true);
             fw.write("\n" + string);

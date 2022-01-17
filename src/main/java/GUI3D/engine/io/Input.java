@@ -1,7 +1,6 @@
 package GUI3D.engine.io;
 
 import org.lwjgl.glfw.*;
-import org.lwjglx.input.Keyboard;
 
 public class Input {
 	private static boolean[] keys = new boolean[GLFW.GLFW_KEY_LAST];

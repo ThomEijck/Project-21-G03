@@ -1,6 +1,5 @@
 package GUI3D.engine.graphics.textures.objConverter;
 
-import org.jetbrains.annotations.NotNull;
 import org.lwjglx.util.vector.Vector3f;
 
 public class Vertex {
@@ -13,7 +12,7 @@ public class Vertex {
     private int index;
     private float length;
 
-    public Vertex(int index, @NotNull Vector3f position){
+    public Vertex(int index,Vector3f position){
         this.index = index;
         this.position = position;
         this.length = position.length();

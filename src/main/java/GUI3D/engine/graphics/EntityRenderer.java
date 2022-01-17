@@ -5,7 +5,6 @@ import GUI3D.engine.graphics.models.TexturedModel;
 import GUI3D.engine.graphics.textures.ModelTexture;
 import GUI3D.entities.Entity;
 import GUI3D.maths.Maths;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -20,14 +19,14 @@ public class EntityRenderer {
 
 	private StaticShader shader;
 
-	public EntityRenderer(@NotNull StaticShader shader, Matrix4f projectionMatrix){
+	public EntityRenderer( StaticShader shader, Matrix4f projectionMatrix){
 		this.shader = shader;
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.stop();
 	}
 
-	public void render(@NotNull Map<TexturedModel, List<Entity>> entities){
+	public void render(Map<TexturedModel, List<Entity>> entities){
 		for(TexturedModel model:entities.keySet()){
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
@@ -39,7 +38,7 @@ public class EntityRenderer {
 		}
 	}
 
-	public void prepareTexturedModel (@NotNull TexturedModel model1){
+	public void prepareTexturedModel ( TexturedModel model1){
 
 		RawModel model = model1.getRawModel();
 		GL30.glBindVertexArray(model.getVaoID());
@@ -65,7 +64,7 @@ public class EntityRenderer {
 		GL30.glBindVertexArray(0);
 	}
 
-	private void prepareInstance(@NotNull Entity entity){
+	private void prepareInstance(Entity entity){
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(),entity.getRotY(),entity.getRotZ(),entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(entity.getTextureXOffset(),entity.getTextureYOffset());

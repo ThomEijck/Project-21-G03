@@ -2,10 +2,8 @@ package GUI3D.MoveMenu;
 
 
 import GUI3D.main.Main;
-import gameLogic.util.GameManager;
 import gameLogic.util.Move;
 import gameLogic.util.Position;
-import org.lwjgl.system.CallbackI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,25 +27,29 @@ public class MoveListener implements ActionListener{
         this.frame = frame;
     }
 
-    // reads textfields from manual shot menu and send information of new shot to simulator
     public void actionPerformed(ActionEvent event){
         try {
             String xPosStart = rowStart.getText();
-            String yPosStart = columnStart.getText();
+            String yPosStart = columnStart.getText().toLowerCase();
             String xPosEnd = rowEnd.getText();
-            String yPosEnd = columnEnd.getText();
-            int xStart = Integer.parseInt(xPosStart)-1;
-            int yStart = Integer.parseInt(yPosStart)-1;
-            int xEnd = Integer.parseInt(xPosEnd)-1;
-            int yEnd = Integer.parseInt(yPosEnd)-1;
+            String yPosEnd = columnEnd.getText().toLowerCase();
 
-            Main.g.movePiece(new Move(new Position(xStart, yStart), new Position(xEnd,yEnd)),false);
-            GameManager.pieceMoved();
+            int xStart= 8 - Integer.parseInt(xPosStart);
+            int yStart = 0;
+            int xEnd= 8 - Integer.parseInt(xPosEnd);
+            int yEnd = 0;
 
-            Main.appliedMove = true;
-            Main.isOpenMoveBox = false;
+            for (char c : yPosStart.toCharArray()) {
+                yStart = (char)(c - 'a');
+            }
+            for (char c : yPosEnd.toCharArray()) {
+                yEnd = (char)(c - 'a');
+            }
 
+            Main.playerMove = new Move(new Position(xStart, yStart), new Position(xEnd, yEnd));
+            System.out.println("before frame dispose");
             frame.dispose();
+            System.out.println("after frame dispose");
 
         }
         catch(IllegalArgumentException e){

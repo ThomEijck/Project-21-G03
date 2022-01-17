@@ -6,8 +6,6 @@ import GUI3D.maths.Maths;
 import org.lwjgl.opengl.*;
 import org.lwjglx.util.vector.Matrix4f;
 
-import java.util.List;
-
 
 public class GUIRenderer {
 

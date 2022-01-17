@@ -1,6 +1,5 @@
 package GUI3D.entities;
 
-
 import GUI3D.engine.io.Input;
 import org.lwjgl.glfw.GLFW;
 import org.lwjglx.util.vector.Vector3f;

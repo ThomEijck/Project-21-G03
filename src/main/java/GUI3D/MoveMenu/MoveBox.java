@@ -12,7 +12,7 @@ public class MoveBox {
     private static final int FRAME_WIDTH = 400;
     private static final int FRAME_HEIGHT = 250;
 
-    public static void create(){
+    public void create(){
         Main.canOpenMoveBox = false;
         Main.isOpenMoveBox = true;
         JFrame frame = new JFrame();

@@ -192,7 +192,7 @@ public class Main implements Runnable {
 	public ExpectiMiniMaxExecutorUtil emm;
 	int depth = 4;
 	int diceValue;
-	int player;
+	public static int player;
 	public static boolean canOpenMoveBox = true;
 	public static boolean isOpenMoveBox = false;
 	public static Position posStart;
@@ -200,24 +200,20 @@ public class Main implements Runnable {
 	public static boolean appliedMove = false;
 	public static boolean moveHasBeenMade = false;
 	public static boolean updateBoard = false;
+	public static Move playerMove;
+	public MoveBox moveBox;
 
 	public void start() {
 		game = new Thread(this, "Dice Chess");
 		game.start();
 	}
 
-	/**
-	 * create window with terrain
-	 * @throws Exception if OBJFileLoader couldn't load model or Loader couldn't load texture
-	 */
 	public void init() throws Exception {
 		window = new Window(WIDTH, HEIGHT, "Dice Chess");
 		window.setBackgroundColor(RED,GREEN,BLUE);
 		window.create();
 		renderer = new MasterRenderer(loader);
 
-
-		// load objects to RawModels
 		modelDataChess = OBJFileLoader.loadOBJ("board");
 		modelDataBorder = OBJFileLoader.loadOBJ("border");
 		modelDataTable = OBJFileLoader.loadOBJ("table");
@@ -332,8 +328,6 @@ public class Main implements Runnable {
 		textureKingBlack.setReflectivity((float)0.5);
 
 
-
-
 		// generate terrain
 		terrain = new Terrain(0,0,loader,texturePack, blendMap,"heightmap");
 
@@ -357,7 +351,7 @@ public class Main implements Runnable {
 		kingWinnerWhite = new Player(texturedModelKingWhite, new Vector3f((float)-1.5,(float)0.1,(float)3.5),0,270,0,1,1);
 		kingWinnerBlack = new Player(texturedModelKingBlack, new Vector3f((float)-1.5,(float)0.1,(float)3.5),0,270,0,1,1);
 
-// put the camera
+		// put the camera
 		camera = new Camera(board);
 
 		players = new ArrayList<>();
@@ -393,8 +387,6 @@ public class Main implements Runnable {
 		players.add(queenb = new Player(texturedModelQueenBlack, new Vector3f(3,0,0),0,270,0,(float) 0.6,1));
 		players.add(kingw = new Player(texturedModelKingWhite, new Vector3f(4,0,7),0,90,0,(float) 0.6,1));
 		players.add(kingb = new Player(texturedModelKingBlack, new Vector3f(4,0,0),0,270,0,(float) 0.6,1));
-		// put the camera
-
 
 		// AI
 		TDevaluator = new TDMatrixEvaluatorUtil();
@@ -403,6 +395,8 @@ public class Main implements Runnable {
 		emm = new ExpectiMiniMaxExecutorUtil(TDevaluator,moveMaker);
 		posStart = new Position(0,0);
 		posEnd = new Position(0,0);
+		playerMove = null;
+		moveBox = new MoveBox();
 
 	}
 
@@ -414,7 +408,6 @@ public class Main implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// render the scene continuously with updated scene
 		while (!window.shouldClose() && !Input.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
 			update();
 			render();
@@ -422,7 +415,6 @@ public class Main implements Runnable {
 
 			player = GameManager.getCurrPlayer();
 			diceValue = GameManager.getDiceValue();
-
 
 			switch (diceValue) {
 				case 1:
@@ -495,19 +487,19 @@ public class Main implements Runnable {
 					break;
 			}
 
-			if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1) && !isOpenMoveBox) {
+
+			if (Input.isKeyDown(GLFW.GLFW_KEY_M) /*&& !isOpenMoveBox*/ ) {
 
 				while (GameManager.getGameState() == 0 && !moveHasBeenMade) {
 					Move m = null;
-
 					System.out.println(diceValue);
-
 
 					if (player == 1) {
 						m = emm.findBestMove(g.getBoard(), player, depth, diceValue);
 						g.movePiece(m, true);
 						GameManager.pieceMoved();
 					} else {
+
 
 						// ai vs ai
 						m = emm.findBestMove(g.getBoard(), player, depth, diceValue);
@@ -516,33 +508,33 @@ public class Main implements Runnable {
 						moveHasBeenMade = true;
 
 
-						/*
-						isOpenMoveBox = true;
+						// ai vs player (buggy)
 
-						MoveBox.create();
+						/* moveBox.create();
 
-
-						while(!appliedMove){
-							//ai vs player
-							if(!isOpenMoveBox){
-								break;
-							}
+						//isOpenMoveBox = true;
+						while(playerMove == null){
+							Thread.onSpinWait();
 						}
+						g.movePiece(playerMove,false);
+						GameManager.pieceMoved();
+						System.out.println(playerMove.toString());
 
 						 */
-
 					}
+					playerMove = null;
 					moveHasBeenMade = true;
-					appliedMove = false;
-					players.clear();
 					updateBoard = true;
+
 				}
+
 				moveHasBeenMade = false;
 
 				Piece[][] pieces = g.getBoard().getChessBoard();
 
 				if (updateBoard) {
 
+					players.clear();
 					for (int i = 0; i < pieces.length; i++) {
 						for (int j = 0; j < pieces.length; j++) {
 							Piece piece = pieces[i][j];
@@ -827,7 +819,6 @@ public class Main implements Runnable {
 			guiRenderer.render(draw);
 		}
 
-        // render scene from different angles/ distant
 		renderer.processEntity(board);
 		renderer.processEntity(border);
 		renderer.processEntity(table);
@@ -840,7 +831,6 @@ public class Main implements Runnable {
 		renderer.processTerrain(terrain);
 
 		renderer.render(lights,camera, new Vector4f(0,-1,0, 100));
-
 
 		window.swapBuffers();
 

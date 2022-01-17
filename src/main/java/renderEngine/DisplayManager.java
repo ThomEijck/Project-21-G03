@@ -21,29 +21,21 @@ public class DisplayManager {
         width = inWidth;
         height = inHeight;
 
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
         if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-
-        // Create the window
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated
-        // or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+                glfwSetWindowShouldClose(window, true);
         });
 
         glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
@@ -60,12 +52,9 @@ public class DisplayManager {
             }
         });
 
-        // Make the OpenGL context current
         glfwMakeContextCurrent(window);
-        // Enable v-sync
         glfwSwapInterval(1);
 
-        // Make the window visible
         glfwShowWindow(window);
         GL.createCapabilities();
         glfwSetFramebufferSizeCallback(window, (window, w, h) -> {
@@ -78,16 +67,14 @@ public class DisplayManager {
     }
 
     public static void updateDisplay() {
-        glfwSwapBuffers(window); // swap the color buffers
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     public static void closeDisplay() {
-        // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
 
-        // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
     }
@@ -118,10 +105,6 @@ public class DisplayManager {
 
     public static void setClick(boolean b) {
         isClicked = b;
-    }
-
-    public static float getAspectRatio() {
-        return (float) width / (float) height;
     }
 
     public static void requestClose() {

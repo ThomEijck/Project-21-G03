@@ -4,7 +4,6 @@ import GUI3D.engine.graphics.Loader;
 import GUI3D.engine.graphics.models.RawModel;
 import GUI3D.engine.io.Window;
 import GUI3D.entities.Camera;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL46;
 import org.lwjglx.util.vector.Matrix4f;
 
@@ -66,13 +65,11 @@ public class SkyboxRenderer {
     private SkyboxShader shader;
     private float time = 0;
 
-// returns shader for the skybox
     public SkyboxShader getShader() {
         return shader;
     }
-// Constructor for skybox
 
-    public SkyboxRenderer(@NotNull Loader loader, Matrix4f projectionMatrix){
+    public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix){
 
         cube = loader.loadToVAO(VERTICES, 3);
         texture = loader.loadCubeMap(TEXTURE_FILES);
@@ -83,7 +80,6 @@ public class SkyboxRenderer {
         shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
     }
-// Render method
 
     public void render(Camera camera, float r, float g, float b){
 
@@ -104,7 +100,7 @@ public class SkyboxRenderer {
         GL46.glDepthMask(true);
         shader.stop();
     }
-// binding of textures
+
     private void bindTextures(){
         time += Window.getFrameTimeSeconds()*1000;
         time%=24000;

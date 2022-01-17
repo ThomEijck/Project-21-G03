@@ -5,7 +5,6 @@ import GUI3D.engine.graphics.models.RawModel;
 import GUI3D.engine.graphics.textures.TerrainTexture;
 import GUI3D.engine.graphics.textures.TerrainTexturePack;
 import GUI3D.maths.Maths;
-import org.jetbrains.annotations.NotNull;
 import org.lwjglx.util.vector.Vector2f;
 import org.lwjglx.util.vector.Vector3f;
 
@@ -34,7 +33,6 @@ public class Terrain {
         this.z = gridZ*SIZE;
         this.model = generateTerrainMap(loader,heightmap);
     }
-
 
     private RawModel generateTerrainMap(Loader loader, String heightMap){
 
@@ -93,7 +91,7 @@ public class Terrain {
     }
 
 
-    private @NotNull Vector3f calculateNormalMap(int x, int z, BufferedImage image){
+    private Vector3f calculateNormalMap(int x, int z, BufferedImage image){
         float heightL = getHeight(x-1,z, image);
         float heightR = getHeight(x+1, z, image);
         float heightD = getHeight(x,z-1, image);
@@ -164,6 +162,5 @@ public class Terrain {
     public TerrainTexture getBlendMap() {
         return blendMap;
     }
-
 
 }

@@ -77,8 +77,6 @@ public class TerrainShader extends ShaderProgram3D {
         super.loadInt(location_blendMap, 4);
     }
 
-
-
     public void loadSkyColour(float r, float g, float b){
         super.loadVector(location_skyColour, new Vector3f(r,g,b));
     }
@@ -88,7 +86,7 @@ public class TerrainShader extends ShaderProgram3D {
         super.loadFloat(location_shineDamper, damper);
         super.loadFloat(location_reflectivity, reflectivity);
     }
-// binding of attributes
+
     @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
@@ -105,7 +103,6 @@ public class TerrainShader extends ShaderProgram3D {
         Matrix4f viewMatrix = Maths.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
-// load lights
 
 
     public void loadLights(List<Light> lights){

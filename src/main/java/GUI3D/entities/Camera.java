@@ -9,15 +9,17 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
 
-    private float distanceFromPlayer = 50;
-    private float angleAroundPlayer = 0;
+    private float distanceFromPlayer = 15;
+    private float angleAroundPlayer = 90;
 
     private Vector3f position = new Vector3f(0,30,0);
-    private float pitch = 20;
+    private float pitch = 50;
     private float yaw = 0;
     private Player player;
 
-
+    public void setDistanceFromPlayer(float distanceFromPlayer) {
+        this.distanceFromPlayer = distanceFromPlayer;
+    }
 
     public Camera(Player player){
         this.player = player;

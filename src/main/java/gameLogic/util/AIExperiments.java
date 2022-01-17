@@ -35,7 +35,7 @@ public class AIExperiments {
 
     private static void runSim(int d,double maxTime,TDMatrixEvaluatorUtil TDevaluator)
     {
-        final boolean DEBUG = false;
+        final boolean DEBUG = true;
 
         GameManager g = new GameManager();
         MoveMakerUtil moveMaker = new MoveMakerUtil();

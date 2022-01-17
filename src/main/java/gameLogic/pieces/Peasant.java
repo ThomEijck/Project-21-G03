@@ -7,8 +7,8 @@ public class Peasant extends Piece{
     private static String name = "Pawn";
 	boolean leftEnpassant;
 	boolean rightEnpassant;
-    public Peasant(Position pos, int player) {
-        super(pos, player);
+    public Peasant(Position pos, int player, int pieceNumber) {
+        super(pos, player, pieceNumber);
 		leftEnpassant = false;
 		rightEnpassant = false;
     }

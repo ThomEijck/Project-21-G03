@@ -8,8 +8,8 @@ public class Queen extends Piece{
 
     private static String name = "Queen";
 
-    public Queen(Position pos, int player) {
-        super(pos, player);
+    public Queen(Position pos, int player, int pieceNumber) {
+        super(pos, player, pieceNumber);
     }
 
     @Override

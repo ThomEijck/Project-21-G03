@@ -6,8 +6,8 @@ public class Bishop extends Piece{
 
     private static String name = "Bishop";
 
-    public Bishop(Position pos, int player) {
-        super(pos, player);
+    public Bishop(Position pos, int player, int pieceNumber) {
+        super(pos, player, pieceNumber);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class MoveHistoryData
         Piece piece;
         if(toCopy.getClass() == Peasant.class)
         {
-            Peasant pawn = new Peasant(new Position(toCopy.getPos()),toCopy.getPlayer());
+            Peasant pawn = new Peasant(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
             Peasant og = (Peasant) toCopy;
             if(og.getLeftEnPassant())
                 pawn.setLeftEnpassant();
@@ -68,22 +68,22 @@ public class MoveHistoryData
             piece = pawn;
         }else if(toCopy.getClass() == Rook.class)
         {
-            piece = new Rook(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new Rook(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
         }else if(toCopy.getClass() == King.class)
         {
-            piece = new King(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new King(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
         }else if(toCopy.getClass() == Bishop.class)
         {
-            piece = new Bishop(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new Bishop(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
         }else if(toCopy.getClass() == Queen.class)
         {
-            piece = new Queen(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new Queen(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
         }else if(toCopy.getClass() == Knight.class)
         {
-            piece = new Knight(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new Knight(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
         }else
         {
-            piece = new Piece(new Position(toCopy.getPos()),toCopy.getPlayer());
+            piece = new Piece(new Position(toCopy.getPos()),toCopy.getPlayer(), toCopy.getPieceNumber());
         }
 
 

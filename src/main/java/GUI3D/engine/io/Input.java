@@ -1,6 +1,7 @@
 package GUI3D.engine.io;
 
 import org.lwjgl.glfw.*;
+import org.lwjglx.input.Keyboard;
 
 public class Input {
 	private static boolean[] keys = new boolean[GLFW.GLFW_KEY_LAST];
@@ -18,14 +19,14 @@ public class Input {
 				keys[key] = (action != GLFW.GLFW_RELEASE);
 			}
 		};
-		
+
 		mouseMove = new GLFWCursorPosCallback() {
 			public void invoke(long window, double xpos, double ypos) {
 				mouseX = xpos;
 				mouseY = ypos;
 			}
 		};
-		
+
 		mouseButtons = new GLFWMouseButtonCallback() {
 			public void invoke(long window, int button, int action, int mods) {
 				buttons[button] = (action != GLFW.GLFW_RELEASE);
@@ -44,12 +45,11 @@ public class Input {
 	public static boolean isButtonDown(int button) {
 		return buttons[button];
 	}
-	
+
 	public void destroy() {
 		keyboard.free();
 		mouseMove.free();
 		mouseButtons.free();
-		mouseScroll.free();
 	}
 
 	public static double getMouseX() {

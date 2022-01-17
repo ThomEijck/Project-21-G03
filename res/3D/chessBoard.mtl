@@ -1,0 +1,168 @@
+# Blender MTL File: 'chess.blend'
+# Material Count: 15
+
+newmtl BlackBishop
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Black\\Black_Bishop_Roughness.png
+
+newmtl BlackKing
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Black\\Black_King_Roughness.png
+
+newmtl BlackKnight
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Black\\Black_Knight_Roughness.png
+
+newmtl BlackPawn
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Black\\Black_Pawn_Roughness.png
+
+newmtl BlackQueen
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Black\\Black_Queen_Roughness.png
+
+newmtl BlackRook
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Black\\Black_Rook_Roughness.png
+
+newmtl Board
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Board\\Board_Roughness.png
+
+newmtl Border
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Board\\Board_Border_Roughness.png
+refl C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Board\\Board_Border_Metallic.png
+
+newmtl Table
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\Table\\Table_Roughness.png
+
+newmtl WhiteBishop
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\White\\White_Bishop_Roughness.png
+
+newmtl WhiteKing
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\White\\White_King_Roughness.png
+
+newmtl WhiteKnight
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\White\\White_Knight_Roughness.png
+
+newmtl WhitePawn
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\White\\White_Pawn_Roughness.png
+
+newmtl WhiteQueen
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\White\\White_Queen_Roughness.png
+
+newmtl WhiteRook
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.010000 0.010000 0.010000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:\\Users\\zaker\\Desktop\\DKE\\Textures\\White\\White_Rook_Roughness.png

@@ -18,9 +18,9 @@ public class PromotionChooser {
     {
         Position pos = piece.getPos();
         int player = piece.getPlayer();
-        Rook rook = new Rook(pos, player);
+        Rook rook = new Rook(pos, player,3);
         rook.hasBeenMoved();
-        Piece[] possibleValues = { new Queen(pos, player), new Knight(pos, player), new Bishop(pos, player), rook};
+        Piece[] possibleValues = { new Queen(pos, player,2), new Knight(pos, player,3), new Bishop(pos, player,3), rook};
         Object selectedValue = JOptionPane.showOptionDialog(null,"To which piece do you want to promote the pawn", "Promotion",
                 JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,
                 null,possibleValues,possibleValues[0]);

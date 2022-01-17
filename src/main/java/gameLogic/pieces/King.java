@@ -6,8 +6,8 @@ public class King extends Piece{
 
     private static String name = "King";
 
-    public King(Position pos, int player) {
-        super(pos, player);
+    public King(Position pos, int player, int pieceNumber) {
+        super(pos, player, pieceNumber);
     }
 
     @Override

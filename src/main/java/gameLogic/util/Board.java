@@ -12,6 +12,7 @@ public class Board {
     private Stack<MoveHistoryData> moveHistory;
     private Piece[] possibleEnPassantPieces = new Piece[2];// always only 2 pieces can do enpassant
     private int move50rule = 0;// counter to keep track of the 50 move rule
+    private static int pieceNumber = 10;
 
     public Board() {
         this.chessBoard = createBoard(chessBoard);
@@ -27,31 +28,33 @@ public class Board {
     }
 
     private Piece[][] createBoard(Piece[][] chessBoard) {
+        int count = 1;
         for (int i = 0; i < 8; i++) {
-            chessBoard[1][i] = new Peasant(new Position(1, i), 2);
-            chessBoard[6][i] = new Peasant(new Position(6, i), 1);
+            chessBoard[1][i] = new Peasant(new Position(1, i), 2,count);
+            chessBoard[6][i] = new Peasant(new Position(6, i), 1,count);
+            count++;
         }
 
-        chessBoard[0][0] = new Rook(new Position(0, 0), 2);
-        chessBoard[0][7] = new Rook(new Position(0, 7), 2);
-        chessBoard[7][0] = new Rook(new Position(7, 0), 1);
-        chessBoard[7][7] = new Rook(new Position(7, 7), 1);
+        chessBoard[0][0] = new Rook(new Position(0, 0), 2,1);
+        chessBoard[0][7] = new Rook(new Position(0, 7), 2,2);
+        chessBoard[7][0] = new Rook(new Position(7, 0), 1,1);
+        chessBoard[7][7] = new Rook(new Position(7, 7), 1,2);
 
-        chessBoard[0][1] = new Knight(new Position(0, 1), 2);
-        chessBoard[0][6] = new Knight(new Position(0, 6), 2);
-        chessBoard[7][1] = new Knight(new Position(7, 1), 1);
-        chessBoard[7][6] = new Knight(new Position(7, 6), 1);
+        chessBoard[0][1] = new Knight(new Position(0, 1), 2,1);
+        chessBoard[0][6] = new Knight(new Position(0, 6), 2,2);
+        chessBoard[7][1] = new Knight(new Position(7, 1), 1,1);
+        chessBoard[7][6] = new Knight(new Position(7, 6), 1,2);
 
-        chessBoard[0][2] = new Bishop(new Position(0, 2), 2);
-        chessBoard[0][5] = new Bishop(new Position(0, 5), 2);
-        chessBoard[7][2] = new Bishop(new Position(7, 2), 1);
-        chessBoard[7][5] = new Bishop(new Position(7, 5), 1);
+        chessBoard[0][2] = new Bishop(new Position(0, 2), 2, 1);
+        chessBoard[0][5] = new Bishop(new Position(0, 5), 2,2);
+        chessBoard[7][2] = new Bishop(new Position(7, 2), 1,1);
+        chessBoard[7][5] = new Bishop(new Position(7, 5), 1,2);
 
-        chessBoard[0][3] = new Queen(new Position(0, 3), 2);
-        chessBoard[7][3] = new Queen(new Position(7, 3), 1);
+        chessBoard[0][3] = new Queen(new Position(0, 3), 2,1);
+        chessBoard[7][3] = new Queen(new Position(7, 3), 1,1);
 
-        chessBoard[0][4] = new King(new Position(0, 4), 2);
-        chessBoard[7][4] = new King(new Position(7, 4), 1);
+        chessBoard[0][4] = new King(new Position(0, 4), 2,1);
+        chessBoard[7][4] = new King(new Position(7, 4), 1,1);
 
         return chessBoard;
     }
@@ -324,15 +327,16 @@ public class Board {
                 PromotionChooser pc = new PromotionChooser(pawn);
                 return pc.getNewPiece();
             case 2:
-                return new Knight(pos, player);
+                return new Knight(pos, player,3);
             case 3:
-                return new Bishop(pos, player);
+                return new Bishop(pos, player,3);
             case 4:
-                return new Rook(pos, player);// System.out.println("Pawn Promoted!!!");
+                return new Rook(pos, player,3);// System.out.println("Pawn Promoted!!!");
             default:// will also take a value of 5 into account which is the queen
-                return new Queen(pos, player);
+                return new Queen(pos, player,2);
 
         }
+
     }
 
 }

@@ -266,6 +266,18 @@ public class Main implements Runnable {
 		texturedModelDice = new TexturedModel(diceModel, new ModelTexture(loader.loadTexture("dice")));
 
 		// set shine and reflectivity of each textured model
+		textureTable = texturedModelTable.getTexture();
+		textureTable.setShineDamper(5);
+		textureTable.setReflectivity((float)0.5);
+
+		textureDice = texturedModelDice.getTexture();
+		textureDice.setShineDamper(5);
+		textureDice.setReflectivity((float)0.5);
+
+		textureBorder = texturedModelBorder.getTexture();
+		textureBorder.setShineDamper(5);
+		textureBorder.setReflectivity((float)0.5);
+
 		textureChess = texturedModelChess.getTexture();
 		textureChess.setShineDamper(5);
 		textureChess.setReflectivity((float)0.5);

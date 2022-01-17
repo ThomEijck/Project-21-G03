@@ -2,6 +2,8 @@ package engineTester;
 
 import java.lang.management.LockInfo;
 import java.util.ArrayList;
+
+import GUI3D.main.Main;
 import chess.*;
 import gameLogic.util.GameManager;
 import gameLogic.util.Position;
@@ -35,6 +37,7 @@ public class MainGameLoop {
     private static Button playAgainButtonB;
     private static Button playAgainButtonDraw;
     private static Button replayButton;
+    private static Button aivsai3d;
 
     static gameLogic.util.Board logicBoard = new gameLogic.util.Board();
     static MoveMakerUtil moveMaker = new MoveMakerUtil();
@@ -48,33 +51,34 @@ public class MainGameLoop {
         Renderer renderer = new Renderer();
         StaticShader shader = new StaticShader();
 
-        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("../../../res/chess_texture_atlas.png"));
-        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("../../../res/dice_atlas.png"));
+        ModelTexture textureAtlas = new ModelTexture(loader.loadTexture("res/chess_texture_atlas.png"));
+        ModelTexture diceAtlas = new ModelTexture(loader.loadTexture("res/dice_atlas.png"));
         board = new Board(textureAtlas);
         mf = new MoveFinder(board);
         dice = new Dice(board, mf, textureAtlas, diceAtlas);
 
-        ModelTexture titleTexture = new ModelTexture(loader.loadTexture("../../../res/title.png"));
-        ModelTexture playTexture = new ModelTexture(loader.loadTexture("../../../res/button_play.png"));
-        ModelTexture exitTexture = new ModelTexture(loader.loadTexture("../../../res/button_exit.png"));
+        ModelTexture titleTexture = new ModelTexture(loader.loadTexture("res/title.png"));
+        ModelTexture playTexture = new ModelTexture(loader.loadTexture("res/button_play.png"));
+        ModelTexture exitTexture = new ModelTexture(loader.loadTexture("res/button_exit.png"));
 
-        ModelTexture modeTexture = new ModelTexture(loader.loadTexture("../../../res/title_mode.png"));
-        ModelTexture pvpTexture = new ModelTexture(loader.loadTexture("../../../res/button_pvp.png"));
-        ModelTexture aiTexture = new ModelTexture(loader.loadTexture("../../../res/button_ai.png"));
-        ModelTexture backTexture = new ModelTexture(loader.loadTexture("../../../res/button_back.png"));
+        ModelTexture modeTexture = new ModelTexture(loader.loadTexture("res/title_mode.png"));
+        ModelTexture pvpTexture = new ModelTexture(loader.loadTexture("res/button_pvp.png"));
+        ModelTexture aiTexture = new ModelTexture(loader.loadTexture("res/button_ai.png"));
+        ModelTexture backTexture = new ModelTexture(loader.loadTexture("res/button_back.png"));
+        ModelTexture ai3dTexture = new ModelTexture(loader.loadTexture("res/button_ai3d.png"));
 
-        ModelTexture colorTexture = new ModelTexture(loader.loadTexture("../../../res/title_color.png"));
-        ModelTexture blackTexture = new ModelTexture(loader.loadTexture("../../../res/button_black.png"));
-        ModelTexture whiteTexture = new ModelTexture(loader.loadTexture("../../../res/button_white.png"));
+        ModelTexture colorTexture = new ModelTexture(loader.loadTexture("res/title_color.png"));
+        ModelTexture blackTexture = new ModelTexture(loader.loadTexture("res/button_black.png"));
+        ModelTexture whiteTexture = new ModelTexture(loader.loadTexture("res/button_white.png"));
 
-        ModelTexture diffTexture = new ModelTexture(loader.loadTexture("../../../res/diff_title.png"));
-        ModelTexture diff1 = new ModelTexture(loader.loadTexture("../../../res/diff_1.png"));
-        ModelTexture diff2 = new ModelTexture(loader.loadTexture("../../../res/diff_2.png"));
+        ModelTexture diffTexture = new ModelTexture(loader.loadTexture("res/diff_title.png"));
+        ModelTexture diff1 = new ModelTexture(loader.loadTexture("res/diff_1.png"));
+        ModelTexture diff2 = new ModelTexture(loader.loadTexture("res/diff_2.png"));
 
-        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("../../../res/play_againW.png"));
-        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("../../../res/play_againB.png"));
-        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("../../../res/play_againDraw.png"));
-        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("../../../res/replayButton.png"));
+        ModelTexture playAgainTextureW = new ModelTexture(loader.loadTexture("res/play_againW.png"));
+        ModelTexture playAgainTextureB = new ModelTexture(loader.loadTexture("res/play_againB.png"));
+        ModelTexture playAgainTextureDraw = new ModelTexture(loader.loadTexture("res/play_againDraw.png"));
+        ModelTexture playAgainTexture = new ModelTexture(loader.loadTexture("res/replayButton.png"));
 
         Button title = new Button(250, 850, 750, 150, titleTexture);
         Button playButton = new Button(375, 600, 500, 100, playTexture);
@@ -84,6 +88,7 @@ public class MainGameLoop {
         Button pvpButton = new Button(375, 600, 500, 100, pvpTexture);
         Button aiButton = new Button(375, 450, 500, 100, aiTexture);
         Button backButton = new Button(100, 100, 250, 50, backTexture);
+        Button ai3dButton = new Button(375, 300, 500, 100, ai3dTexture);
 
         Button colorButton = new Button(250, 850, 750, 150, colorTexture);
         Button blackButton = new Button(375, 600, 500, 100, blackTexture);
@@ -105,6 +110,7 @@ public class MainGameLoop {
         playAgainButtonB.setEnabled(false);
         playAgainButtonDraw.setEnabled(false);
         replayButton.setEnabled(true);
+        ai3dButton.setEnabled(true);
 
         int scene = 0;
 
@@ -138,6 +144,9 @@ public class MainGameLoop {
                         scene = 2;
                     } else if (backButton.isClicked(x, y)) {
                         scene = 0;
+                    }
+                    else if(ai3dButton.isClicked(x,y)){
+                        new Main().start();
                     }
                 } else if (scene == 2) {
                     if (whiteButton.isClicked(x, y)) {
@@ -218,6 +227,7 @@ public class MainGameLoop {
                 renderer.render(pvpButton.getTexturedModel());
                 renderer.render(aiButton.getTexturedModel());
                 renderer.render(backButton.getTexturedModel());
+                renderer.render(ai3dButton.getTexturedModel());
             } else if (scene == 2) {
                 renderer.render(colorButton.getTexturedModel());
                 renderer.render(blackButton.getTexturedModel());
